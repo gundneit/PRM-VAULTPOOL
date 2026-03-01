@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "154310563994",
+    "project_id": "vault-pool",
+    "storage_bucket": "vault-pool.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:154310563994:android:59d6df8b8afacf80312723",
+        "android_client_info": {
+          "package_name": "com.lavelahotel.poolbooking"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCmj8ucnawf3BW0cXPr68-zWsqv-KhGYPA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

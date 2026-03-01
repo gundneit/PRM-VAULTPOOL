@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Chỉ dùng màu nền đơn giản cho splash để tránh lỗi bitmap/vector -->
+    <item android:drawable="@color/primary" />
+</layer-list>
