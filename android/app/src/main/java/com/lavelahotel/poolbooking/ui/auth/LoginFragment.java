@@ -18,6 +18,7 @@ import com.lavelahotel.poolbooking.R;
 import com.lavelahotel.poolbooking.data.repository.FirebaseAuthRepository;
 import com.lavelahotel.poolbooking.databinding.FragmentLoginBinding;
 import com.lavelahotel.poolbooking.ui.main.MainActivity;
+import com.lavelahotel.poolbooking.util.ValidationUtils;
 
 public class LoginFragment extends Fragment {
 
@@ -44,6 +45,28 @@ public class LoginFragment extends Fragment {
 
         setupClickListeners();
         observeViewModel();
+        setupChannelToggle();
+    }
+
+    private void setupChannelToggle() {
+        binding.rgLoginChannel.setOnCheckedChangeListener((group, checkedId) -> {
+            if (checkedId == R.id.rbLoginSms) {
+                // SMS: ẩn email + password, hiện phone
+                binding.tilEmailOrPhone.setVisibility(View.GONE);
+                binding.tilPassword.setVisibility(View.GONE);
+                binding.tvForgotPassword.setVisibility(View.GONE);
+                binding.tilLoginPhone.setVisibility(View.VISIBLE);
+                binding.tilEmailOrPhone.setError(null);
+                binding.tilPassword.setError(null);
+            } else {
+                // Email: hiện email + password, ẩn phone
+                binding.tilEmailOrPhone.setVisibility(View.VISIBLE);
+                binding.tilPassword.setVisibility(View.VISIBLE);
+                binding.tvForgotPassword.setVisibility(View.VISIBLE);
+                binding.tilLoginPhone.setVisibility(View.GONE);
+                binding.tilLoginPhone.setError(null);
+            }
+        });
     }
 
     private void setupClickListeners() {
@@ -51,9 +74,20 @@ public class LoginFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 if (validateInput()) {
-                    String emailOrPhone = binding.etEmailOrPhone.getText().toString().trim();
-                    String password = binding.etPassword.getText().toString();
-                    viewModel.login(emailOrPhone, password);
+                    int channel = binding.rgLoginChannel.getCheckedRadioButtonId();
+                    if (channel == R.id.rbLoginSms) {
+                        // Đăng nhập bằng SMS OTP: chuyển sang màn nhập OTP
+                        String rawPhone = binding.etLoginPhone.getText().toString().trim();
+                        String phone = ValidationUtils.formatToE164Vietnam(rawPhone);
+                        if (getActivity() instanceof AuthActivity) {
+                            ((AuthActivity) getActivity()).navigateToPhoneOtp(phone);
+                        }
+                    } else {
+                        // Đăng nhập bằng Email + Password
+                        String email = binding.etEmailOrPhone.getText().toString().trim();
+                        String password = binding.etPassword.getText().toString();
+                        viewModel.login(email, password);
+                    }
                 }
             }
         });
@@ -106,25 +140,39 @@ public class LoginFragment extends Fragment {
 
     private boolean validateInput() {
         boolean isValid = true;
+        int channel = binding.rgLoginChannel.getCheckedRadioButtonId();
 
-        String emailOrPhone = binding.etEmailOrPhone.getText().toString().trim();
-        String password = binding.etPassword.getText().toString();
-
-        if (TextUtils.isEmpty(emailOrPhone)) {
-            binding.tilEmailOrPhone.setError(getString(R.string.error_required));
-            isValid = false;
+        if (channel == R.id.rbLoginSms) {
+            String phone = binding.etLoginPhone.getText().toString().trim();
+            if (TextUtils.isEmpty(phone)) {
+                binding.tilLoginPhone.setError(getString(R.string.error_required));
+                isValid = false;
+            } else if (!ValidationUtils.isValidPhone(phone)) {
+                binding.tilLoginPhone.setError(getString(R.string.error_invalid_phone));
+                isValid = false;
+            } else {
+                binding.tilLoginPhone.setError(null);
+            }
         } else {
-            binding.tilEmailOrPhone.setError(null);
-        }
+            String email = binding.etEmailOrPhone.getText().toString().trim();
+            String password = binding.etPassword.getText().toString();
 
-        if (TextUtils.isEmpty(password)) {
-            binding.tilPassword.setError(getString(R.string.error_required));
-            isValid = false;
-        } else if (password.length() < 8) {
-            binding.tilPassword.setError(getString(R.string.error_password_too_short));
-            isValid = false;
-        } else {
-            binding.tilPassword.setError(null);
+            if (TextUtils.isEmpty(email)) {
+                binding.tilEmailOrPhone.setError(getString(R.string.error_required));
+                isValid = false;
+            } else {
+                binding.tilEmailOrPhone.setError(null);
+            }
+
+            if (TextUtils.isEmpty(password)) {
+                binding.tilPassword.setError(getString(R.string.error_required));
+                isValid = false;
+            } else if (password.length() < 8) {
+                binding.tilPassword.setError(getString(R.string.error_password_too_short));
+                isValid = false;
+            } else {
+                binding.tilPassword.setError(null);
+            }
         }
 
         return isValid;
