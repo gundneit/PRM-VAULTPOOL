@@ -1,0 +1,9 @@
+#!/bin/sh
+
+# Gradle wrapper script copied from original project
+
+export GRADLE_USER_HOME="${GRADLE_USER_HOME:-$HOME/.gradle}"
+
+DIR="$(cd "$(dirname "$0")" && pwd)"
+sh "$DIR/gradlew" "$@"
+

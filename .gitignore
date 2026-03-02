@@ -1,0 +1,14 @@
+# Built files
+android/.gradle/
+android/app/build/
+android/build/
+android/local.properties
+
+# IDE / OS
+.idea/
+*.iml
+.DS_Store
+Thumbs.db
+
+# Kotlin kapt
+android/app/build/

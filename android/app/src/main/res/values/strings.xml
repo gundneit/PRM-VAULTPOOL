@@ -1,0 +1,44 @@
+<resources>
+    <string name="app_name">La Vela Pool Booking</string>
+
+    <string name="login">Đăng nhập</string>
+    <string name="register">Đăng ký</string>
+    <string name="email">Email</string>
+    <string name="phone">Số điện thoại</string>
+    <string name="password">Mật khẩu</string>
+    <string name="full_name">Họ và tên</string>
+    <string name="confirm_password">Xác nhận mật khẩu</string>
+    <string name="forgot_password">Quên mật khẩu?</string>
+    <string name="dont_have_account">Chưa có tài khoản? Đăng ký</string>
+    <string name="already_have_account">Đã có tài khoản? Đăng nhập</string>
+
+    <string name="verify_otp">Xác thực OTP</string>
+    <string name="otp_code">Mã OTP</string>
+    <string name="enter_otp">Nhập mã OTP đã được gửi đến</string>
+    <string name="resend_otp">Gửi lại mã OTP</string>
+    <string name="verify">Xác thực</string>
+
+    <string name="verification_channel">Phương thức xác thực</string>
+    <string name="email_verification">Email</string>
+    <string name="sms_verification">SMS</string>
+
+    <string name="login_success">Đăng nhập thành công</string>
+    <string name="register_success">Đăng ký thành công. Vui lòng kiểm tra email/SMS để lấy mã OTP.</string>
+    <string name="otp_sent">Mã OTP đã được gửi. Vui lòng kiểm tra email/SMS.</string>
+    <string name="otp_verified">Xác thực thành công</string>
+
+    <string name="error_required">Trường này không được để trống</string>
+    <string name="error_invalid_email">Email không hợp lệ</string>
+    <string name="error_invalid_phone">Số điện thoại không hợp lệ</string>
+    <string name="error_password_too_short">Mật khẩu phải có ít nhất 8 ký tự</string>
+    <string name="error_password_mismatch">Mật khẩu không khớp</string>
+    <string name="error_invalid_otp">Mã OTP không đúng</string>
+    <string name="error_network">Lỗi kết nối. Vui lòng thử lại.</string>
+    <string name="error_unknown">Đã xảy ra lỗi. Vui lòng thử lại sau.</string>
+
+    <string name="loading">Đang tải...</string>
+    <string name="please_wait">Vui lòng đợi</string>
+
+    <string name="logout">Đăng xuất</string>
+</resources>
+
