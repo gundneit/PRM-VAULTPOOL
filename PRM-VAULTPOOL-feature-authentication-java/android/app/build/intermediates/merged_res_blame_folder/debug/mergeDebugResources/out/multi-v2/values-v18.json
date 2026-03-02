@@ -1,0 +1,19 @@
+{
+    "logs": [
+        {
+            "outputFile": "com.lavelahotel.poolbooking.app-mergeDebugResources-53:/values-v18/values-v18.xml",
+            "map": [
+                {
+                    "source": "C:\\Users\\ADMIN\\.gradle\\caches\\transforms-3\\84cf01a0facc45bbb859d1c55fd7eb31\\transformed\\appcompat-1.6.1\\res\\values-v18\\values-v18.xml",
+                    "from": {
+                        "startLines": "2",
+                        "startColumns": "4",
+                        "startOffsets": "55",
+                        "endColumns": "48",
+                        "endOffsets": "99"
+                    }
+                }
+            ]
+        }
+    ]
+}
