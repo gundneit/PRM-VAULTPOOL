@@ -2,16 +2,10 @@
 <project version="4">
   <component name="deploymentTargetSelector">
     <selectionStates>
-      <SelectionState runConfigName="LaVelaPoolBookingJava.app.androidTest">
-        <option name="selectionMode" value="DROPDOWN" />
-      </SelectionState>
       <SelectionState runConfigName="LaVelaPoolBookingJava.app">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
-      <SelectionState runConfigName="LaVelaPoolBookingJava.app.main">
-        <option name="selectionMode" value="DROPDOWN" />
-      </SelectionState>
-      <SelectionState runConfigName="LaVelaPoolBookingJava.app.unitTest">
+      <SelectionState runConfigName="apps.android-customer">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
     </selectionStates>

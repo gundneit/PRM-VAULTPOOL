@@ -1,0 +1,66 @@
+[
+    {
+        "merged": "C:\\Users\\ADMIN\\.gradle\\daemon\\8.5\\com.vaultpool.customer.android-customer-merged_res-49:\\layout_fragment_register.xml.flat",
+        "source": "C:\\Users\\ADMIN\\.gradle\\daemon\\8.5\\com.vaultpool.customer.android-customer-main-51:\\layout\\fragment_register.xml"
+    },
+    {
+        "merged": "com.vaultpool.customer.android-customer-merged_res-49:/anim_slide_out_left.xml.flat",
+        "source": "com.vaultpool.customer.android-customer-main-51:/anim/slide_out_left.xml"
+    },
+    {
+        "merged": "C:\\Users\\ADMIN\\.gradle\\daemon\\8.5\\com.vaultpool.customer.android-customer-merged_res-49:\\layout_fragment_login.xml.flat",
+        "source": "C:\\Users\\ADMIN\\.gradle\\daemon\\8.5\\com.vaultpool.customer.android-customer-main-51:\\layout\\fragment_login.xml"
+    },
+    {
+        "merged": "C:\\Users\\ADMIN\\.gradle\\daemon\\8.5\\com.vaultpool.customer.android-customer-merged_res-49:\\drawable_ic_launcher.xml.flat",
+        "source": "C:\\Users\\ADMIN\\.gradle\\daemon\\8.5\\com.vaultpool.customer.android-customer-main-51:\\drawable\\ic_launcher.xml"
+    },
+    {
+        "merged": "com.vaultpool.customer.android-customer-merged_res-49:/anim_slide_in_left.xml.flat",
+        "source": "com.vaultpool.customer.android-customer-main-51:/anim/slide_in_left.xml"
+    },
+    {
+        "merged": "com.vaultpool.customer.android-customer-merged_res-49:/anim_slide_in_right.xml.flat",
+        "source": "com.vaultpool.customer.android-customer-main-51:/anim/slide_in_right.xml"
+    },
+    {
+        "merged": "C:\\Users\\ADMIN\\.gradle\\daemon\\8.5\\com.vaultpool.customer.android-customer-merged_res-49:\\layout_fragment_email_verification.xml.flat",
+        "source": "C:\\Users\\ADMIN\\.gradle\\daemon\\8.5\\com.vaultpool.customer.android-customer-main-51:\\layout\\fragment_email_verification.xml"
+    },
+    {
+        "merged": "C:\\Users\\ADMIN\\.gradle\\daemon\\8.5\\com.vaultpool.customer.android-customer-merged_res-49:\\layout_activity_auth.xml.flat",
+        "source": "C:\\Users\\ADMIN\\.gradle\\daemon\\8.5\\com.vaultpool.customer.android-customer-main-51:\\layout\\activity_auth.xml"
+    },
+    {
+        "merged": "com.vaultpool.customer.android-customer-merged_res-49:/anim_slide_out_right.xml.flat",
+        "source": "com.vaultpool.customer.android-customer-main-51:/anim/slide_out_right.xml"
+    },
+    {
+        "merged": "C:\\Users\\ADMIN\\.gradle\\daemon\\8.5\\com.vaultpool.customer.android-customer-merged_res-49:\\drawable_splash_background.xml.flat",
+        "source": "C:\\Users\\ADMIN\\.gradle\\daemon\\8.5\\com.vaultpool.customer.android-customer-main-51:\\drawable\\splash_background.xml"
+    },
+    {
+        "merged": "C:\\Users\\ADMIN\\.gradle\\daemon\\8.5\\com.vaultpool.customer.android-customer-merged_res-49:\\layout_activity_main.xml.flat",
+        "source": "C:\\Users\\ADMIN\\.gradle\\daemon\\8.5\\com.vaultpool.customer.android-customer-main-51:\\layout\\activity_main.xml"
+    },
+    {
+        "merged": "C:\\Users\\ADMIN\\.gradle\\daemon\\8.5\\com.vaultpool.customer.android-customer-merged_res-49:\\mipmap-anydpi-v26_ic_launcher.xml.flat",
+        "source": "C:\\Users\\ADMIN\\.gradle\\daemon\\8.5\\com.vaultpool.customer.android-customer-main-51:\\mipmap-anydpi-v26\\ic_launcher.xml"
+    },
+    {
+        "merged": "C:\\Users\\ADMIN\\.gradle\\daemon\\8.5\\com.vaultpool.customer.android-customer-merged_res-49:\\drawable_ic_launcher_foreground.xml.flat",
+        "source": "C:\\Users\\ADMIN\\.gradle\\daemon\\8.5\\com.vaultpool.customer.android-customer-main-51:\\drawable\\ic_launcher_foreground.xml"
+    },
+    {
+        "merged": "C:\\Users\\ADMIN\\.gradle\\daemon\\8.5\\com.vaultpool.customer.android-customer-merged_res-49:\\layout_fragment_phone_otp_verification.xml.flat",
+        "source": "C:\\Users\\ADMIN\\.gradle\\daemon\\8.5\\com.vaultpool.customer.android-customer-main-51:\\layout\\fragment_phone_otp_verification.xml"
+    },
+    {
+        "merged": "C:\\Users\\ADMIN\\.gradle\\daemon\\8.5\\com.vaultpool.customer.android-customer-merged_res-49:\\mipmap-anydpi-v26_ic_launcher_round.xml.flat",
+        "source": "C:\\Users\\ADMIN\\.gradle\\daemon\\8.5\\com.vaultpool.customer.android-customer-main-51:\\mipmap-anydpi-v26\\ic_launcher_round.xml"
+    },
+    {
+        "merged": "C:\\Users\\ADMIN\\.gradle\\daemon\\8.5\\com.vaultpool.customer.android-customer-merged_res-49:\\layout_activity_splash.xml.flat",
+        "source": "C:\\Users\\ADMIN\\.gradle\\daemon\\8.5\\com.vaultpool.customer.android-customer-main-51:\\layout\\activity_splash.xml"
+    }
+]

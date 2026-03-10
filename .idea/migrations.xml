@@ -3,7 +3,7 @@
   <component name="ProjectMigrations">
     <option name="MigrateToGradleLocalJavaHome">
       <set>
-        <option value="$PROJECT_DIR$/PRM-VAULTPOOL-feature-authentication-java/android" />
+        <option value="$PROJECT_DIR$" />
       </set>
     </option>
   </component>
