@@ -1,30 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="primary">#1E88E5</color>
-    <color name="primary_dark">#1565C0</color>
-    <color name="primary_light">#64B5F6</color>
-
-    <color name="accent">#00ACC1</color>
-    <color name="accent_dark">#00838F</color>
-
-    <color name="background">#F5F5F5</color>
+    <color name="navy">#0A2640</color>
+    <color name="gold">#C8A97E</color>
+    <color name="teal">#25858A</color>
+    <color name="teal_light">#5FBBC0</color>
+    <color name="blue_royal">#1565C0</color>
+    <color name="background">#F6F5F2</color>
     <color name="surface">#FFFFFF</color>
-    <color name="surface_dark">#212121</color>
-
-    <color name="text_primary">#212121</color>
-    <color name="text_secondary">#757575</color>
-    <color name="text_hint">#BDBDBD</color>
-
-    <color name="success">#4CAF50</color>
-    <color name="error">#F44336</color>
-    <color name="warning">#FF9800</color>
-    <color name="info">#2196F3</color>
-
+    <color name="surface_soft">#FDFCF9</color>
+    <color name="surface_dark">#15212F</color>
+    <color name="text_primary">#161616</color>
+    <color name="text_secondary">#6E7480</color>
+    <color name="text_hint">#9BA3AE</color>
+    <color name="divider">#D9DCE1</color>
+    <color name="indicator_inactive">#B6BCC5</color>
     <color name="white">#FFFFFF</color>
     <color name="black">#000000</color>
     <color name="transparent">#00000000</color>
 
-    <!-- Launcher Icon -->
+    <color name="primary">@color/navy</color>
+    <color name="primary_dark">#071C2D</color>
+    <color name="primary_light">#214B73</color>
+    <color name="accent">@color/teal</color>
+    <color name="accent_dark">#1A6367</color>
+    <color name="success">#4CAF50</color>
+    <color name="error">#D64545</color>
+    <color name="warning">#FF9800</color>
+    <color name="info">#2196F3</color>
+
     <color name="ic_launcher_background">#FFFFFF</color>
 </resources>
 

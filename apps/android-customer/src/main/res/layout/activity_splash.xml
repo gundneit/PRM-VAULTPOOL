@@ -3,32 +3,47 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/primary">
+    android:background="@color/navy">
 
     <ImageView
-        android:id="@+id/ivLogo"
-        android:layout_width="150dp"
-        android:layout_height="150dp"
-        android:src="@drawable/ic_launcher"
-        app:layout_constraintBottom_toTopOf="@id/tvAppName"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_chainStyle="packed" />
-
-    <TextView
-        android:id="@+id/tvAppName"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:text="@string/app_name"
-        android:textColor="@color/white"
-        android:textSize="28sp"
-        android:textStyle="bold"
+        android:id="@+id/ivSplashRings"
+        android:layout_width="400dp"
+        android:layout_height="400dp"
+        android:alpha="0.3"
+        android:contentDescription="@null"
+        android:src="@drawable/bg_splash_rings"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/ivLogo" />
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/ivSplashLogo"
+        android:layout_width="240dp"
+        android:layout_height="240dp"
+        android:adjustViewBounds="true"
+        android:contentDescription="@string/lavela"
+        android:scaleType="fitCenter"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tvSplashLogo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="serif"
+        android:letterSpacing="0.08"
+        android:text="@string/lavela"
+        android:textColor="@color/gold"
+        android:textSize="44sp"
+        android:textStyle="bold"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
-

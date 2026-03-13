@@ -1,5 +1,34 @@
 <resources>
-    <string name="app_name">La Vela Pool Booking</string>
+    <string name="app_name">Lavela</string>
+    <string name="lavela">Lavela</string>
+    <string name="lavela_pool">Lavela Pool</string>
+    <string name="login_title">Login</string>
+    <string name="onboarding_page_one_title">Escape to Paradise</string>
+    <string name="onboarding_page_one_desc">Discover the most exclusive pools and private beach clubs.</string>
+    <string name="onboarding_page_two_title">Unwind in Luxury</string>
+    <string name="onboarding_page_two_desc">Experience world-class amenities and personalized poolside service.</string>
+    <string name="onboarding_page_three_title">Book Your Experience</string>
+    <string name="onboarding_page_three_desc">Reserve your spot instantly and elevate your relaxation game.</string>
+    <string name="next">Next</string>
+    <string name="get_started">Get Started</string>
+    <string name="or_continue_with">or continue with</string>
+    <string name="continue_with_google">Continue with Google</string>
+    <string name="continue_with_apple">Continue with Apple</string>
+    <string name="forgot_password_en">Forgot Password?</string>
+    <string name="create_account">Don\'t have an account? Sign up</string>
+    <string name="register_success_en">Account created. Please verify your email before logging in.</string>
+    <string name="reset_password_sent">Password reset email sent.</string>
+    <string name="backend_account_missing">This account is not registered in Lavela yet. Please sign up first.</string>
+    <string name="error_verify_email_first">Please verify your email before logging in.</string>
+    <string name="welcome_title">Welcome back</string>
+    <string name="guest_user">Guest</string>
+    <string name="label_email">Email</string>
+    <string name="label_user_id">User ID</string>
+    <string name="label_status">Session</string>
+    <string name="status_active">Authenticated with backend</string>
+    <string name="status_missing">Session data missing</string>
+    <string name="status_refreshing">Refreshing profile from backend...</string>
+    <string name="session_expired">Your session expired. Please sign in again.</string>
 
     <string name="login">Đăng nhập</string>
     <string name="register">Đăng ký</string>
@@ -41,4 +70,3 @@
 
     <string name="logout">Đăng xuất</string>
 </resources>
-

@@ -1,10 +1,10 @@
 {
     "logs": [
         {
-            "outputFile": "com.vaultpool.customer.android-customer-mergeDebugResources-47:/values-small-v4/values-small-v4.xml",
+            "outputFile": "com.vaultpool.customer.android-customer-mergeDebugResources-49:/values-small-v4/values-small-v4.xml",
             "map": [
                 {
-                    "source": "C:\\Users\\ADMIN\\.gradle\\caches\\transforms-3\\944eeeb0d774d974b2aae19c1b2738a1\\transformed\\material-1.11.0\\res\\values-small-v4\\values-small-v4.xml",
+                    "source": "C:\\Users\\QUANG TUAN\\.gradle\\caches\\transforms-3\\944eeeb0d774d974b2aae19c1b2738a1\\transformed\\material-1.11.0\\res\\values-small-v4\\values-small-v4.xml",
                     "from": {
                         "startLines": "2,3,4,5",
                         "startColumns": "4,4,4,4",

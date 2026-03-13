@@ -42,6 +42,17 @@
             </intent-filter>
         </activity>
         <activity
+            android:name="com.vaultpool.customer.presentation.ui.onboarding.OnboardingActivity"
+            android:exported="false" />
+        <activity
+            android:name="com.vaultpool.customer.presentation.ui.login.LoginActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name="com.vaultpool.customer.presentation.ui.register.RegisterActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
             android:name="com.vaultpool.customer.presentation.ui.auth.AuthActivity"
             android:exported="false"
             android:windowSoftInputMode="adjustResize" />

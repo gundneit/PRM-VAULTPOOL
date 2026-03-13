@@ -11,6 +11,7 @@ public class ServiceLocator {
     private com.vaultpool.customer.domain.repository.AuthRepository authRepository;
     private com.vaultpool.customer.domain.usecase.LoginUseCase loginUseCase;
     private com.vaultpool.customer.data.local.prefs.PreferencesManager preferencesManager;
+    private com.vaultpool.customer.data.auth.AuthFlowManager authFlowManager;
 
     private ServiceLocator() {
     }
@@ -27,6 +28,10 @@ public class ServiceLocator {
         preferencesManager = new com.vaultpool.customer.data.local.prefs.PreferencesManager(context);
         authRepository = new com.vaultpool.customer.data.repository.FirebaseAuthRepository();
         loginUseCase = new com.vaultpool.customer.domain.usecase.LoginUseCase(authRepository);
+        authFlowManager = new com.vaultpool.customer.data.auth.AuthFlowManager(
+                authRepository,
+                preferencesManager
+        );
     }
 
     public com.vaultpool.customer.domain.repository.AuthRepository getAuthRepository() {
@@ -39,5 +44,9 @@ public class ServiceLocator {
 
     public com.vaultpool.customer.data.local.prefs.PreferencesManager getPreferencesManager() {
         return preferencesManager;
+    }
+
+    public com.vaultpool.customer.data.auth.AuthFlowManager getAuthFlowManager() {
+        return authFlowManager;
     }
 }

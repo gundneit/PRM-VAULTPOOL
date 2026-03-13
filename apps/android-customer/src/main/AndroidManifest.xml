@@ -25,6 +25,20 @@
         </activity>
 
         <activity
+            android:name=".presentation.ui.onboarding.OnboardingActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".presentation.ui.login.LoginActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+
+        <activity
+            android:name=".presentation.ui.register.RegisterActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+
+        <activity
             android:name=".presentation.ui.auth.AuthActivity"
             android:exported="false"
             android:windowSoftInputMode="adjustResize" />

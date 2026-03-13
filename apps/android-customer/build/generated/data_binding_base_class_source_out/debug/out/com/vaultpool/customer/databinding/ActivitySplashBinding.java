@@ -21,16 +21,20 @@ public final class ActivitySplashBinding implements ViewBinding {
   private final ConstraintLayout rootView;
 
   @NonNull
-  public final ImageView ivLogo;
+  public final ImageView ivSplashLogo;
 
   @NonNull
-  public final TextView tvAppName;
+  public final ImageView ivSplashRings;
 
-  private ActivitySplashBinding(@NonNull ConstraintLayout rootView, @NonNull ImageView ivLogo,
-      @NonNull TextView tvAppName) {
+  @NonNull
+  public final TextView tvSplashLogo;
+
+  private ActivitySplashBinding(@NonNull ConstraintLayout rootView, @NonNull ImageView ivSplashLogo,
+      @NonNull ImageView ivSplashRings, @NonNull TextView tvSplashLogo) {
     this.rootView = rootView;
-    this.ivLogo = ivLogo;
-    this.tvAppName = tvAppName;
+    this.ivSplashLogo = ivSplashLogo;
+    this.ivSplashRings = ivSplashRings;
+    this.tvSplashLogo = tvSplashLogo;
   }
 
   @Override
@@ -60,19 +64,26 @@ public final class ActivitySplashBinding implements ViewBinding {
     // This is done to optimize the compiled bytecode for size and performance.
     int id;
     missingId: {
-      id = R.id.ivLogo;
-      ImageView ivLogo = ViewBindings.findChildViewById(rootView, id);
-      if (ivLogo == null) {
+      id = R.id.ivSplashLogo;
+      ImageView ivSplashLogo = ViewBindings.findChildViewById(rootView, id);
+      if (ivSplashLogo == null) {
         break missingId;
       }
 
-      id = R.id.tvAppName;
-      TextView tvAppName = ViewBindings.findChildViewById(rootView, id);
-      if (tvAppName == null) {
+      id = R.id.ivSplashRings;
+      ImageView ivSplashRings = ViewBindings.findChildViewById(rootView, id);
+      if (ivSplashRings == null) {
         break missingId;
       }
 
-      return new ActivitySplashBinding((ConstraintLayout) rootView, ivLogo, tvAppName);
+      id = R.id.tvSplashLogo;
+      TextView tvSplashLogo = ViewBindings.findChildViewById(rootView, id);
+      if (tvSplashLogo == null) {
+        break missingId;
+      }
+
+      return new ActivitySplashBinding((ConstraintLayout) rootView, ivSplashLogo, ivSplashRings,
+          tvSplashLogo);
     }
     String missingId = rootView.getResources().getResourceName(id);
     throw new NullPointerException("Missing required view with ID: ".concat(missingId));
