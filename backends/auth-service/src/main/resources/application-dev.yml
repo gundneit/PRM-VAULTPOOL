@@ -17,6 +17,7 @@ spring:
       idle-timeout: 120000
 
   jpa:
+    defer-datasource-initialization: true
     hibernate:
       # update: Hibernate tự tạo/cập nhật bảng theo Entity
       ddl-auto: update
@@ -25,8 +26,17 @@ spring:
     properties:
       hibernate:
         format_sql: true
+  sql:
+    init:
+      mode: always
 
 logging:
   level:
     com.lavela: DEBUG
     org.hibernate.SQL: DEBUG
+
+app:
+  dev-auth:
+    enabled: true
+    bearer-token: dev-admin-token
+    firebase-uid: dev-admin-uid

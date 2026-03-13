@@ -10,6 +10,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
@@ -27,6 +28,15 @@ public class FirebaseTokenFilter extends OncePerRequestFilter {
 
     private final UserRepository userRepository;
 
+    @Value("${app.dev-auth.enabled:false}")
+    private boolean devAuthEnabled;
+
+    @Value("${app.dev-auth.bearer-token:}")
+    private String devBearerToken;
+
+    @Value("${app.dev-auth.firebase-uid:}")
+    private String devFirebaseUid;
+
     @Override
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
@@ -34,20 +44,15 @@ public class FirebaseTokenFilter extends OncePerRequestFilter {
         String token = extractBearerToken(request);
 
         if (StringUtils.hasText(token)) {
+            if (devAuthEnabled && token.equals(devBearerToken)) {
+                authenticateByFirebaseUid(devFirebaseUid, request);
+                filterChain.doFilter(request, response);
+                return;
+            }
+
             try {
                 FirebaseToken firebaseToken = FirebaseAuth.getInstance().verifyIdToken(token);
-                String uid = firebaseToken.getUid();
-
-                Optional<User> userOpt = userRepository.findByFirebaseUid(uid);
-                if (userOpt.isPresent()) {
-                    User user = userOpt.get();
-                    UserPrincipal principal = new UserPrincipal(
-                            user.getId(), user.getFirebaseUid(), user.getEmail(), user.getRoles());
-                    UsernamePasswordAuthenticationToken auth =
-                            new UsernamePasswordAuthenticationToken(principal, null, principal.getAuthorities());
-                    auth.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                    SecurityContextHolder.getContext().setAuthentication(auth);
-                }
+                authenticateByFirebaseUid(firebaseToken.getUid(), request);
             } catch (Exception ex) {
                 log.warn("Firebase token verification failed: {}", ex.getMessage());
             }
@@ -62,5 +67,24 @@ public class FirebaseTokenFilter extends OncePerRequestFilter {
             return header.substring(7);
         }
         return null;
+    }
+
+    private void authenticateByFirebaseUid(String firebaseUid, HttpServletRequest request) {
+        if (!StringUtils.hasText(firebaseUid)) {
+            return;
+        }
+
+        Optional<User> userOpt = userRepository.findByFirebaseUid(firebaseUid);
+        if (userOpt.isEmpty()) {
+            return;
+        }
+
+        User user = userOpt.get();
+        UserPrincipal principal = new UserPrincipal(
+                user.getId(), user.getFirebaseUid(), user.getEmail(), user.getRoles());
+        UsernamePasswordAuthenticationToken auth =
+                new UsernamePasswordAuthenticationToken(principal, null, principal.getAuthorities());
+        auth.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+        SecurityContextHolder.getContext().setAuthentication(auth);
     }
 }

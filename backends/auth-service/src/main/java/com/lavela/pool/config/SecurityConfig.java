@@ -31,6 +31,8 @@ public class SecurityConfig {
                 .requestMatchers("/swagger-ui/**", "/swagger-ui.html", "/v3/api-docs/**").permitAll()
                 // Auth endpoints
                 .requestMatchers(HttpMethod.POST, "/api/auth/register").permitAll()
+                // Public pool catalog endpoints
+                .requestMatchers(HttpMethod.GET, "/pools/**").permitAll()
                 // Everything else requires authentication
                 .anyRequest().authenticated()
             )
