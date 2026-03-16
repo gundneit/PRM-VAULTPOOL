@@ -55,6 +55,9 @@ public class BookingService {
                 .orElseThrow(() -> new ResourceNotFoundException("Slot not found: " + req.getSlotId()));
 
         // 3. Validate slot
+        if (slot.getStartTime().isBefore(LocalDateTime.now())) {
+            throw new BookingConflictException("Cannot book a slot that has already started or passed.");
+        }
         if (!STATUS_ACTIVE.equalsIgnoreCase(slot.getStatus())) {
             throw new BookingConflictException("Slot is not available (status: " + slot.getStatus() + ")");
         }

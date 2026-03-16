@@ -200,6 +200,12 @@ public class PoolService {
     }
 
     private SlotResponse toSlotResponse(Slot slot) {
+        String displayStatus = slot.getStatus();
+        // Nếu slot đã bắt đầu (hoặc qua giờ), hiển thị trạng thái là EXPIRED
+        if (slot.getStartTime().isBefore(LocalDateTime.now()) && "ACTIVE".equalsIgnoreCase(displayStatus)) {
+            displayStatus = "EXPIRED";
+        }
+
         return SlotResponse.builder()
                 .id(slot.getId())
                 .poolId(slot.getPool().getId())
@@ -208,7 +214,7 @@ public class PoolService {
                 .capacityTotal(slot.getCapacityTotal())
                 .capacityAvailable(slot.getCapacityAvailable())
                 .price(slot.getPrice())
-                .status(slot.getStatus())
+                .status(displayStatus)
                 .build();
     }
 
