@@ -4,7 +4,7 @@ spring:
     # Thay <HOST>, <USERNAME>, <PASSWORD> bằng thông tin từ TiDB Cloud Console
     # Connect → MySQL CLI → copy host + user + password
     # ──────────────────────────────────────────────────────────────────
-    url: jdbc:mysql://gateway01.ap-southeast-1.prod.aws.tidbcloud.com:4000/lavela_pool?sslMode=VERIFY_IDENTITY&enabledTLSProtocols=TLSv1.2,TLSv1.3
+    url: jdbc:mysql://gateway01.ap-southeast-1.prod.aws.tidbcloud.com:4000/lavela_pool?sslMode=VERIFY_IDENTITY&enabledTLSProtocols=TLSv1.2,TLSv1.3&serverTimezone=Asia/Ho_Chi_Minh
     username: ${TIDB_USERNAME}
     password: ${TIDB_PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver
