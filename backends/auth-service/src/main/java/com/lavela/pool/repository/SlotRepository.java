@@ -1,7 +1,11 @@
 package com.lavela.pool.repository;
 
 import com.lavela.pool.domain.entity.Slot;
+import jakarta.persistence.LockModeType;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Lock;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
@@ -19,4 +23,11 @@ public interface SlotRepository extends JpaRepository<Slot, Long> {
     );
 
     Optional<Slot> findByIdAndPoolId(Long id, Long poolId);
+
+    /**
+     * Pessimistic write lock — dùng khi tạo booking để tránh overbooking concurrent
+     */
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
+    @Query("SELECT s FROM Slot s WHERE s.id = :id")
+    Optional<Slot> findByIdForUpdate(@Param("id") Long id);
 }
