@@ -106,6 +106,23 @@
     </androidx.cardview.widget.CardView>
 
     <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnStaff"
+        style="@style/Widget.Material3.Button.OutlinedButton"
+        android:layout_width="0dp"
+        android:layout_height="56dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginBottom="16dp"
+        android:text="Staff Dashboard"
+        android:textAllCaps="false"
+        android:textColor="@color/navy"
+        app:cornerRadius="28dp"
+        app:strokeColor="@color/navy"
+        app:layout_constraintBottom_toTopOf="@+id/btnLogout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/btnLogout"
         style="@style/Widget.Material3.Button"
         android:layout_width="0dp"

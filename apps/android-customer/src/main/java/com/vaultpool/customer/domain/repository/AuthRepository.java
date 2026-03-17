@@ -65,4 +65,11 @@ public interface AuthRepository {
      * @return Single emitting Result
      */
     Single<Result<User>> reloadUser();
+
+    /**
+     * Get user profile from Backend using Firebase token
+     * @param token Firebase ID token
+     * @return Single emitting Result with User (including roles)
+     */
+    Single<Result<User>> getProfileFromBackend(String token);
 }

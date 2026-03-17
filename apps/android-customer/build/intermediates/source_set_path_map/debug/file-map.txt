@@ -44,11 +44,11 @@ com.vaultpool.customer.android-customer-lifecycle-viewmodel-2.7.0-42 C:\Users\QU
 com.vaultpool.customer.android-customer-customview-poolingcontainer-1.0.0-43 C:\Users\QUANG TUAN\.gradle\caches\transforms-3\e13bc2d6c0bd12396442ad305a9ddf67\transformed\customview-poolingcontainer-1.0.0\res
 com.vaultpool.customer.android-customer-navigation-runtime-2.7.7-44 C:\Users\QUANG TUAN\.gradle\caches\transforms-3\ec989219817b5c85bfbd7c7561daa890\transformed\navigation-runtime-2.7.7\res
 com.vaultpool.customer.android-customer-core-1.12.0-45 C:\Users\QUANG TUAN\.gradle\caches\transforms-3\ff5b48c5356f62c3d44204f45063f039\transformed\core-1.12.0\res
-com.vaultpool.customer.android-customer-pngs-46 E:\prm-final\PRM-VAULTPOOL\apps\android-customer\build\generated\res\pngs\debug
-com.vaultpool.customer.android-customer-res-47 E:\prm-final\PRM-VAULTPOOL\apps\android-customer\build\generated\res\processDebugGoogleServices
-com.vaultpool.customer.android-customer-resValues-48 E:\prm-final\PRM-VAULTPOOL\apps\android-customer\build\generated\res\resValues\debug
-com.vaultpool.customer.android-customer-packageDebugResources-49 E:\prm-final\PRM-VAULTPOOL\apps\android-customer\build\intermediates\incremental\debug\packageDebugResources\merged.dir
-com.vaultpool.customer.android-customer-packageDebugResources-50 E:\prm-final\PRM-VAULTPOOL\apps\android-customer\build\intermediates\incremental\debug\packageDebugResources\stripped.dir
-com.vaultpool.customer.android-customer-merged_res-51 E:\prm-final\PRM-VAULTPOOL\apps\android-customer\build\intermediates\merged_res\debug
-com.vaultpool.customer.android-customer-debug-52 E:\prm-final\PRM-VAULTPOOL\apps\android-customer\src\debug\res
-com.vaultpool.customer.android-customer-main-53 E:\prm-final\PRM-VAULTPOOL\apps\android-customer\src\main\res
+com.vaultpool.customer.android-customer-pngs-46 E:\PRM-ASSIGN\PRM-VAULTPOOL\apps\android-customer\build\generated\res\pngs\debug
+com.vaultpool.customer.android-customer-res-47 E:\PRM-ASSIGN\PRM-VAULTPOOL\apps\android-customer\build\generated\res\processDebugGoogleServices
+com.vaultpool.customer.android-customer-resValues-48 E:\PRM-ASSIGN\PRM-VAULTPOOL\apps\android-customer\build\generated\res\resValues\debug
+com.vaultpool.customer.android-customer-packageDebugResources-49 E:\PRM-ASSIGN\PRM-VAULTPOOL\apps\android-customer\build\intermediates\incremental\debug\packageDebugResources\merged.dir
+com.vaultpool.customer.android-customer-packageDebugResources-50 E:\PRM-ASSIGN\PRM-VAULTPOOL\apps\android-customer\build\intermediates\incremental\debug\packageDebugResources\stripped.dir
+com.vaultpool.customer.android-customer-merged_res-51 E:\PRM-ASSIGN\PRM-VAULTPOOL\apps\android-customer\build\intermediates\merged_res\debug
+com.vaultpool.customer.android-customer-debug-52 E:\PRM-ASSIGN\PRM-VAULTPOOL\apps\android-customer\src\debug\res
+com.vaultpool.customer.android-customer-main-53 E:\PRM-ASSIGN\PRM-VAULTPOOL\apps\android-customer\src\main\res
