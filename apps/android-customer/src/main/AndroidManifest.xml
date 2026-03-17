@@ -47,6 +47,11 @@
             android:name=".presentation.ui.main.MainActivity"
             android:exported="false" />
 
+        <activity
+            android:name=".presentation.ui.staff.StaffActivity"
+            android:exported="false"
+            android:theme="@style/Theme.VaultPool" />
+
     </application>
 
 </manifest>

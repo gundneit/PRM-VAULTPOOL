@@ -26,6 +26,9 @@ public final class ActivityMainBinding implements ViewBinding {
   public final MaterialButton btnLogout;
 
   @NonNull
+  public final MaterialButton btnStaff;
+
+  @NonNull
   public final CardView cardProfile;
 
   @NonNull
@@ -56,13 +59,14 @@ public final class ActivityMainBinding implements ViewBinding {
   public final TextView tvWelcome;
 
   private ActivityMainBinding(@NonNull ConstraintLayout rootView, @NonNull MaterialButton btnLogout,
-      @NonNull CardView cardProfile, @NonNull ProgressBar progressBar,
-      @NonNull TextView tvEmailLabel, @NonNull TextView tvEmailValue, @NonNull TextView tvHeader,
-      @NonNull TextView tvStatusLabel, @NonNull TextView tvStatusValue,
-      @NonNull TextView tvUserIdLabel, @NonNull TextView tvUserIdValue,
-      @NonNull TextView tvWelcome) {
+      @NonNull MaterialButton btnStaff, @NonNull CardView cardProfile,
+      @NonNull ProgressBar progressBar, @NonNull TextView tvEmailLabel,
+      @NonNull TextView tvEmailValue, @NonNull TextView tvHeader, @NonNull TextView tvStatusLabel,
+      @NonNull TextView tvStatusValue, @NonNull TextView tvUserIdLabel,
+      @NonNull TextView tvUserIdValue, @NonNull TextView tvWelcome) {
     this.rootView = rootView;
     this.btnLogout = btnLogout;
+    this.btnStaff = btnStaff;
     this.cardProfile = cardProfile;
     this.progressBar = progressBar;
     this.tvEmailLabel = tvEmailLabel;
@@ -105,6 +109,12 @@ public final class ActivityMainBinding implements ViewBinding {
       id = R.id.btnLogout;
       MaterialButton btnLogout = ViewBindings.findChildViewById(rootView, id);
       if (btnLogout == null) {
+        break missingId;
+      }
+
+      id = R.id.btnStaff;
+      MaterialButton btnStaff = ViewBindings.findChildViewById(rootView, id);
+      if (btnStaff == null) {
         break missingId;
       }
 
@@ -168,7 +178,7 @@ public final class ActivityMainBinding implements ViewBinding {
         break missingId;
       }
 
-      return new ActivityMainBinding((ConstraintLayout) rootView, btnLogout, cardProfile,
+      return new ActivityMainBinding((ConstraintLayout) rootView, btnLogout, btnStaff, cardProfile,
           progressBar, tvEmailLabel, tvEmailValue, tvHeader, tvStatusLabel, tvStatusValue,
           tvUserIdLabel, tvUserIdValue, tvWelcome);
     }

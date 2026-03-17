@@ -1,5 +1,9 @@
 package com.vaultpool.customer;
 
+import retrofit2.Retrofit;
+import retrofit2.adapter.rxjava3.RxJava3CallAdapterFactory;
+import retrofit2.converter.gson.GsonConverterFactory;
+
 /**
  * Simple Service Locator for Dependency Injection.
  * This replaces Hilt for Java-only projects.
@@ -12,6 +16,10 @@ public class ServiceLocator {
     private com.vaultpool.customer.domain.usecase.LoginUseCase loginUseCase;
     private com.vaultpool.customer.data.local.prefs.PreferencesManager preferencesManager;
     private com.vaultpool.customer.data.auth.AuthFlowManager authFlowManager;
+    
+    // Staff Dependencies
+    private com.vaultpool.customer.data.remote.api.StaffApi staffApi;
+    private com.vaultpool.customer.domain.repository.StaffRepository staffRepository;
 
     private ServiceLocator() {
     }
@@ -24,14 +32,29 @@ public class ServiceLocator {
     }
 
     public void init(android.content.Context context) {
-        // Initialize dependencies
+        // Initialize common dependencies
         preferencesManager = new com.vaultpool.customer.data.local.prefs.PreferencesManager(context);
-        authRepository = new com.vaultpool.customer.data.repository.FirebaseAuthRepository();
+        
+        // Setup Retrofit
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("http://10.0.2.2:8080/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
+                .build();
+        
+        // Initialize Auth dependencies
+        com.vaultpool.customer.data.remote.api.AuthApi authApi = 
+                retrofit.create(com.vaultpool.customer.data.remote.api.AuthApi.class);
+        authRepository = new com.vaultpool.customer.data.repository.FirebaseAuthRepository(authApi);
         loginUseCase = new com.vaultpool.customer.domain.usecase.LoginUseCase(authRepository);
         authFlowManager = new com.vaultpool.customer.data.auth.AuthFlowManager(
                 authRepository,
                 preferencesManager
         );
+        
+        // Initialize Staff dependencies
+        staffApi = retrofit.create(com.vaultpool.customer.data.remote.api.StaffApi.class);
+        staffRepository = new com.vaultpool.customer.data.repository.StaffRepositoryImpl(staffApi);
     }
 
     public com.vaultpool.customer.domain.repository.AuthRepository getAuthRepository() {
@@ -48,5 +71,9 @@ public class ServiceLocator {
 
     public com.vaultpool.customer.data.auth.AuthFlowManager getAuthFlowManager() {
         return authFlowManager;
+    }
+    
+    public com.vaultpool.customer.domain.repository.StaffRepository getStaffRepository() {
+        return staffRepository;
     }
 }

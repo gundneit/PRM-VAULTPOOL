@@ -47,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
         String userEmail = preferencesManager.getUserEmail();
         String userId = preferencesManager.getUserId();
         boolean loggedIn = preferencesManager.isLoggedIn();
+        boolean isStaff = preferencesManager.isStaff();
 
         binding.tvWelcome.setText(userName != null && !userName.isEmpty()
                 ? userName
@@ -58,10 +59,17 @@ public class MainActivity extends AppCompatActivity {
                         ? com.vaultpool.customer.R.string.status_active
                         : com.vaultpool.customer.R.string.status_missing
         ));
+        
+        // Hide staff button if user is not staff
+        binding.btnStaff.setVisibility(isStaff ? android.view.View.VISIBLE : android.view.View.GONE);
     }
 
     private void setupActions() {
         binding.btnLogout.setOnClickListener(v -> logout());
+        binding.btnStaff.setOnClickListener(v -> {
+            Intent intent = new Intent(this, com.vaultpool.customer.presentation.ui.staff.StaffActivity.class);
+            startActivity(intent);
+        });
     }
 
     private void refreshProfile() {

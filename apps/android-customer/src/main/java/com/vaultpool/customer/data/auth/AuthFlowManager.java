@@ -6,7 +6,9 @@ import com.vaultpool.customer.domain.model.User;
 import com.vaultpool.customer.domain.repository.AuthRepository;
 
 import io.reactivex.rxjava3.core.Single;
+import io.reactivex.rxjava3.schedulers.Schedulers;
 import io.reactivex.rxjava3.subjects.BehaviorSubject;
+import java.util.Set;
 
 /**
  * Manages the authentication flow and session state.
@@ -29,11 +31,13 @@ public class AuthFlowManager {
             String userId = preferencesManager.getUserId();
             String email = preferencesManager.getUserEmail();
             String name = preferencesManager.getUserName();
+            Set<String> roles = preferencesManager.getUserRoles();
             
             User user = User.builder()
                     .id(userId != null ? Long.parseLong(userId) : null)
                     .email(email)
                     .fullName(name)
+                    .roles(roles)
                     .build();
             
             sessionSubject.onNext(SessionState.authenticated(token, user));
@@ -47,17 +51,42 @@ public class AuthFlowManager {
     public Single<Result<User>> login(String email, String password) {
         sessionSubject.onNext(SessionState.loading());
         return authRepository.loginWithEmail(email, password)
-                .map(result -> {
+                .flatMap(result -> {
                     if (result.isSuccess()) {
-                        User user = result.getData();
-                        String token = "mock_token"; // Replace with actual token if available
-                        saveSession(token, user);
-                        sessionSubject.onNext(SessionState.authenticated(token, user));
+                        User firebaseUser = result.getData();
+                        return authRepository.getIdToken()
+                                .flatMap(token -> {
+                                    if (token == null) return Single.just(Result.success(firebaseUser));
+                                    
+                                    return authRepository.getProfileFromBackend(token)
+                                            .map(profileResult -> {
+                                                if (profileResult.isSuccess()) {
+                                                    // Backend profile found (might be Staff)
+                                                    User backendUser = profileResult.getData();
+                                                    saveSession(token, backendUser);
+                                                    sessionSubject.onNext(SessionState.authenticated(token, backendUser));
+                                                    return Result.success(backendUser);
+                                                } else {
+                                                    // Backend rejected (403) or not found. 
+                                                    // Fallback: Login as a standard Firebase user.
+                                                    saveSession(token, firebaseUser);
+                                                    sessionSubject.onNext(SessionState.authenticated(token, firebaseUser));
+                                                    return Result.success(firebaseUser);
+                                                }
+                                            })
+                                            .onErrorReturn(throwable -> {
+                                                // Any network error: still allow login as basic user
+                                                saveSession(token, firebaseUser);
+                                                sessionSubject.onNext(SessionState.authenticated(token, firebaseUser));
+                                                return Result.success(firebaseUser);
+                                            });
+                                });
                     } else {
                         sessionSubject.onNext(SessionState.unauthenticated());
+                        return Single.just(result);
                     }
-                    return result;
                 })
+                .subscribeOn(Schedulers.io())
                 .onErrorReturn(throwable -> {
                     sessionSubject.onNext(SessionState.unauthenticated());
                     return Result.<User>failure(throwable);
@@ -68,7 +97,6 @@ public class AuthFlowManager {
         sessionSubject.onNext(SessionState.loading());
         return authRepository.registerWithEmail(email, password, fullName)
                 .doOnSuccess(result -> {
-                    // Đảm bảo cập nhật lại trạng thái sau khi đăng ký xong
                     sessionSubject.onNext(SessionState.unauthenticated());
                 })
                 .doOnError(throwable -> {
@@ -92,7 +120,19 @@ public class AuthFlowManager {
     }
 
     public Single<Result<User>> refreshProfile() {
-        return authRepository.reloadUser()
+        return authRepository.getIdToken()
+                .flatMap(token -> {
+                    if (token == null) return Single.just(Result.<User>failure("No token"));
+                    return authRepository.getProfileFromBackend(token);
+                })
+                .doOnSuccess(result -> {
+                    if (result.isSuccess()) {
+                        User user = result.getData();
+                        String token = preferencesManager.getFirebaseToken();
+                        saveSession(token, user);
+                        sessionSubject.onNext(SessionState.authenticated(token, user));
+                    }
+                })
                 .onErrorReturn(throwable -> Result.<User>failure(throwable));
     }
 
@@ -105,6 +145,9 @@ public class AuthFlowManager {
         if (user != null) {
             preferencesManager.saveUserEmail(user.getEmail());
             preferencesManager.saveUserName(user.getFullName());
+            if (user.getRoles() != null) {
+                preferencesManager.saveUserRoles(user.getRoles());
+            }
         }
     }
 
