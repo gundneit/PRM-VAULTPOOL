@@ -24,6 +24,7 @@ public class StaffViewModel extends ViewModel {
 
     private final MutableLiveData<Result<List<BookingStaffDto>>> bookings = new MutableLiveData<>();
     private final MutableLiveData<Result<List<PoolStaffDto>>> pools = new MutableLiveData<>();
+    private final MutableLiveData<Result<List<SlotStaffDto>>> slots = new MutableLiveData<>();
     private final MutableLiveData<Result<PoolStaffDto>> poolActionUpdate = new MutableLiveData<>();
     private final MutableLiveData<Result<SlotStaffDto>> slotActionUpdate = new MutableLiveData<>();
     private final MutableLiveData<Boolean> loading = new MutableLiveData<>(false);
@@ -35,6 +36,7 @@ public class StaffViewModel extends ViewModel {
 
     public LiveData<Result<List<BookingStaffDto>>> getBookings() { return bookings; }
     public LiveData<Result<List<PoolStaffDto>>> getPools() { return pools; }
+    public LiveData<Result<List<SlotStaffDto>>> getSlots() { return slots; }
     public LiveData<Result<PoolStaffDto>> getPoolActionUpdate() { return poolActionUpdate; }
     public LiveData<Result<SlotStaffDto>> getSlotActionUpdate() { return slotActionUpdate; }
     public LiveData<Boolean> getLoading() { return loading; }
@@ -66,6 +68,21 @@ public class StaffViewModel extends ViewModel {
                 }, throwable -> {
                     loading.setValue(false);
                     pools.setValue(Result.failure(throwable.getMessage()));
+                }));
+    }
+
+    public void fetchSlots(Long poolId) {
+        loading.setValue(true);
+        disposables.add(authRepository.getIdToken()
+                .flatMap(token -> staffRepository.getPoolSlots(token, poolId))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(result -> {
+                    loading.setValue(false);
+                    slots.setValue(result);
+                }, throwable -> {
+                    loading.setValue(false);
+                    slots.setValue(Result.failure(throwable.getMessage()));
                 }));
     }
 
@@ -101,10 +118,11 @@ public class StaffViewModel extends ViewModel {
                 }));
     }
 
-    public void updatePoolStatus(Long poolId) {
+    public void updatePoolStatus(Long poolId, String currentStatus) {
+        String newStatus = "ACTIVE".equalsIgnoreCase(currentStatus) ? "INACTIVE" : "ACTIVE";
         loading.setValue(true);
         disposables.add(authRepository.getIdToken()
-                .flatMap(token -> staffRepository.updatePoolStatus(token, poolId))
+                .flatMap(token -> staffRepository.updatePoolStatus(token, poolId, newStatus))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(result -> {
@@ -147,10 +165,11 @@ public class StaffViewModel extends ViewModel {
                 }));
     }
 
-    public void updateSlotStatus(Long poolId, Long slotId) {
+    public void updateSlotStatus(Long poolId, Long slotId, String currentStatus) {
+        String newStatus = "ACTIVE".equalsIgnoreCase(currentStatus) ? "INACTIVE" : "ACTIVE";
         loading.setValue(true);
         disposables.add(authRepository.getIdToken()
-                .flatMap(token -> staffRepository.updateSlotStatus(token, poolId, slotId))
+                .flatMap(token -> staffRepository.updateSlotStatus(token, poolId, slotId, newStatus))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(result -> {

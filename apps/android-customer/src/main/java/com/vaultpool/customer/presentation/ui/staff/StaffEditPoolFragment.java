@@ -24,7 +24,9 @@ public class StaffEditPoolFragment extends Fragment {
     public static StaffEditPoolFragment newInstance(PoolStaffDto pool) {
         StaffEditPoolFragment fragment = new StaffEditPoolFragment();
         Bundle args = new Bundle();
-        args.putSerializable("pool", (java.io.Serializable) pool);
+        if (pool != null) {
+            args.putSerializable("pool", (java.io.Serializable) pool);
+        }
         fragment.setArguments(args);
         return fragment;
     }
@@ -40,6 +42,10 @@ public class StaffEditPoolFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         pool = (PoolStaffDto) getArguments().getSerializable("pool");
+        if (pool == null) {
+            pool = new PoolStaffDto();
+            pool.setStatus("ACTIVE");
+        }
         
         setupViewModel();
         bindData();
@@ -66,10 +72,12 @@ public class StaffEditPoolFragment extends Fragment {
     }
 
     private void bindData() {
-        binding.etName.setText(pool.getName());
-        binding.etAddress.setText(pool.getAddress());
-        binding.etDescription.setText(pool.getDescription());
-        binding.etHours.setText(pool.getOpenHours());
+        if (pool.getName() != null) binding.etName.setText(pool.getName());
+        if (pool.getAddress() != null) binding.etAddress.setText(pool.getAddress());
+        if (pool.getDescription() != null) binding.etDescription.setText(pool.getDescription());
+        if (pool.getOpenHours() != null) binding.etHours.setText(pool.getOpenHours());
+        
+        binding.toolbarEdit.setTitle(pool.getId() == null ? "Add New Pool" : "Edit Pool Info");
     }
 
     private void setupActions() {
@@ -83,7 +91,11 @@ public class StaffEditPoolFragment extends Fragment {
             pool.setDescription(binding.etDescription.getText().toString());
             pool.setOpenHours(binding.etHours.getText().toString());
             
-            viewModel.updatePool(pool.getId(), pool);
+            if (pool.getId() == null) {
+                viewModel.createPool(pool);
+            } else {
+                viewModel.updatePool(pool.getId(), pool);
+            }
         });
     }
 

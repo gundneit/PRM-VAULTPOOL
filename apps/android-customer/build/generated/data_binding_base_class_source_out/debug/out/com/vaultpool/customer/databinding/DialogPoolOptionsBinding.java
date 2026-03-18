@@ -34,17 +34,21 @@ public final class DialogPoolOptionsBinding implements ViewBinding {
   public final MaterialButton btnToggleStatus;
 
   @NonNull
+  public final MaterialButton btnViewSlots;
+
+  @NonNull
   public final TextView tvPoolTitle;
 
   private DialogPoolOptionsBinding(@NonNull MaterialCardView rootView,
       @NonNull MaterialButton btnAddSlot, @NonNull ImageButton btnClose,
       @NonNull MaterialButton btnEditInfo, @NonNull MaterialButton btnToggleStatus,
-      @NonNull TextView tvPoolTitle) {
+      @NonNull MaterialButton btnViewSlots, @NonNull TextView tvPoolTitle) {
     this.rootView = rootView;
     this.btnAddSlot = btnAddSlot;
     this.btnClose = btnClose;
     this.btnEditInfo = btnEditInfo;
     this.btnToggleStatus = btnToggleStatus;
+    this.btnViewSlots = btnViewSlots;
     this.tvPoolTitle = tvPoolTitle;
   }
 
@@ -99,6 +103,12 @@ public final class DialogPoolOptionsBinding implements ViewBinding {
         break missingId;
       }
 
+      id = R.id.btn_view_slots;
+      MaterialButton btnViewSlots = ViewBindings.findChildViewById(rootView, id);
+      if (btnViewSlots == null) {
+        break missingId;
+      }
+
       id = R.id.tv_pool_title;
       TextView tvPoolTitle = ViewBindings.findChildViewById(rootView, id);
       if (tvPoolTitle == null) {
@@ -106,7 +116,7 @@ public final class DialogPoolOptionsBinding implements ViewBinding {
       }
 
       return new DialogPoolOptionsBinding((MaterialCardView) rootView, btnAddSlot, btnClose,
-          btnEditInfo, btnToggleStatus, tvPoolTitle);
+          btnEditInfo, btnToggleStatus, btnViewSlots, tvPoolTitle);
     }
     String missingId = rootView.getResources().getResourceName(id);
     throw new NullPointerException("Missing required view with ID: ".concat(missingId));

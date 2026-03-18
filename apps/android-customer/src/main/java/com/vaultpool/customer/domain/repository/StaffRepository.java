@@ -11,10 +11,11 @@ import io.reactivex.rxjava3.core.Single;
 public interface StaffRepository {
     Single<Result<List<BookingStaffDto>>> getStaffBookings(String token);
     Single<Result<List<PoolStaffDto>>> getStaffPools(String token);
+    Single<Result<List<SlotStaffDto>>> getPoolSlots(String token, Long poolId);
     Single<Result<PoolStaffDto>> createPool(String token, PoolStaffDto pool);
     Single<Result<PoolStaffDto>> updatePool(String token, Long id, PoolStaffDto pool);
-    Single<Result<PoolStaffDto>> updatePoolStatus(String token, Long id);
+    Single<Result<PoolStaffDto>> updatePoolStatus(String token, Long id, String status);
     Single<Result<SlotStaffDto>> createSlot(String token, Long poolId, SlotStaffDto slot);
     Single<Result<SlotStaffDto>> updateSlot(String token, Long poolId, Long slotId, SlotStaffDto slot);
-    Single<Result<SlotStaffDto>> updateSlotStatus(String token, Long poolId, Long slotId);
+    Single<Result<SlotStaffDto>> updateSlotStatus(String token, Long poolId, Long slotId, String status);
 }

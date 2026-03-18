@@ -12,10 +12,6 @@
         "source": "com.vaultpool.customer.android-customer-main-53:/anim/slide_in_left.xml"
     },
     {
-        "merged": "com.vaultpool.customer.android-customer-merged_res-51:/drawable_ic_splash_logo.xml.flat",
-        "source": "com.vaultpool.customer.android-customer-main-53:/drawable/ic_splash_logo.xml"
-    },
-    {
         "merged": "com.vaultpool.customer.android-customer-merged_res-51:/drawable_ic_launcher_foreground.xml.flat",
         "source": "com.vaultpool.customer.android-customer-main-53:/drawable/ic_launcher_foreground.xml"
     },
@@ -24,44 +20,16 @@
         "source": "com.vaultpool.customer.android-customer-main-53:/drawable/bg_splash_combined.xml"
     },
     {
-        "merged": "com.vaultpool.customer.android-customer-merged_res-51:/anim_slide_out_left.xml.flat",
-        "source": "com.vaultpool.customer.android-customer-main-53:/anim/slide_out_left.xml"
-    },
-    {
         "merged": "com.vaultpool.customer.android-customer-merged_res-51:/drawable_splash_background.xml.flat",
         "source": "com.vaultpool.customer.android-customer-main-53:/drawable/splash_background.xml"
-    },
-    {
-        "merged": "com.vaultpool.customer.android-customer-merged_res-51:/drawable_bg_splash_rings.xml.flat",
-        "source": "com.vaultpool.customer.android-customer-main-53:/drawable/bg_splash_rings.xml"
     },
     {
         "merged": "com.vaultpool.customer.android-customer-merged_res-51:/menu_menu_staff_nav.xml.flat",
         "source": "com.vaultpool.customer.android-customer-main-53:/menu/menu_staff_nav.xml"
     },
     {
-        "merged": "com.vaultpool.customer.android-customer-merged_res-51:/drawable_indicator_inactive.xml.flat",
-        "source": "com.vaultpool.customer.android-customer-main-53:/drawable/indicator_inactive.xml"
-    },
-    {
         "merged": "com.vaultpool.customer.android-customer-merged_res-51:/layout_activity_splash.xml.flat",
         "source": "com.vaultpool.customer.android-customer-main-53:/layout/activity_splash.xml"
-    },
-    {
-        "merged": "com.vaultpool.customer.android-customer-merged_res-51:/anim_slide_in_right.xml.flat",
-        "source": "com.vaultpool.customer.android-customer-main-53:/anim/slide_in_right.xml"
-    },
-    {
-        "merged": "com.vaultpool.customer.android-customer-merged_res-51:/drawable_bg_wavy_header.xml.flat",
-        "source": "com.vaultpool.customer.android-customer-main-53:/drawable/bg_wavy_header.xml"
-    },
-    {
-        "merged": "com.vaultpool.customer.android-customer-merged_res-51:/mipmap-anydpi-v26_ic_launcher_round.xml.flat",
-        "source": "com.vaultpool.customer.android-customer-main-53:/mipmap-anydpi-v26/ic_launcher_round.xml"
-    },
-    {
-        "merged": "com.vaultpool.customer.android-customer-merged_res-51:/layout_activity_auth.xml.flat",
-        "source": "com.vaultpool.customer.android-customer-main-53:/layout/activity_auth.xml"
     },
     {
         "merged": "com.vaultpool.customer.android-customer-merged_res-51:/drawable_bg_onboarding_page_2.xml.flat",
@@ -84,12 +52,12 @@
         "source": "com.vaultpool.customer.android-customer-main-53:/layout/fragment_onboarding_page.xml"
     },
     {
-        "merged": "com.vaultpool.customer.android-customer-merged_res-51:/drawable_bg_glass_card.xml.flat",
-        "source": "com.vaultpool.customer.android-customer-main-53:/drawable/bg_glass_card.xml"
-    },
-    {
         "merged": "com.vaultpool.customer.android-customer-merged_res-51:/layout_fragment_login.xml.flat",
         "source": "com.vaultpool.customer.android-customer-main-53:/layout/fragment_login.xml"
+    },
+    {
+        "merged": "com.vaultpool.customer.android-customer-merged_res-51:/drawable_bg_glass_card.xml.flat",
+        "source": "com.vaultpool.customer.android-customer-main-53:/drawable/bg_glass_card.xml"
     },
     {
         "merged": "com.vaultpool.customer.android-customer-merged_res-51:/drawable_ic_launcher.xml.flat",
@@ -104,24 +72,12 @@
         "source": "com.vaultpool.customer.android-customer-main-53:/mipmap-anydpi-v26/ic_launcher.xml"
     },
     {
-        "merged": "com.vaultpool.customer.android-customer-merged_res-51:/anim_slide_out_right.xml.flat",
-        "source": "com.vaultpool.customer.android-customer-main-53:/anim/slide_out_right.xml"
-    },
-    {
         "merged": "com.vaultpool.customer.android-customer-merged_res-51:/layout_item_booking_staff.xml.flat",
         "source": "com.vaultpool.customer.android-customer-main-53:/layout/item_booking_staff.xml"
     },
     {
         "merged": "com.vaultpool.customer.android-customer-merged_res-51:/layout_activity_main.xml.flat",
         "source": "com.vaultpool.customer.android-customer-main-53:/layout/activity_main.xml"
-    },
-    {
-        "merged": "com.vaultpool.customer.android-customer-merged_res-51:/drawable_ic_google.xml.flat",
-        "source": "com.vaultpool.customer.android-customer-main-53:/drawable/ic_google.xml"
-    },
-    {
-        "merged": "com.vaultpool.customer.android-customer-merged_res-51:/layout_fragment_phone_otp_verification.xml.flat",
-        "source": "com.vaultpool.customer.android-customer-main-53:/layout/fragment_phone_otp_verification.xml"
     },
     {
         "merged": "com.vaultpool.customer.android-customer-merged_res-51:/layout_dialog_pool_options.xml.flat",
@@ -132,28 +88,20 @@
         "source": "com.vaultpool.customer.android-customer-main-53:/drawable/ic_apple.xml"
     },
     {
-        "merged": "com.vaultpool.customer.android-customer-merged_res-51:/drawable_bg_onboarding_page_3.xml.flat",
-        "source": "com.vaultpool.customer.android-customer-main-53:/drawable/bg_onboarding_page_3.xml"
+        "merged": "com.vaultpool.customer.android-customer-merged_res-51:/drawable_bg_status_badge.xml.flat",
+        "source": "com.vaultpool.customer.android-customer-main-53:/drawable/bg_status_badge.xml"
     },
     {
         "merged": "com.vaultpool.customer.android-customer-merged_res-51:/layout_fragment_staff_bookings.xml.flat",
         "source": "com.vaultpool.customer.android-customer-main-53:/layout/fragment_staff_bookings.xml"
     },
     {
-        "merged": "com.vaultpool.customer.android-customer-merged_res-51:/layout_layout_pool_options_sheet.xml.flat",
-        "source": "com.vaultpool.customer.android-customer-main-53:/layout/layout_pool_options_sheet.xml"
+        "merged": "com.vaultpool.customer.android-customer-merged_res-51:/layout_fragment_staff_slots.xml.flat",
+        "source": "com.vaultpool.customer.android-customer-main-53:/layout/fragment_staff_slots.xml"
     },
     {
         "merged": "com.vaultpool.customer.android-customer-merged_res-51:/drawable_logo.png.flat",
         "source": "com.vaultpool.customer.android-customer-main-53:/drawable/logo.png"
-    },
-    {
-        "merged": "com.vaultpool.customer.android-customer-merged_res-51:/layout_fragment_register.xml.flat",
-        "source": "com.vaultpool.customer.android-customer-main-53:/layout/fragment_register.xml"
-    },
-    {
-        "merged": "com.vaultpool.customer.android-customer-merged_res-51:/drawable_indicator_active.xml.flat",
-        "source": "com.vaultpool.customer.android-customer-main-53:/drawable/indicator_active.xml"
     },
     {
         "merged": "com.vaultpool.customer.android-customer-merged_res-51:/layout_activity_login.xml.flat",
@@ -164,15 +112,83 @@
         "source": "com.vaultpool.customer.android-customer-main-53:/drawable/bg_subtle_circle.xml"
     },
     {
+        "merged": "com.vaultpool.customer.android-customer-merged_res-51:/drawable_bg_onboarding_page_1.xml.flat",
+        "source": "com.vaultpool.customer.android-customer-main-53:/drawable/bg_onboarding_page_1.xml"
+    },
+    {
+        "merged": "com.vaultpool.customer.android-customer-merged_res-51:/drawable_ic_splash_logo.xml.flat",
+        "source": "com.vaultpool.customer.android-customer-main-53:/drawable/ic_splash_logo.xml"
+    },
+    {
+        "merged": "com.vaultpool.customer.android-customer-merged_res-51:/anim_slide_out_left.xml.flat",
+        "source": "com.vaultpool.customer.android-customer-main-53:/anim/slide_out_left.xml"
+    },
+    {
+        "merged": "com.vaultpool.customer.android-customer-merged_res-51:/drawable_bg_splash_rings.xml.flat",
+        "source": "com.vaultpool.customer.android-customer-main-53:/drawable/bg_splash_rings.xml"
+    },
+    {
+        "merged": "com.vaultpool.customer.android-customer-merged_res-51:/drawable_indicator_inactive.xml.flat",
+        "source": "com.vaultpool.customer.android-customer-main-53:/drawable/indicator_inactive.xml"
+    },
+    {
+        "merged": "com.vaultpool.customer.android-customer-merged_res-51:/anim_slide_in_right.xml.flat",
+        "source": "com.vaultpool.customer.android-customer-main-53:/anim/slide_in_right.xml"
+    },
+    {
+        "merged": "com.vaultpool.customer.android-customer-merged_res-51:/drawable_bg_wavy_header.xml.flat",
+        "source": "com.vaultpool.customer.android-customer-main-53:/drawable/bg_wavy_header.xml"
+    },
+    {
+        "merged": "com.vaultpool.customer.android-customer-merged_res-51:/layout_item_slot_staff.xml.flat",
+        "source": "com.vaultpool.customer.android-customer-main-53:/layout/item_slot_staff.xml"
+    },
+    {
+        "merged": "com.vaultpool.customer.android-customer-merged_res-51:/mipmap-anydpi-v26_ic_launcher_round.xml.flat",
+        "source": "com.vaultpool.customer.android-customer-main-53:/mipmap-anydpi-v26/ic_launcher_round.xml"
+    },
+    {
+        "merged": "com.vaultpool.customer.android-customer-merged_res-51:/layout_activity_auth.xml.flat",
+        "source": "com.vaultpool.customer.android-customer-main-53:/layout/activity_auth.xml"
+    },
+    {
+        "merged": "com.vaultpool.customer.android-customer-merged_res-51:/anim_slide_out_right.xml.flat",
+        "source": "com.vaultpool.customer.android-customer-main-53:/anim/slide_out_right.xml"
+    },
+    {
+        "merged": "com.vaultpool.customer.android-customer-merged_res-51:/drawable_ic_google.xml.flat",
+        "source": "com.vaultpool.customer.android-customer-main-53:/drawable/ic_google.xml"
+    },
+    {
+        "merged": "com.vaultpool.customer.android-customer-merged_res-51:/layout_fragment_phone_otp_verification.xml.flat",
+        "source": "com.vaultpool.customer.android-customer-main-53:/layout/fragment_phone_otp_verification.xml"
+    },
+    {
+        "merged": "com.vaultpool.customer.android-customer-merged_res-51:/drawable_bg_onboarding_page_3.xml.flat",
+        "source": "com.vaultpool.customer.android-customer-main-53:/drawable/bg_onboarding_page_3.xml"
+    },
+    {
+        "merged": "com.vaultpool.customer.android-customer-merged_res-51:/layout_layout_pool_options_sheet.xml.flat",
+        "source": "com.vaultpool.customer.android-customer-main-53:/layout/layout_pool_options_sheet.xml"
+    },
+    {
+        "merged": "com.vaultpool.customer.android-customer-merged_res-51:/layout_dialog_add_slot.xml.flat",
+        "source": "com.vaultpool.customer.android-customer-main-53:/layout/dialog_add_slot.xml"
+    },
+    {
+        "merged": "com.vaultpool.customer.android-customer-merged_res-51:/layout_fragment_register.xml.flat",
+        "source": "com.vaultpool.customer.android-customer-main-53:/layout/fragment_register.xml"
+    },
+    {
+        "merged": "com.vaultpool.customer.android-customer-merged_res-51:/drawable_indicator_active.xml.flat",
+        "source": "com.vaultpool.customer.android-customer-main-53:/drawable/indicator_active.xml"
+    },
+    {
         "merged": "com.vaultpool.customer.android-customer-merged_res-51:/layout_activity_staff.xml.flat",
         "source": "com.vaultpool.customer.android-customer-main-53:/layout/activity_staff.xml"
     },
     {
         "merged": "com.vaultpool.customer.android-customer-merged_res-51:/layout_activity_onboarding.xml.flat",
         "source": "com.vaultpool.customer.android-customer-main-53:/layout/activity_onboarding.xml"
-    },
-    {
-        "merged": "com.vaultpool.customer.android-customer-merged_res-51:/drawable_bg_onboarding_page_1.xml.flat",
-        "source": "com.vaultpool.customer.android-customer-main-53:/drawable/bg_onboarding_page_1.xml"
     }
 ]

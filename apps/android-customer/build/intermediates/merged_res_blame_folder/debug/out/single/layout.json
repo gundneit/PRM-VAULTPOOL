@@ -16,12 +16,16 @@
         "source": "com.vaultpool.customer.android-customer-main-53:/layout/activity_onboarding.xml"
     },
     {
-        "merged": "com.vaultpool.customer.android-customer-mergeDebugResources-50:/layout/layout_pool_options_sheet.xml",
-        "source": "com.vaultpool.customer.android-customer-main-53:/layout/layout_pool_options_sheet.xml"
+        "merged": "com.vaultpool.customer.android-customer-mergeDebugResources-50:/layout/dialog_add_slot.xml",
+        "source": "com.vaultpool.customer.android-customer-main-53:/layout/dialog_add_slot.xml"
     },
     {
         "merged": "com.vaultpool.customer.android-customer-mergeDebugResources-50:/layout/activity_splash.xml",
         "source": "com.vaultpool.customer.android-customer-main-53:/layout/activity_splash.xml"
+    },
+    {
+        "merged": "com.vaultpool.customer.android-customer-mergeDebugResources-50:/layout/layout_pool_options_sheet.xml",
+        "source": "com.vaultpool.customer.android-customer-main-53:/layout/layout_pool_options_sheet.xml"
     },
     {
         "merged": "com.vaultpool.customer.android-customer-mergeDebugResources-50:/layout/activity_main.xml",
@@ -56,6 +60,10 @@
         "source": "com.vaultpool.customer.android-customer-main-53:/layout/fragment_staff_bookings.xml"
     },
     {
+        "merged": "com.vaultpool.customer.android-customer-mergeDebugResources-50:/layout/fragment_staff_slots.xml",
+        "source": "com.vaultpool.customer.android-customer-main-53:/layout/fragment_staff_slots.xml"
+    },
+    {
         "merged": "com.vaultpool.customer.android-customer-mergeDebugResources-50:/layout/item_pool_staff.xml",
         "source": "com.vaultpool.customer.android-customer-main-53:/layout/item_pool_staff.xml"
     },
@@ -74,5 +82,9 @@
     {
         "merged": "com.vaultpool.customer.android-customer-mergeDebugResources-50:/layout/fragment_email_verification.xml",
         "source": "com.vaultpool.customer.android-customer-main-53:/layout/fragment_email_verification.xml"
+    },
+    {
+        "merged": "com.vaultpool.customer.android-customer-mergeDebugResources-50:/layout/item_slot_staff.xml",
+        "source": "com.vaultpool.customer.android-customer-main-53:/layout/item_slot_staff.xml"
     }
 ]

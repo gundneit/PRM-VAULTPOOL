@@ -8,6 +8,7 @@ import com.vaultpool.customer.data.remote.dto.staff.SlotStaffDto;
 import com.vaultpool.customer.domain.model.Result;
 import com.vaultpool.customer.domain.repository.StaffRepository;
 
+import java.util.HashMap;
 import java.util.List;
 import io.reactivex.rxjava3.core.Single;
 import io.reactivex.rxjava3.schedulers.Schedulers;
@@ -42,6 +43,14 @@ public class StaffRepositoryImpl implements StaffRepository {
     }
 
     @Override
+    public Single<Result<List<SlotStaffDto>>> getPoolSlots(String token, Long poolId) {
+        return staffApi.getPoolSlots(poolId)
+                .map(this::handleResponse)
+                .onErrorReturn(Result::failure)
+                .subscribeOn(Schedulers.io());
+    }
+
+    @Override
     public Single<Result<PoolStaffDto>> createPool(String token, PoolStaffDto pool) {
         return staffApi.createPool(formatToken(token), pool)
                 .map(this::handleResponse)
@@ -58,8 +67,10 @@ public class StaffRepositoryImpl implements StaffRepository {
     }
 
     @Override
-    public Single<Result<PoolStaffDto>> updatePoolStatus(String token, Long id) {
-        return staffApi.updatePoolStatus(formatToken(token), id)
+    public Single<Result<PoolStaffDto>> updatePoolStatus(String token, Long id, String status) {
+        java.util.Map<String, String> body = new java.util.HashMap<>();
+        body.put("status", status);
+        return staffApi.updatePoolStatus(formatToken(token), id, body)
                 .map(this::handleResponse)
                 .onErrorReturn(Result::failure)
                 .subscribeOn(Schedulers.io());
@@ -82,8 +93,10 @@ public class StaffRepositoryImpl implements StaffRepository {
     }
 
     @Override
-    public Single<Result<SlotStaffDto>> updateSlotStatus(String token, Long poolId, Long slotId) {
-        return staffApi.updateSlotStatus(formatToken(token), poolId, slotId)
+    public Single<Result<SlotStaffDto>> updateSlotStatus(String token, Long poolId, Long slotId, String status) {
+        java.util.Map<String, String> body = new java.util.HashMap<>();
+        body.put("status", status);
+        return staffApi.updateSlotStatus(formatToken(token), poolId, slotId, body)
                 .map(this::handleResponse)
                 .onErrorReturn(Result::failure)
                 .subscribeOn(Schedulers.io());

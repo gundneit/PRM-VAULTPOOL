@@ -3088,6 +3088,7 @@ drawable bg_onboarding_page_3
 drawable bg_splash_combined
 drawable bg_splash_rings
 drawable bg_splash_square_logo
+drawable bg_status_badge
 drawable bg_subtle_circle
 drawable bg_wavy_header
 drawable btn_checkbox_checked_mtrl
@@ -3351,9 +3352,11 @@ id btnVerifyOtp
 id btn_add_slot
 id btn_cancel
 id btn_close
+id btn_create
 id btn_edit_info
 id btn_save
 id btn_toggle_status
+id btn_view_slots
 id buttonPanel
 id cache_measures
 id callMeasure
@@ -3446,13 +3449,17 @@ id etOtp
 id etPassword
 id etPhone
 id et_address
+id et_capacity
 id et_description
+id et_end_time
 id et_hours
 id et_name
 id et_pool_address
 id et_pool_description
 id et_pool_hours
 id et_pool_name
+id et_price
+id et_start_time
 id exitUntilCollapsed
 id expand_activities_button
 id expanded_menu
@@ -3666,6 +3673,7 @@ id row_index_key
 id rtl
 id rv_bookings
 id rv_pools
+id rv_slots
 id save_non_transition_alpha
 id save_overlay_view
 id sawtooth
@@ -3774,6 +3782,7 @@ id title_template
 id toggle
 id toolbar
 id toolbar_edit
+id toolbar_slots
 id top
 id topPanel
 id touch_outside
@@ -3809,6 +3818,7 @@ id tvWelcome
 id tv_amount
 id tv_booking_code
 id tv_booking_count
+id tv_capacity
 id tv_open_hours
 id tv_pool_address
 id tv_pool_count
@@ -3816,6 +3826,7 @@ id tv_pool_name
 id tv_pool_status
 id tv_pool_subtitle
 id tv_pool_title
+id tv_price
 id tv_qty
 id tv_status
 id tv_time
@@ -3990,6 +4001,7 @@ layout design_navigation_menu_item
 layout design_text_input_end_icon
 layout design_text_input_start_icon
 layout dialog_add_pool
+layout dialog_add_slot
 layout dialog_pool_options
 layout fragment_edit_pool
 layout fragment_email_verification
@@ -3999,10 +4011,12 @@ layout fragment_phone_otp_verification
 layout fragment_register
 layout fragment_staff_bookings
 layout fragment_staff_pools
+layout fragment_staff_slots
 layout ime_base_split_test_activity
 layout ime_secondary_split_test_activity
 layout item_booking_staff
 layout item_pool_staff
+layout item_slot_staff
 layout layout_pool_options_sheet
 layout m3_alert_dialog
 layout m3_alert_dialog_actions
