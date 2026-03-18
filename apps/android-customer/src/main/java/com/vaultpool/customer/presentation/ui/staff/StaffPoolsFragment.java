@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import com.vaultpool.customer.ServiceLocator;
 import com.vaultpool.customer.data.remote.dto.staff.PoolStaffDto;
 import com.vaultpool.customer.data.remote.dto.staff.SlotStaffDto;
+import com.vaultpool.customer.databinding.DialogAddSlotBinding;
 import com.vaultpool.customer.databinding.DialogPoolOptionsBinding;
 import com.vaultpool.customer.databinding.FragmentStaffPoolsBinding;
 
@@ -61,7 +62,7 @@ public class StaffPoolsFragment extends Fragment {
 
             @Override
             public void onStatusToggle(PoolStaffDto pool) {
-                viewModel.updatePoolStatus(pool.getId());
+                viewModel.updatePoolStatus(pool.getId(), pool.getStatus());
             }
         });
         
@@ -89,7 +90,7 @@ public class StaffPoolsFragment extends Fragment {
 
         viewModel.getSlotActionUpdate().observe(getViewLifecycleOwner(), result -> {
             if (result.isSuccess()) {
-                Toast.makeText(getContext(), "Slot Operation Successful", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "Slot Created Successfully", Toast.LENGTH_SHORT).show();
             } else if (result.isFailure()) {
                 Toast.makeText(getContext(), result.getErrorMessage(), Toast.LENGTH_LONG).show();
             }
@@ -100,7 +101,6 @@ public class StaffPoolsFragment extends Fragment {
         });
 
         binding.fabAddPool.setOnClickListener(v -> {
-            // Can use same fragment for add, just pass null
             openEditFragment(null);
         });
     }
@@ -111,7 +111,6 @@ public class StaffPoolsFragment extends Fragment {
                 .setView(dialogBinding.getRoot())
                 .create();
 
-        // Make background transparent so the card corners show
         if (dialog.getWindow() != null) {
             dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         }
@@ -125,12 +124,17 @@ public class StaffPoolsFragment extends Fragment {
 
         dialogBinding.btnToggleStatus.setOnClickListener(v -> {
             dialog.dismiss();
-            viewModel.updatePoolStatus(pool.getId());
+            viewModel.updatePoolStatus(pool.getId(), pool.getStatus());
         });
 
         dialogBinding.btnAddSlot.setOnClickListener(v -> {
             dialog.dismiss();
-            showAddSlotQuickAction(pool);
+            showAddSlotDialog(pool);
+        });
+
+        dialogBinding.btnViewSlots.setOnClickListener(v -> {
+            dialog.dismiss();
+            openSlotsFragment(pool);
         });
 
         dialogBinding.btnClose.setOnClickListener(v -> dialog.dismiss());
@@ -139,11 +143,6 @@ public class StaffPoolsFragment extends Fragment {
     }
 
     private void openEditFragment(@Nullable PoolStaffDto pool) {
-        if (pool == null) {
-            Toast.makeText(getContext(), "Adding new pool coming soon", Toast.LENGTH_SHORT).show();
-            return;
-        }
-        
         requireActivity().getSupportFragmentManager()
                 .beginTransaction()
                 .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out, android.R.anim.fade_in, android.R.anim.fade_out)
@@ -152,17 +151,53 @@ public class StaffPoolsFragment extends Fragment {
                 .commit();
     }
 
-    private void showAddSlotQuickAction(PoolStaffDto pool) {
-        SlotStaffDto newSlot = new SlotStaffDto();
-        newSlot.setPoolId(pool.getId());
-        newSlot.setStartTime("2026-03-17T08:00:00");
-        newSlot.setEndTime("2026-03-17T10:00:00");
-        newSlot.setCapacityTotal(20);
-        newSlot.setCapacityAvailable(20);
-        newSlot.setPrice(150000L);
-        newSlot.setStatus("ACTIVE");
+    private void openSlotsFragment(PoolStaffDto pool) {
+        requireActivity().getSupportFragmentManager()
+                .beginTransaction()
+                .setCustomAnimations(com.vaultpool.customer.R.anim.slide_in_right, com.vaultpool.customer.R.anim.slide_out_left, com.vaultpool.customer.R.anim.slide_in_right, com.vaultpool.customer.R.anim.slide_out_left)
+                .add(com.vaultpool.customer.R.id.nav_host_fragment, StaffSlotsFragment.newInstance(pool))
+                .addToBackStack(null)
+                .commit();
+    }
 
-        viewModel.createSlot(pool.getId(), newSlot);
+    private void showAddSlotDialog(PoolStaffDto pool) {
+        DialogAddSlotBinding slotBinding = DialogAddSlotBinding.inflate(getLayoutInflater());
+        AlertDialog dialog = new AlertDialog.Builder(requireContext())
+                .setView(slotBinding.getRoot())
+                .create();
+
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        }
+
+        // Set default values for easier testing
+        slotBinding.etStartTime.setText("2026-03-18T08:00:00");
+        slotBinding.etEndTime.setText("2026-03-18T10:00:00");
+        slotBinding.etPrice.setText("150000");
+        slotBinding.etCapacity.setText("20");
+
+        slotBinding.btnCancel.setOnClickListener(v -> dialog.dismiss());
+
+        slotBinding.btnCreate.setOnClickListener(v -> {
+            SlotStaffDto newSlot = new SlotStaffDto();
+            newSlot.setPoolId(pool.getId());
+            newSlot.setStartTime(slotBinding.etStartTime.getText().toString());
+            newSlot.setEndTime(slotBinding.etEndTime.getText().toString());
+            
+            try {
+                newSlot.setPrice(Long.parseLong(slotBinding.etPrice.getText().toString()));
+                newSlot.setCapacityTotal(Integer.parseInt(slotBinding.etCapacity.getText().toString()));
+                newSlot.setCapacityAvailable(newSlot.getCapacityTotal());
+                newSlot.setStatus("ACTIVE");
+                
+                viewModel.createSlot(pool.getId(), newSlot);
+                dialog.dismiss();
+            } catch (NumberFormatException e) {
+                Toast.makeText(getContext(), "Invalid input format", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        dialog.show();
     }
 
     @Override

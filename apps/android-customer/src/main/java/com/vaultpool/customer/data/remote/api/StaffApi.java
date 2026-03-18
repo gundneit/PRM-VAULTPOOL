@@ -16,6 +16,7 @@ import retrofit2.http.PUT;
 import retrofit2.http.Path;
 
 public interface StaffApi {
+    // Staff Operations (Private)
     @GET("api/staff/bookings")
     Single<ApiResponse<List<BookingStaffDto>>> getStaffBookings(@Header("Authorization") String token);
 
@@ -29,7 +30,7 @@ public interface StaffApi {
     Single<ApiResponse<PoolStaffDto>> updatePool(@Header("Authorization") String token, @Path("id") Long id, @Body PoolStaffDto pool);
 
     @PATCH("api/staff/pools/{id}/status")
-    Single<ApiResponse<PoolStaffDto>> updatePoolStatus(@Header("Authorization") String token, @Path("id") Long id);
+    Single<ApiResponse<PoolStaffDto>> updatePoolStatus(@Header("Authorization") String token, @Path("id") Long id, @Body java.util.Map<String, String> status);
 
     @POST("api/staff/pools/{poolId}/slots")
     Single<ApiResponse<SlotStaffDto>> createSlot(@Header("Authorization") String token, @Path("poolId") Long poolId, @Body SlotStaffDto slot);
@@ -38,5 +39,18 @@ public interface StaffApi {
     Single<ApiResponse<SlotStaffDto>> updateSlot(@Header("Authorization") String token, @Path("poolId") Long poolId, @Path("slotId") Long slotId, @Body SlotStaffDto slot);
 
     @PATCH("api/staff/pools/{poolId}/slots/{slotId}/status")
-    Single<ApiResponse<SlotStaffDto>> updateSlotStatus(@Header("Authorization") String token, @Path("poolId") Long poolId, @Path("slotId") Long slotId);
+    Single<ApiResponse<SlotStaffDto>> updateSlotStatus(@Header("Authorization") String token, @Path("poolId") Long poolId, @Path("slotId") Long slotId, @Body java.util.Map<String, String> status);
+
+    // Public / Shared Operations
+    @GET("pools")
+    Single<ApiResponse<List<PoolStaffDto>>> getActivePools();
+
+    @GET("pools/{id}")
+    Single<ApiResponse<PoolStaffDto>> getPoolDetail(@Path("id") Long id);
+
+    @GET("pools/{poolId}/slots/all")
+    Single<ApiResponse<List<SlotStaffDto>>> getPoolSlots(@Path("poolId") Long poolId);
+
+    @GET("pools/{poolId}/slots")
+    Single<ApiResponse<List<SlotStaffDto>>> getSlotsByDate(@Path("poolId") Long poolId, @retrofit2.http.Query("date") String date);
 }

@@ -32,6 +32,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:navigationIcon="?attr/homeAsUpIndicator"
+                app:navigationIconTint="@color/white"
                 app:title="Staff Dashboard"
                 app:titleTextColor="@color/white" />
 

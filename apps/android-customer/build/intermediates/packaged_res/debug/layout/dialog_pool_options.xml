@@ -41,38 +41,54 @@
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_edit_info"
-            style="@style/Widget.Material3.Button.TonalButton"
+            style="@style/Widget.Material3.Button"
             android:layout_width="match_parent"
             android:layout_height="60dp"
             android:layout_marginBottom="12dp"
             android:text="Edit Pool Info"
-            android:textColor="@color/navy"
+            android:textColor="@color/white"
+            app:backgroundTint="@color/navy"
             app:cornerRadius="16dp"
             app:icon="@android:drawable/ic_menu_edit"
-            app:iconTint="@color/navy" />
+            app:iconTint="@color/white" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_toggle_status"
-            style="@style/Widget.Material3.Button.TonalButton"
+            style="@style/Widget.Material3.Button"
             android:layout_width="match_parent"
             android:layout_height="60dp"
             android:layout_marginBottom="12dp"
             android:text="Toggle Status"
-            android:textColor="@color/warning"
+            android:textColor="@color/white"
+            app:backgroundTint="@color/warning"
             app:cornerRadius="16dp"
             app:icon="@android:drawable/ic_menu_manage"
-            app:iconTint="@color/warning" />
+            app:iconTint="@color/white" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_add_slot"
-            style="@style/Widget.Material3.Button.TonalButton"
+            style="@style/Widget.Material3.Button"
             android:layout_width="match_parent"
             android:layout_height="60dp"
+            android:layout_marginBottom="12dp"
             android:text="Create New Slot"
-            android:textColor="@color/teal"
+            android:textColor="@color/white"
+            app:backgroundTint="@color/teal"
             app:cornerRadius="16dp"
             app:icon="@android:drawable/ic_input_add"
-            app:iconTint="@color/teal" />
+            app:iconTint="@color/white" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_view_slots"
+            style="@style/Widget.Material3.Button"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:text="View All Slots"
+            android:textColor="@color/white"
+            app:backgroundTint="@color/blue_royal"
+            app:cornerRadius="16dp"
+            app:icon="@android:drawable/ic_menu_agenda"
+            app:iconTint="@color/white" />
 
     </LinearLayout>
 </com.google.android.material.card.MaterialCardView>
