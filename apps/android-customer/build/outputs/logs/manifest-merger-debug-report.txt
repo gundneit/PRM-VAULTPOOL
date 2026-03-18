@@ -1,9 +1,9 @@
 -- Merging decision tree log ---
 manifest
-ADDED from C:\Ki8\PRM392\ASMPRM\PRM-VAULTPOOL\apps\android-customer\src\main\AndroidManifest.xml:2:1-52:12
-INJECTED from C:\Ki8\PRM392\ASMPRM\PRM-VAULTPOOL\apps\android-customer\src\main\AndroidManifest.xml:2:1-52:12
-INJECTED from C:\Ki8\PRM392\ASMPRM\PRM-VAULTPOOL\apps\android-customer\src\main\AndroidManifest.xml:2:1-52:12
-INJECTED from C:\Ki8\PRM392\ASMPRM\PRM-VAULTPOOL\apps\android-customer\src\main\AndroidManifest.xml:2:1-52:12
+ADDED from C:\Ki8\PRM392\ASMPRM\PRM-VAULTPOOL\apps\android-customer\src\main\AndroidManifest.xml:2:1-59:12
+INJECTED from C:\Ki8\PRM392\ASMPRM\PRM-VAULTPOOL\apps\android-customer\src\main\AndroidManifest.xml:2:1-59:12
+INJECTED from C:\Ki8\PRM392\ASMPRM\PRM-VAULTPOOL\apps\android-customer\src\main\AndroidManifest.xml:2:1-59:12
+INJECTED from C:\Ki8\PRM392\ASMPRM\PRM-VAULTPOOL\apps\android-customer\src\main\AndroidManifest.xml:2:1-59:12
 MERGED from [androidx.databinding:viewbinding:8.2.2] C:\Users\ADMIN\.gradle\caches\transforms-3\f16d34f2f69e99c0df277b0b626d31ff\transformed\viewbinding-8.2.2\AndroidManifest.xml:2:1-7:12
 MERGED from [androidx.core:core-splashscreen:1.0.1] C:\Users\ADMIN\.gradle\caches\transforms-3\5a25aa58d5394de0810449b0a389d07b\transformed\core-splashscreen-1.0.1\AndroidManifest.xml:17:1-24:12
 MERGED from [androidx.navigation:navigation-common:2.7.7] C:\Users\ADMIN\.gradle\caches\transforms-3\16ee2d8bb269e3d1cdb1596ba67bb09c\transformed\navigation-common-2.7.7\AndroidManifest.xml:17:1-22:12
@@ -18,6 +18,7 @@ MERGED from [androidx.recyclerview:recyclerview:1.3.1] C:\Users\ADMIN\.gradle\ca
 MERGED from [androidx.viewpager2:viewpager2:1.1.0] C:\Users\ADMIN\.gradle\caches\transforms-3\d1c6280a0fe3f0208796a63541ec4b92\transformed\viewpager2-1.1.0\AndroidManifest.xml:2:1-7:12
 MERGED from [androidx.emoji2:emoji2-views-helper:1.2.0] C:\Users\ADMIN\.gradle\caches\transforms-3\3b8176bfb4994d4cb2122e1552bd4ed1\transformed\emoji2-views-helper-1.2.0\AndroidManifest.xml:2:1-7:12
 MERGED from [androidx.emoji2:emoji2:1.2.0] C:\Users\ADMIN\.gradle\caches\transforms-3\8891603d4dffd2a83e4ab049e1e6da2f\transformed\emoji2-1.2.0\AndroidManifest.xml:17:1-35:12
+MERGED from [com.github.bumptech.glide:glide:4.16.0] C:\Users\ADMIN\.gradle\caches\transforms-3\a6f1d83af128b130d7f72b539785fa1a\transformed\glide-4.16.0\AndroidManifest.xml:2:1-9:12
 MERGED from [androidx.fragment:fragment-ktx:1.6.2] C:\Users\ADMIN\.gradle\caches\transforms-3\5ac69b94e231cd5a9c98c691c638408d\transformed\fragment-ktx-1.6.2\AndroidManifest.xml:17:1-22:12
 MERGED from [com.google.firebase:firebase-auth-ktx:22.3.1] C:\Users\ADMIN\.gradle\caches\transforms-3\e15ef9407f6032124e7bd3cf1903f884\transformed\firebase-auth-ktx-22.3.1\AndroidManifest.xml:2:1-17:12
 MERGED from [com.google.firebase:firebase-auth:22.3.1] C:\Users\ADMIN\.gradle\caches\transforms-3\1e7580a11edc4d6e729fe2abb20c59f0\transformed\firebase-auth-22.3.1\AndroidManifest.xml:17:1-75:12
@@ -68,10 +69,12 @@ MERGED from [androidx.cardview:cardview:1.0.0] C:\Users\ADMIN\.gradle\caches\tra
 MERGED from [androidx.arch.core:core-runtime:2.2.0] C:\Users\ADMIN\.gradle\caches\transforms-3\c5edc86f64135bc505a373c212b909ea\transformed\core-runtime-2.2.0\AndroidManifest.xml:17:1-22:12
 MERGED from [androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\ADMIN\.gradle\caches\transforms-3\ad53e66d6e0265c656a19816fd2f11bf\transformed\profileinstaller-1.3.0\AndroidManifest.xml:17:1-55:12
 MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.1] C:\Users\ADMIN\.gradle\caches\transforms-3\4fa6020f407e9e8c37527afaad71a5a1\transformed\versionedparcelable-1.1.1\AndroidManifest.xml:17:1-27:12
-MERGED from [com.google.firebase:firebase-components:17.1.5] C:\Users\ADMIN\.gradle\caches\transforms-3\2a92f32f068d5372983cc0a4e8d7a272\transformed\firebase-components-17.1.5\AndroidManifest.xml:15:1-20:12
-MERGED from [androidx.interpolator:interpolator:1.0.0] C:\Users\ADMIN\.gradle\caches\transforms-3\c06c81c0a4a77edb09d00eb31ffcb919\transformed\interpolator-1.0.0\AndroidManifest.xml:17:1-22:12
+MERGED from [com.github.bumptech.glide:gifdecoder:4.16.0] C:\Users\ADMIN\.gradle\caches\transforms-3\96f00c12687b810a0722904cf5b151d8\transformed\gifdecoder-4.16.0\AndroidManifest.xml:2:1-9:12
+MERGED from [androidx.exifinterface:exifinterface:1.3.6] C:\Users\ADMIN\.gradle\caches\transforms-3\6b1f34549804cac3c7a6cc1aa8b78473\transformed\exifinterface-1.3.6\AndroidManifest.xml:17:1-24:12
 MERGED from [androidx.startup:startup-runtime:1.1.1] C:\Users\ADMIN\.gradle\caches\transforms-3\d20fcd83f5ce015574fe8abbfa653adf\transformed\startup-runtime-1.1.1\AndroidManifest.xml:17:1-33:12
 MERGED from [androidx.tracing:tracing:1.0.0] C:\Users\ADMIN\.gradle\caches\transforms-3\2effa9bc2fbbd668abd4cdd9a7ad69b1\transformed\tracing-1.0.0\AndroidManifest.xml:17:1-24:12
+MERGED from [com.google.firebase:firebase-components:17.1.5] C:\Users\ADMIN\.gradle\caches\transforms-3\2a92f32f068d5372983cc0a4e8d7a272\transformed\firebase-components-17.1.5\AndroidManifest.xml:15:1-20:12
+MERGED from [androidx.interpolator:interpolator:1.0.0] C:\Users\ADMIN\.gradle\caches\transforms-3\c06c81c0a4a77edb09d00eb31ffcb919\transformed\interpolator-1.0.0\AndroidManifest.xml:17:1-22:12
 MERGED from [androidx.localbroadcastmanager:localbroadcastmanager:1.0.0] C:\Users\ADMIN\.gradle\caches\transforms-3\bbc845703f31853d283c64f21a88ae2f\transformed\localbroadcastmanager-1.0.0\AndroidManifest.xml:17:1-22:12
 MERGED from [androidx.documentfile:documentfile:1.0.0] C:\Users\ADMIN\.gradle\caches\transforms-3\2fe9f79f114b823a3353f67c1cf02b2d\transformed\documentfile-1.0.0\AndroidManifest.xml:17:1-22:12
 MERGED from [androidx.print:print:1.0.0] C:\Users\ADMIN\.gradle\caches\transforms-3\c8f8b13b3da758277c96f31330438ff3\transformed\print-1.0.0\AndroidManifest.xml:17:1-22:12
@@ -101,8 +104,8 @@ MERGED from [com.google.android.recaptcha:recaptcha:18.4.0] C:\Users\ADMIN\.grad
 	android:name
 		ADDED from C:\Ki8\PRM392\ASMPRM\PRM-VAULTPOOL\apps\android-customer\src\main\AndroidManifest.xml:5:22-76
 application
-ADDED from C:\Ki8\PRM392\ASMPRM\PRM-VAULTPOOL\apps\android-customer\src\main\AndroidManifest.xml:7:5-50:19
-INJECTED from C:\Ki8\PRM392\ASMPRM\PRM-VAULTPOOL\apps\android-customer\src\main\AndroidManifest.xml:7:5-50:19
+ADDED from C:\Ki8\PRM392\ASMPRM\PRM-VAULTPOOL\apps\android-customer\src\main\AndroidManifest.xml:7:5-57:19
+INJECTED from C:\Ki8\PRM392\ASMPRM\PRM-VAULTPOOL\apps\android-customer\src\main\AndroidManifest.xml:7:5-57:19
 MERGED from [com.google.android.material:material:1.11.0] C:\Users\ADMIN\.gradle\caches\transforms-3\944eeeb0d774d974b2aae19c1b2738a1\transformed\material-1.11.0\AndroidManifest.xml:22:5-20
 MERGED from [com.google.android.material:material:1.11.0] C:\Users\ADMIN\.gradle\caches\transforms-3\944eeeb0d774d974b2aae19c1b2738a1\transformed\material-1.11.0\AndroidManifest.xml:22:5-20
 MERGED from [androidx.constraintlayout:constraintlayout:2.1.4] C:\Users\ADMIN\.gradle\caches\transforms-3\5ead0d00d1696689210daa46b89cc81c\transformed\constraintlayout-2.1.4\AndroidManifest.xml:9:5-20
@@ -215,6 +218,18 @@ ADDED from C:\Ki8\PRM392\ASMPRM\PRM-VAULTPOOL\apps\android-customer\src\main\And
 		ADDED from C:\Ki8\PRM392\ASMPRM\PRM-VAULTPOOL\apps\android-customer\src\main\AndroidManifest.xml:48:13-37
 	android:name
 		ADDED from C:\Ki8\PRM392\ASMPRM\PRM-VAULTPOOL\apps\android-customer\src\main\AndroidManifest.xml:47:13-62
+activity#com.vaultpool.customer.presentation.ui.staff.StaffActivity
+ADDED from C:\Ki8\PRM392\ASMPRM\PRM-VAULTPOOL\apps\android-customer\src\main\AndroidManifest.xml:50:9-53:54
+	android:exported
+		ADDED from C:\Ki8\PRM392\ASMPRM\PRM-VAULTPOOL\apps\android-customer\src\main\AndroidManifest.xml:52:13-37
+	android:theme
+		ADDED from C:\Ki8\PRM392\ASMPRM\PRM-VAULTPOOL\apps\android-customer\src\main\AndroidManifest.xml:53:13-51
+	android:name
+		ADDED from C:\Ki8\PRM392\ASMPRM\PRM-VAULTPOOL\apps\android-customer\src\main\AndroidManifest.xml:51:13-64
+activity#com.vaultpool.customer.presentation.ui.main.home.PoolDetailActivity
+ADDED from C:\Ki8\PRM392\ASMPRM\PRM-VAULTPOOL\apps\android-customer\src\main\AndroidManifest.xml:54:9-82
+	android:name
+		ADDED from C:\Ki8\PRM392\ASMPRM\PRM-VAULTPOOL\apps\android-customer\src\main\AndroidManifest.xml:54:19-79
 uses-sdk
 INJECTED from C:\Ki8\PRM392\ASMPRM\PRM-VAULTPOOL\apps\android-customer\src\main\AndroidManifest.xml reason: use-sdk injection requested
 INJECTED from C:\Ki8\PRM392\ASMPRM\PRM-VAULTPOOL\apps\android-customer\src\main\AndroidManifest.xml
@@ -247,6 +262,8 @@ MERGED from [androidx.emoji2:emoji2-views-helper:1.2.0] C:\Users\ADMIN\.gradle\c
 MERGED from [androidx.emoji2:emoji2-views-helper:1.2.0] C:\Users\ADMIN\.gradle\caches\transforms-3\3b8176bfb4994d4cb2122e1552bd4ed1\transformed\emoji2-views-helper-1.2.0\AndroidManifest.xml:5:5-44
 MERGED from [androidx.emoji2:emoji2:1.2.0] C:\Users\ADMIN\.gradle\caches\transforms-3\8891603d4dffd2a83e4ab049e1e6da2f\transformed\emoji2-1.2.0\AndroidManifest.xml:21:5-44
 MERGED from [androidx.emoji2:emoji2:1.2.0] C:\Users\ADMIN\.gradle\caches\transforms-3\8891603d4dffd2a83e4ab049e1e6da2f\transformed\emoji2-1.2.0\AndroidManifest.xml:21:5-44
+MERGED from [com.github.bumptech.glide:glide:4.16.0] C:\Users\ADMIN\.gradle\caches\transforms-3\a6f1d83af128b130d7f72b539785fa1a\transformed\glide-4.16.0\AndroidManifest.xml:5:5-7:41
+MERGED from [com.github.bumptech.glide:glide:4.16.0] C:\Users\ADMIN\.gradle\caches\transforms-3\a6f1d83af128b130d7f72b539785fa1a\transformed\glide-4.16.0\AndroidManifest.xml:5:5-7:41
 MERGED from [androidx.fragment:fragment-ktx:1.6.2] C:\Users\ADMIN\.gradle\caches\transforms-3\5ac69b94e231cd5a9c98c691c638408d\transformed\fragment-ktx-1.6.2\AndroidManifest.xml:20:5-44
 MERGED from [androidx.fragment:fragment-ktx:1.6.2] C:\Users\ADMIN\.gradle\caches\transforms-3\5ac69b94e231cd5a9c98c691c638408d\transformed\fragment-ktx-1.6.2\AndroidManifest.xml:20:5-44
 MERGED from [com.google.firebase:firebase-auth-ktx:22.3.1] C:\Users\ADMIN\.gradle\caches\transforms-3\e15ef9407f6032124e7bd3cf1903f884\transformed\firebase-auth-ktx-22.3.1\AndroidManifest.xml:5:5-44
@@ -347,14 +364,18 @@ MERGED from [androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\ADMIN\.g
 MERGED from [androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\ADMIN\.gradle\caches\transforms-3\ad53e66d6e0265c656a19816fd2f11bf\transformed\profileinstaller-1.3.0\AndroidManifest.xml:21:5-44
 MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.1] C:\Users\ADMIN\.gradle\caches\transforms-3\4fa6020f407e9e8c37527afaad71a5a1\transformed\versionedparcelable-1.1.1\AndroidManifest.xml:20:5-22:41
 MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.1] C:\Users\ADMIN\.gradle\caches\transforms-3\4fa6020f407e9e8c37527afaad71a5a1\transformed\versionedparcelable-1.1.1\AndroidManifest.xml:20:5-22:41
-MERGED from [com.google.firebase:firebase-components:17.1.5] C:\Users\ADMIN\.gradle\caches\transforms-3\2a92f32f068d5372983cc0a4e8d7a272\transformed\firebase-components-17.1.5\AndroidManifest.xml:18:5-44
-MERGED from [com.google.firebase:firebase-components:17.1.5] C:\Users\ADMIN\.gradle\caches\transforms-3\2a92f32f068d5372983cc0a4e8d7a272\transformed\firebase-components-17.1.5\AndroidManifest.xml:18:5-44
-MERGED from [androidx.interpolator:interpolator:1.0.0] C:\Users\ADMIN\.gradle\caches\transforms-3\c06c81c0a4a77edb09d00eb31ffcb919\transformed\interpolator-1.0.0\AndroidManifest.xml:20:5-44
-MERGED from [androidx.interpolator:interpolator:1.0.0] C:\Users\ADMIN\.gradle\caches\transforms-3\c06c81c0a4a77edb09d00eb31ffcb919\transformed\interpolator-1.0.0\AndroidManifest.xml:20:5-44
+MERGED from [com.github.bumptech.glide:gifdecoder:4.16.0] C:\Users\ADMIN\.gradle\caches\transforms-3\96f00c12687b810a0722904cf5b151d8\transformed\gifdecoder-4.16.0\AndroidManifest.xml:5:5-7:41
+MERGED from [com.github.bumptech.glide:gifdecoder:4.16.0] C:\Users\ADMIN\.gradle\caches\transforms-3\96f00c12687b810a0722904cf5b151d8\transformed\gifdecoder-4.16.0\AndroidManifest.xml:5:5-7:41
+MERGED from [androidx.exifinterface:exifinterface:1.3.6] C:\Users\ADMIN\.gradle\caches\transforms-3\6b1f34549804cac3c7a6cc1aa8b78473\transformed\exifinterface-1.3.6\AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.exifinterface:exifinterface:1.3.6] C:\Users\ADMIN\.gradle\caches\transforms-3\6b1f34549804cac3c7a6cc1aa8b78473\transformed\exifinterface-1.3.6\AndroidManifest.xml:20:5-22:41
 MERGED from [androidx.startup:startup-runtime:1.1.1] C:\Users\ADMIN\.gradle\caches\transforms-3\d20fcd83f5ce015574fe8abbfa653adf\transformed\startup-runtime-1.1.1\AndroidManifest.xml:21:5-23:41
 MERGED from [androidx.startup:startup-runtime:1.1.1] C:\Users\ADMIN\.gradle\caches\transforms-3\d20fcd83f5ce015574fe8abbfa653adf\transformed\startup-runtime-1.1.1\AndroidManifest.xml:21:5-23:41
 MERGED from [androidx.tracing:tracing:1.0.0] C:\Users\ADMIN\.gradle\caches\transforms-3\2effa9bc2fbbd668abd4cdd9a7ad69b1\transformed\tracing-1.0.0\AndroidManifest.xml:20:5-22:41
 MERGED from [androidx.tracing:tracing:1.0.0] C:\Users\ADMIN\.gradle\caches\transforms-3\2effa9bc2fbbd668abd4cdd9a7ad69b1\transformed\tracing-1.0.0\AndroidManifest.xml:20:5-22:41
+MERGED from [com.google.firebase:firebase-components:17.1.5] C:\Users\ADMIN\.gradle\caches\transforms-3\2a92f32f068d5372983cc0a4e8d7a272\transformed\firebase-components-17.1.5\AndroidManifest.xml:18:5-44
+MERGED from [com.google.firebase:firebase-components:17.1.5] C:\Users\ADMIN\.gradle\caches\transforms-3\2a92f32f068d5372983cc0a4e8d7a272\transformed\firebase-components-17.1.5\AndroidManifest.xml:18:5-44
+MERGED from [androidx.interpolator:interpolator:1.0.0] C:\Users\ADMIN\.gradle\caches\transforms-3\c06c81c0a4a77edb09d00eb31ffcb919\transformed\interpolator-1.0.0\AndroidManifest.xml:20:5-44
+MERGED from [androidx.interpolator:interpolator:1.0.0] C:\Users\ADMIN\.gradle\caches\transforms-3\c06c81c0a4a77edb09d00eb31ffcb919\transformed\interpolator-1.0.0\AndroidManifest.xml:20:5-44
 MERGED from [androidx.localbroadcastmanager:localbroadcastmanager:1.0.0] C:\Users\ADMIN\.gradle\caches\transforms-3\bbc845703f31853d283c64f21a88ae2f\transformed\localbroadcastmanager-1.0.0\AndroidManifest.xml:20:5-44
 MERGED from [androidx.localbroadcastmanager:localbroadcastmanager:1.0.0] C:\Users\ADMIN\.gradle\caches\transforms-3\bbc845703f31853d283c64f21a88ae2f\transformed\localbroadcastmanager-1.0.0\AndroidManifest.xml:20:5-44
 MERGED from [androidx.documentfile:documentfile:1.0.0] C:\Users\ADMIN\.gradle\caches\transforms-3\2fe9f79f114b823a3353f67c1cf02b2d\transformed\documentfile-1.0.0\AndroidManifest.xml:20:5-44

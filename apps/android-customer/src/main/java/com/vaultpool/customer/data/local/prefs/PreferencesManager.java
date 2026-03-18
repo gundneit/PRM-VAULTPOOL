@@ -8,6 +8,8 @@ import androidx.security.crypto.MasterKey;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Secure preferences manager for storing sensitive data like tokens.
@@ -19,13 +21,16 @@ public class PreferencesManager {
     private static final String KEY_USER_ID = "user_id";
     private static final String KEY_USER_EMAIL = "user_email";
     private static final String KEY_USER_NAME = "user_name";
+    private static final String KEY_USER_ROLES = "user_roles";
     private static final String KEY_IS_LOGGED_IN = "is_logged_in";
 
     private final SharedPreferences encryptedPrefs;
 
+    public MasterKey masterKey;
+
     public PreferencesManager(Context context) {
         try {
-            MasterKey masterKey = new MasterKey.Builder(context)
+            masterKey = new MasterKey.Builder(context)
                     .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
                     .build();
 
@@ -79,6 +84,20 @@ public class PreferencesManager {
 
     public String getUserName() {
         return encryptedPrefs.getString(KEY_USER_NAME, null);
+    }
+
+    // User Roles
+    public void saveUserRoles(Set<String> roles) {
+        encryptedPrefs.edit().putStringSet(KEY_USER_ROLES, roles).apply();
+    }
+
+    public Set<String> getUserRoles() {
+        return encryptedPrefs.getStringSet(KEY_USER_ROLES, new HashSet<>());
+    }
+
+    public boolean isStaff() {
+        Set<String> roles = getUserRoles();
+        return roles.contains("STAFF") || roles.contains("ADMIN");
     }
 
     // Login State

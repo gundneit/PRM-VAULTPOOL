@@ -8,19 +8,24 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
+import com.vaultpool.customer.data.remote.api.AuthApi;
+import com.vaultpool.customer.data.remote.dto.UserDto;
 import com.vaultpool.customer.domain.model.Result;
 import com.vaultpool.customer.domain.model.User;
 import com.vaultpool.customer.domain.repository.AuthRepository;
 
 import io.reactivex.rxjava3.core.Completable;
 import io.reactivex.rxjava3.core.Single;
+import io.reactivex.rxjava3.schedulers.Schedulers;
 
 public class FirebaseAuthRepository implements AuthRepository {
 
     private final FirebaseAuth auth;
+    private final AuthApi authApi;
 
-    public FirebaseAuthRepository() {
+    public FirebaseAuthRepository(AuthApi authApi) {
         this.auth = FirebaseAuth.getInstance();
+        this.authApi = authApi;
     }
 
     @Override
@@ -147,6 +152,21 @@ public class FirebaseAuthRepository implements AuthRepository {
         });
     }
 
+    @Override
+    public Single<Result<User>> getProfileFromBackend(String token) {
+        String bearerToken = token.startsWith("Bearer ") ? token : "Bearer " + token;
+        return authApi.getProfile(bearerToken)
+                .subscribeOn(Schedulers.io())
+                .map(response -> {
+                    if (response.isSuccess() && response.getData() != null) {
+                        return Result.success(mapDtoToUser(response.getData()));
+                    } else {
+                        return Result.<User>failure(response.getMessage());
+                    }
+                })
+                .onErrorReturn(Result::failure);
+    }
+
     private User mapFirebaseUserToUser(FirebaseUser firebaseUser) {
         User user = new User();
         user.setFirebaseUid(firebaseUser.getUid());
@@ -154,6 +174,20 @@ public class FirebaseAuthRepository implements AuthRepository {
         user.setFullName(firebaseUser.getDisplayName());
         user.setPhone(firebaseUser.getPhoneNumber());
         user.setStatus(firebaseUser.isEmailVerified() ? "ACTIVE" : "PENDING");
+        return user;
+    }
+
+    private User mapDtoToUser(UserDto dto) {
+        User user = new User();
+        user.setId(dto.getId());
+        user.setFirebaseUid(dto.getFirebaseUid());
+        user.setFullName(dto.getFullName());
+        user.setEmail(dto.getEmail());
+        user.setPhone(dto.getPhone());
+        user.setStatus(dto.getStatus());
+        user.setRoles(dto.getRoles());
+        user.setCreatedAt(dto.getCreatedAt());
+        user.setUpdatedAt(dto.getUpdatedAt());
         return user;
     }
 }

@@ -1,17 +1,19 @@
 package com.vaultpool.customer.presentation.ui.main.home;
 
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+import com.bumptech.glide.Glide;
 import com.vaultpool.customer.databinding.ItemPoolBinding;
-import com.vaultpool.customer.domain.model.Pool;
+import com.vaultpool.customer.data.remote.dto.PoolDto;
 import java.util.List;
 
 public class PoolAdapter extends RecyclerView.Adapter<PoolAdapter.ViewHolder> {
-    private final List<Pool> pools;
+    private final List<PoolDto> pools;
 
-    public PoolAdapter(List<Pool> pools) {
+    public PoolAdapter(List<PoolDto> pools) {
         this.pools = pools;
     }
 
@@ -23,13 +25,23 @@ public class PoolAdapter extends RecyclerView.Adapter<PoolAdapter.ViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        Pool pool = pools.get(position);
+        PoolDto pool = pools.get(position);
         holder.binding.poolName.setText(pool.getName());
-        holder.binding.poolLocation.setText(pool.getLocation());
-        holder.binding.poolPrice.setText(pool.getPrice());
-        holder.binding.poolRating.setText(String.valueOf(pool.getRating()));
-        // For now, we use a placeholder or the drawable from the model if we had one.
-        // holder.binding.poolImage.setImageResource(...);
+        holder.binding.poolLocation.setText(pool.getAddress());
+        holder.binding.poolPrice.setText("ACTIVE".equals(pool.getStatus()) ? "Open" : "Closed");
+        holder.binding.poolRating.setText("4.9");
+
+        if (pool.getImages() != null && !pool.getImages().isEmpty()) {
+            Glide.with(holder.itemView.getContext())
+                    .load(pool.getImages().get(0).getImageUrl())
+                    .into(holder.binding.poolImage);
+        }
+
+        holder.itemView.setOnClickListener(v -> {
+            Intent intent = new Intent(holder.itemView.getContext(), PoolDetailActivity.class);
+            intent.putExtra(PoolDetailActivity.EXTRA_POOL_ID, pool.getId());
+            holder.itemView.getContext().startActivity(intent);
+        });
     }
 
     @Override

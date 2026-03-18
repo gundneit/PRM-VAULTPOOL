@@ -59,6 +59,11 @@
         <activity
             android:name="com.vaultpool.customer.presentation.ui.main.MainActivity"
             android:exported="false" />
+        <activity
+            android:name="com.vaultpool.customer.presentation.ui.staff.StaffActivity"
+            android:exported="false"
+            android:theme="@style/Theme.VaultPool" />
+        <activity android:name="com.vaultpool.customer.presentation.ui.main.home.PoolDetailActivity" />
 
         <provider
             android:name="androidx.startup.InitializationProvider"
