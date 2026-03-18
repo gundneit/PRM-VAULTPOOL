@@ -1,10 +1,10 @@
 {
     "logs": [
         {
-            "outputFile": "com.vaultpool.customer.android-customer-mergeDebugResources-49:/values-v27/values-v27.xml",
+            "outputFile": "com.vaultpool.customer.android-customer-mergeDebugResources-3:/values-v27/values-v27.xml",
             "map": [
                 {
-                    "source": "C:\\Users\\QUANG TUAN\\.gradle\\caches\\transforms-3\\5a25aa58d5394de0810449b0a389d07b\\transformed\\core-splashscreen-1.0.1\\res\\values-v27\\values-v27.xml",
+                    "source": "C:\\Users\\ADMIN\\.gradle\\caches\\transforms-3\\5a25aa58d5394de0810449b0a389d07b\\transformed\\core-splashscreen-1.0.1\\res\\values-v27\\values-v27.xml",
                     "from": {
                         "startLines": "2,3,4,7",
                         "startColumns": "4,4,4,4",

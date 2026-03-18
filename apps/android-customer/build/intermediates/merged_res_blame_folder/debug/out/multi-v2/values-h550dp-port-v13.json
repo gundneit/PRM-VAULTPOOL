@@ -1,10 +1,10 @@
 {
     "logs": [
         {
-            "outputFile": "com.vaultpool.customer.android-customer-mergeDebugResources-49:/values-h550dp-port-v13/values-h550dp-port-v13.xml",
+            "outputFile": "com.vaultpool.customer.android-customer-mergeDebugResources-3:/values-h550dp-port-v13/values-h550dp-port-v13.xml",
             "map": [
                 {
-                    "source": "C:\\Users\\QUANG TUAN\\.gradle\\caches\\transforms-3\\944eeeb0d774d974b2aae19c1b2738a1\\transformed\\material-1.11.0\\res\\values-h550dp-port-v13\\values-h550dp-port-v13.xml",
+                    "source": "C:\\Users\\ADMIN\\.gradle\\caches\\transforms-3\\944eeeb0d774d974b2aae19c1b2738a1\\transformed\\material-1.11.0\\res\\values-h550dp-port-v13\\values-h550dp-port-v13.xml",
                     "from": {
                         "startLines": "2",
                         "startColumns": "4",

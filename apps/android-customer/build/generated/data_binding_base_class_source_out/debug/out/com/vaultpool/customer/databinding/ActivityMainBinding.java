@@ -4,15 +4,12 @@ package com.vaultpool.customer.databinding;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ProgressBar;
-import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.viewbinding.ViewBinding;
 import androidx.viewbinding.ViewBindings;
-import com.google.android.material.button.MaterialButton;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.vaultpool.customer.R;
 import java.lang.NullPointerException;
 import java.lang.Override;
@@ -23,56 +20,12 @@ public final class ActivityMainBinding implements ViewBinding {
   private final ConstraintLayout rootView;
 
   @NonNull
-  public final MaterialButton btnLogout;
+  public final BottomNavigationView bottomNavigation;
 
-  @NonNull
-  public final CardView cardProfile;
-
-  @NonNull
-  public final ProgressBar progressBar;
-
-  @NonNull
-  public final TextView tvEmailLabel;
-
-  @NonNull
-  public final TextView tvEmailValue;
-
-  @NonNull
-  public final TextView tvHeader;
-
-  @NonNull
-  public final TextView tvStatusLabel;
-
-  @NonNull
-  public final TextView tvStatusValue;
-
-  @NonNull
-  public final TextView tvUserIdLabel;
-
-  @NonNull
-  public final TextView tvUserIdValue;
-
-  @NonNull
-  public final TextView tvWelcome;
-
-  private ActivityMainBinding(@NonNull ConstraintLayout rootView, @NonNull MaterialButton btnLogout,
-      @NonNull CardView cardProfile, @NonNull ProgressBar progressBar,
-      @NonNull TextView tvEmailLabel, @NonNull TextView tvEmailValue, @NonNull TextView tvHeader,
-      @NonNull TextView tvStatusLabel, @NonNull TextView tvStatusValue,
-      @NonNull TextView tvUserIdLabel, @NonNull TextView tvUserIdValue,
-      @NonNull TextView tvWelcome) {
+  private ActivityMainBinding(@NonNull ConstraintLayout rootView,
+      @NonNull BottomNavigationView bottomNavigation) {
     this.rootView = rootView;
-    this.btnLogout = btnLogout;
-    this.cardProfile = cardProfile;
-    this.progressBar = progressBar;
-    this.tvEmailLabel = tvEmailLabel;
-    this.tvEmailValue = tvEmailValue;
-    this.tvHeader = tvHeader;
-    this.tvStatusLabel = tvStatusLabel;
-    this.tvStatusValue = tvStatusValue;
-    this.tvUserIdLabel = tvUserIdLabel;
-    this.tvUserIdValue = tvUserIdValue;
-    this.tvWelcome = tvWelcome;
+    this.bottomNavigation = bottomNavigation;
   }
 
   @Override
@@ -102,75 +55,13 @@ public final class ActivityMainBinding implements ViewBinding {
     // This is done to optimize the compiled bytecode for size and performance.
     int id;
     missingId: {
-      id = R.id.btnLogout;
-      MaterialButton btnLogout = ViewBindings.findChildViewById(rootView, id);
-      if (btnLogout == null) {
+      id = R.id.bottom_navigation;
+      BottomNavigationView bottomNavigation = ViewBindings.findChildViewById(rootView, id);
+      if (bottomNavigation == null) {
         break missingId;
       }
 
-      id = R.id.cardProfile;
-      CardView cardProfile = ViewBindings.findChildViewById(rootView, id);
-      if (cardProfile == null) {
-        break missingId;
-      }
-
-      id = R.id.progressBar;
-      ProgressBar progressBar = ViewBindings.findChildViewById(rootView, id);
-      if (progressBar == null) {
-        break missingId;
-      }
-
-      id = R.id.tvEmailLabel;
-      TextView tvEmailLabel = ViewBindings.findChildViewById(rootView, id);
-      if (tvEmailLabel == null) {
-        break missingId;
-      }
-
-      id = R.id.tvEmailValue;
-      TextView tvEmailValue = ViewBindings.findChildViewById(rootView, id);
-      if (tvEmailValue == null) {
-        break missingId;
-      }
-
-      id = R.id.tvHeader;
-      TextView tvHeader = ViewBindings.findChildViewById(rootView, id);
-      if (tvHeader == null) {
-        break missingId;
-      }
-
-      id = R.id.tvStatusLabel;
-      TextView tvStatusLabel = ViewBindings.findChildViewById(rootView, id);
-      if (tvStatusLabel == null) {
-        break missingId;
-      }
-
-      id = R.id.tvStatusValue;
-      TextView tvStatusValue = ViewBindings.findChildViewById(rootView, id);
-      if (tvStatusValue == null) {
-        break missingId;
-      }
-
-      id = R.id.tvUserIdLabel;
-      TextView tvUserIdLabel = ViewBindings.findChildViewById(rootView, id);
-      if (tvUserIdLabel == null) {
-        break missingId;
-      }
-
-      id = R.id.tvUserIdValue;
-      TextView tvUserIdValue = ViewBindings.findChildViewById(rootView, id);
-      if (tvUserIdValue == null) {
-        break missingId;
-      }
-
-      id = R.id.tvWelcome;
-      TextView tvWelcome = ViewBindings.findChildViewById(rootView, id);
-      if (tvWelcome == null) {
-        break missingId;
-      }
-
-      return new ActivityMainBinding((ConstraintLayout) rootView, btnLogout, cardProfile,
-          progressBar, tvEmailLabel, tvEmailValue, tvHeader, tvStatusLabel, tvStatusValue,
-          tvUserIdLabel, tvUserIdValue, tvWelcome);
+      return new ActivityMainBinding((ConstraintLayout) rootView, bottomNavigation);
     }
     String missingId = rootView.getResources().getResourceName(id);
     throw new NullPointerException("Missing required view with ID: ".concat(missingId));

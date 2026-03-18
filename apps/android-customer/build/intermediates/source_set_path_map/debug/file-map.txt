@@ -1,54 +1,54 @@
-com.vaultpool.customer.android-customer-annotation-experimental-1.4.0-0 C:\Users\QUANG TUAN\.gradle\caches\transforms-3\15a80fd09bb469d4fb3d71c11596d125\transformed\annotation-experimental-1.4.0\res
-com.vaultpool.customer.android-customer-navigation-common-2.7.7-1 C:\Users\QUANG TUAN\.gradle\caches\transforms-3\16ee2d8bb269e3d1cdb1596ba67bb09c\transformed\navigation-common-2.7.7\res
-com.vaultpool.customer.android-customer-appcompat-resources-1.6.1-2 C:\Users\QUANG TUAN\.gradle\caches\transforms-3\177afcb1a6eba4ee826a2149ccc7e51f\transformed\appcompat-resources-1.6.1\res
-com.vaultpool.customer.android-customer-slidingpanelayout-1.2.0-3 C:\Users\QUANG TUAN\.gradle\caches\transforms-3\1bf2cb918d423659ba1385749a971e58\transformed\slidingpanelayout-1.2.0\res
-com.vaultpool.customer.android-customer-lifecycle-viewmodel-ktx-2.7.0-4 C:\Users\QUANG TUAN\.gradle\caches\transforms-3\219069a43142613427061ad17f9ea108\transformed\lifecycle-viewmodel-ktx-2.7.0\res
-com.vaultpool.customer.android-customer-security-crypto-1.1.0-alpha06-5 C:\Users\QUANG TUAN\.gradle\caches\transforms-3\21e39d8377110353e2d3a3f29005b4da\transformed\security-crypto-1.1.0-alpha06\res
-com.vaultpool.customer.android-customer-cardview-1.0.0-6 C:\Users\QUANG TUAN\.gradle\caches\transforms-3\24f03fc58522eabc04097738b7524479\transformed\cardview-1.0.0\res
-com.vaultpool.customer.android-customer-lifecycle-runtime-ktx-2.7.0-7 C:\Users\QUANG TUAN\.gradle\caches\transforms-3\25cc4e899850527537b4a86e313135a3\transformed\lifecycle-runtime-ktx-2.7.0\res
-com.vaultpool.customer.android-customer-lifecycle-livedata-core-ktx-2.7.0-8 C:\Users\QUANG TUAN\.gradle\caches\transforms-3\269dbe5f0f4271db6570a4197599d59a\transformed\lifecycle-livedata-core-ktx-2.7.0\res
-com.vaultpool.customer.android-customer-lifecycle-livedata-core-2.7.0-9 C:\Users\QUANG TUAN\.gradle\caches\transforms-3\2cb3ea9e0d553997c0fbe53056a01a2c\transformed\lifecycle-livedata-core-2.7.0\res
-com.vaultpool.customer.android-customer-lifecycle-viewmodel-savedstate-2.7.0-10 C:\Users\QUANG TUAN\.gradle\caches\transforms-3\2d4560364ffb34614f9999eb17f03048\transformed\lifecycle-viewmodel-savedstate-2.7.0\res
-com.vaultpool.customer.android-customer-play-services-base-18.0.1-11 C:\Users\QUANG TUAN\.gradle\caches\transforms-3\307e7b0d96f517efeea36523b42b458e\transformed\play-services-base-18.0.1\res
-com.vaultpool.customer.android-customer-emoji2-views-helper-1.2.0-12 C:\Users\QUANG TUAN\.gradle\caches\transforms-3\3b8176bfb4994d4cb2122e1552bd4ed1\transformed\emoji2-views-helper-1.2.0\res
-com.vaultpool.customer.android-customer-firebase-common-20.4.2-13 C:\Users\QUANG TUAN\.gradle\caches\transforms-3\44fe9029dad2b46854aba5d2eb9cc8c1\transformed\firebase-common-20.4.2\res
-com.vaultpool.customer.android-customer-coordinatorlayout-1.1.0-14 C:\Users\QUANG TUAN\.gradle\caches\transforms-3\452d8edd4498c457a9df61fabf034819\transformed\coordinatorlayout-1.1.0\res
-com.vaultpool.customer.android-customer-core-splashscreen-1.0.1-15 C:\Users\QUANG TUAN\.gradle\caches\transforms-3\5a25aa58d5394de0810449b0a389d07b\transformed\core-splashscreen-1.0.1\res
-com.vaultpool.customer.android-customer-fragment-ktx-1.6.2-16 C:\Users\QUANG TUAN\.gradle\caches\transforms-3\5ac69b94e231cd5a9c98c691c638408d\transformed\fragment-ktx-1.6.2\res
-com.vaultpool.customer.android-customer-constraintlayout-2.1.4-17 C:\Users\QUANG TUAN\.gradle\caches\transforms-3\5ead0d00d1696689210daa46b89cc81c\transformed\constraintlayout-2.1.4\res
-com.vaultpool.customer.android-customer-fragment-1.6.2-18 C:\Users\QUANG TUAN\.gradle\caches\transforms-3\67d38b575b52ec334c6526b765dc35f3\transformed\fragment-1.6.2\res
-com.vaultpool.customer.android-customer-lifecycle-livedata-2.7.0-19 C:\Users\QUANG TUAN\.gradle\caches\transforms-3\69036f0544841094f8038e9d6b169c83\transformed\lifecycle-livedata-2.7.0\res
-com.vaultpool.customer.android-customer-lifecycle-runtime-2.7.0-20 C:\Users\QUANG TUAN\.gradle\caches\transforms-3\6da8e63f52359965cbc1303a707c694f\transformed\lifecycle-runtime-2.7.0\res
-com.vaultpool.customer.android-customer-savedstate-ktx-1.2.1-21 C:\Users\QUANG TUAN\.gradle\caches\transforms-3\6e6f939173d9d0dd95d603f604d18336\transformed\savedstate-ktx-1.2.1\res
-com.vaultpool.customer.android-customer-activity-ktx-1.8.0-22 C:\Users\QUANG TUAN\.gradle\caches\transforms-3\6f69603dde2c6eefee48648c8bb871cf\transformed\activity-ktx-1.8.0\res
-com.vaultpool.customer.android-customer-transition-1.4.1-23 C:\Users\QUANG TUAN\.gradle\caches\transforms-3\792e6a0c0a0ff744e5876d394b562a3a\transformed\transition-1.4.1\res
-com.vaultpool.customer.android-customer-emoji2-1.2.0-24 C:\Users\QUANG TUAN\.gradle\caches\transforms-3\8891603d4dffd2a83e4ab049e1e6da2f\transformed\emoji2-1.2.0\res
-com.vaultpool.customer.android-customer-appcompat-1.6.1-25 C:\Users\QUANG TUAN\.gradle\caches\transforms-3\8948699fca29846c5365ff0dbf442dc8\transformed\appcompat-1.6.1\res
-com.vaultpool.customer.android-customer-core-ktx-1.12.0-26 C:\Users\QUANG TUAN\.gradle\caches\transforms-3\8caa2238896efff8bfad5ac0f2ad4ec3\transformed\core-ktx-1.12.0\res
-com.vaultpool.customer.android-customer-recyclerview-1.3.1-27 C:\Users\QUANG TUAN\.gradle\caches\transforms-3\9270649e67637f493b348e60aea22a36\transformed\recyclerview-1.3.1\res
-com.vaultpool.customer.android-customer-savedstate-1.2.1-28 C:\Users\QUANG TUAN\.gradle\caches\transforms-3\9423bad28e44502e92adcd433ac08cf8\transformed\savedstate-1.2.1\res
-com.vaultpool.customer.android-customer-material-1.11.0-29 C:\Users\QUANG TUAN\.gradle\caches\transforms-3\944eeeb0d774d974b2aae19c1b2738a1\transformed\material-1.11.0\res
-com.vaultpool.customer.android-customer-drawerlayout-1.1.1-30 C:\Users\QUANG TUAN\.gradle\caches\transforms-3\a2f1286fdf0612e2bd996ed4d220c740\transformed\drawerlayout-1.1.1\res
-com.vaultpool.customer.android-customer-window-1.0.0-31 C:\Users\QUANG TUAN\.gradle\caches\transforms-3\abd493635d463f159b5873642bfcc30f\transformed\window-1.0.0\res
-com.vaultpool.customer.android-customer-profileinstaller-1.3.0-32 C:\Users\QUANG TUAN\.gradle\caches\transforms-3\ad53e66d6e0265c656a19816fd2f11bf\transformed\profileinstaller-1.3.0\res
-com.vaultpool.customer.android-customer-lifecycle-process-2.7.0-33 C:\Users\QUANG TUAN\.gradle\caches\transforms-3\ba57817d6ce1ade8bb5e3420747d5041\transformed\lifecycle-process-2.7.0\res
-com.vaultpool.customer.android-customer-navigation-ui-2.7.7-34 C:\Users\QUANG TUAN\.gradle\caches\transforms-3\c323d9c9247a8006612788c4cbe54f4d\transformed\navigation-ui-2.7.7\res
-com.vaultpool.customer.android-customer-core-runtime-2.2.0-35 C:\Users\QUANG TUAN\.gradle\caches\transforms-3\c5edc86f64135bc505a373c212b909ea\transformed\core-runtime-2.2.0\res
-com.vaultpool.customer.android-customer-activity-1.8.0-36 C:\Users\QUANG TUAN\.gradle\caches\transforms-3\cabce2a8dca11000ea4894b85df9381e\transformed\activity-1.8.0\res
-com.vaultpool.customer.android-customer-play-services-basement-18.1.0-37 C:\Users\QUANG TUAN\.gradle\caches\transforms-3\d0e766ba1dc4ae4f12a5957ef8fe0c10\transformed\play-services-basement-18.1.0\res
-com.vaultpool.customer.android-customer-viewpager2-1.1.0-38 C:\Users\QUANG TUAN\.gradle\caches\transforms-3\d1c6280a0fe3f0208796a63541ec4b92\transformed\viewpager2-1.1.0\res
-com.vaultpool.customer.android-customer-startup-runtime-1.1.1-39 C:\Users\QUANG TUAN\.gradle\caches\transforms-3\d20fcd83f5ce015574fe8abbfa653adf\transformed\startup-runtime-1.1.1\res
-com.vaultpool.customer.android-customer-navigation-fragment-2.7.7-40 C:\Users\QUANG TUAN\.gradle\caches\transforms-3\d5a76d2155a97837e3b05d34435cfb69\transformed\navigation-fragment-2.7.7\res
-com.vaultpool.customer.android-customer-browser-1.4.0-41 C:\Users\QUANG TUAN\.gradle\caches\transforms-3\dd551334c3b2a10680a348842690ee28\transformed\browser-1.4.0\res
-com.vaultpool.customer.android-customer-lifecycle-viewmodel-2.7.0-42 C:\Users\QUANG TUAN\.gradle\caches\transforms-3\df39d1e40353223bd5750471a442e60f\transformed\lifecycle-viewmodel-2.7.0\res
-com.vaultpool.customer.android-customer-customview-poolingcontainer-1.0.0-43 C:\Users\QUANG TUAN\.gradle\caches\transforms-3\e13bc2d6c0bd12396442ad305a9ddf67\transformed\customview-poolingcontainer-1.0.0\res
-com.vaultpool.customer.android-customer-navigation-runtime-2.7.7-44 C:\Users\QUANG TUAN\.gradle\caches\transforms-3\ec989219817b5c85bfbd7c7561daa890\transformed\navigation-runtime-2.7.7\res
-com.vaultpool.customer.android-customer-core-1.12.0-45 C:\Users\QUANG TUAN\.gradle\caches\transforms-3\ff5b48c5356f62c3d44204f45063f039\transformed\core-1.12.0\res
-com.vaultpool.customer.android-customer-pngs-46 E:\prm-final\PRM-VAULTPOOL\apps\android-customer\build\generated\res\pngs\debug
-com.vaultpool.customer.android-customer-res-47 E:\prm-final\PRM-VAULTPOOL\apps\android-customer\build\generated\res\processDebugGoogleServices
-com.vaultpool.customer.android-customer-resValues-48 E:\prm-final\PRM-VAULTPOOL\apps\android-customer\build\generated\res\resValues\debug
-com.vaultpool.customer.android-customer-packageDebugResources-49 E:\prm-final\PRM-VAULTPOOL\apps\android-customer\build\intermediates\incremental\debug\packageDebugResources\merged.dir
-com.vaultpool.customer.android-customer-packageDebugResources-50 E:\prm-final\PRM-VAULTPOOL\apps\android-customer\build\intermediates\incremental\debug\packageDebugResources\stripped.dir
-com.vaultpool.customer.android-customer-merged_res-51 E:\prm-final\PRM-VAULTPOOL\apps\android-customer\build\intermediates\merged_res\debug
-com.vaultpool.customer.android-customer-debug-52 E:\prm-final\PRM-VAULTPOOL\apps\android-customer\src\debug\res
-com.vaultpool.customer.android-customer-main-53 E:\prm-final\PRM-VAULTPOOL\apps\android-customer\src\main\res
+com.vaultpool.customer.android-customer-pngs-0 C:\Ki8\PRM392\ASMPRM\PRM-VAULTPOOL\apps\android-customer\build\generated\res\pngs\debug
+com.vaultpool.customer.android-customer-res-1 C:\Ki8\PRM392\ASMPRM\PRM-VAULTPOOL\apps\android-customer\build\generated\res\processDebugGoogleServices
+com.vaultpool.customer.android-customer-resValues-2 C:\Ki8\PRM392\ASMPRM\PRM-VAULTPOOL\apps\android-customer\build\generated\res\resValues\debug
+com.vaultpool.customer.android-customer-packageDebugResources-3 C:\Ki8\PRM392\ASMPRM\PRM-VAULTPOOL\apps\android-customer\build\intermediates\incremental\debug\packageDebugResources\merged.dir
+com.vaultpool.customer.android-customer-packageDebugResources-4 C:\Ki8\PRM392\ASMPRM\PRM-VAULTPOOL\apps\android-customer\build\intermediates\incremental\debug\packageDebugResources\stripped.dir
+com.vaultpool.customer.android-customer-merged_res-5 C:\Ki8\PRM392\ASMPRM\PRM-VAULTPOOL\apps\android-customer\build\intermediates\merged_res\debug
+com.vaultpool.customer.android-customer-debug-6 C:\Ki8\PRM392\ASMPRM\PRM-VAULTPOOL\apps\android-customer\src\debug\res
+com.vaultpool.customer.android-customer-main-7 C:\Ki8\PRM392\ASMPRM\PRM-VAULTPOOL\apps\android-customer\src\main\res
+com.vaultpool.customer.android-customer-annotation-experimental-1.4.0-8 C:\Users\ADMIN\.gradle\caches\transforms-3\15a80fd09bb469d4fb3d71c11596d125\transformed\annotation-experimental-1.4.0\res
+com.vaultpool.customer.android-customer-navigation-common-2.7.7-9 C:\Users\ADMIN\.gradle\caches\transforms-3\16ee2d8bb269e3d1cdb1596ba67bb09c\transformed\navigation-common-2.7.7\res
+com.vaultpool.customer.android-customer-appcompat-resources-1.6.1-10 C:\Users\ADMIN\.gradle\caches\transforms-3\177afcb1a6eba4ee826a2149ccc7e51f\transformed\appcompat-resources-1.6.1\res
+com.vaultpool.customer.android-customer-slidingpanelayout-1.2.0-11 C:\Users\ADMIN\.gradle\caches\transforms-3\1bf2cb918d423659ba1385749a971e58\transformed\slidingpanelayout-1.2.0\res
+com.vaultpool.customer.android-customer-lifecycle-viewmodel-ktx-2.7.0-12 C:\Users\ADMIN\.gradle\caches\transforms-3\219069a43142613427061ad17f9ea108\transformed\lifecycle-viewmodel-ktx-2.7.0\res
+com.vaultpool.customer.android-customer-security-crypto-1.1.0-alpha06-13 C:\Users\ADMIN\.gradle\caches\transforms-3\21e39d8377110353e2d3a3f29005b4da\transformed\security-crypto-1.1.0-alpha06\res
+com.vaultpool.customer.android-customer-cardview-1.0.0-14 C:\Users\ADMIN\.gradle\caches\transforms-3\24f03fc58522eabc04097738b7524479\transformed\cardview-1.0.0\res
+com.vaultpool.customer.android-customer-lifecycle-runtime-ktx-2.7.0-15 C:\Users\ADMIN\.gradle\caches\transforms-3\25cc4e899850527537b4a86e313135a3\transformed\lifecycle-runtime-ktx-2.7.0\res
+com.vaultpool.customer.android-customer-lifecycle-livedata-core-ktx-2.7.0-16 C:\Users\ADMIN\.gradle\caches\transforms-3\269dbe5f0f4271db6570a4197599d59a\transformed\lifecycle-livedata-core-ktx-2.7.0\res
+com.vaultpool.customer.android-customer-lifecycle-livedata-core-2.7.0-17 C:\Users\ADMIN\.gradle\caches\transforms-3\2cb3ea9e0d553997c0fbe53056a01a2c\transformed\lifecycle-livedata-core-2.7.0\res
+com.vaultpool.customer.android-customer-lifecycle-viewmodel-savedstate-2.7.0-18 C:\Users\ADMIN\.gradle\caches\transforms-3\2d4560364ffb34614f9999eb17f03048\transformed\lifecycle-viewmodel-savedstate-2.7.0\res
+com.vaultpool.customer.android-customer-play-services-base-18.0.1-19 C:\Users\ADMIN\.gradle\caches\transforms-3\307e7b0d96f517efeea36523b42b458e\transformed\play-services-base-18.0.1\res
+com.vaultpool.customer.android-customer-emoji2-views-helper-1.2.0-20 C:\Users\ADMIN\.gradle\caches\transforms-3\3b8176bfb4994d4cb2122e1552bd4ed1\transformed\emoji2-views-helper-1.2.0\res
+com.vaultpool.customer.android-customer-firebase-common-20.4.2-21 C:\Users\ADMIN\.gradle\caches\transforms-3\44fe9029dad2b46854aba5d2eb9cc8c1\transformed\firebase-common-20.4.2\res
+com.vaultpool.customer.android-customer-coordinatorlayout-1.1.0-22 C:\Users\ADMIN\.gradle\caches\transforms-3\452d8edd4498c457a9df61fabf034819\transformed\coordinatorlayout-1.1.0\res
+com.vaultpool.customer.android-customer-core-splashscreen-1.0.1-23 C:\Users\ADMIN\.gradle\caches\transforms-3\5a25aa58d5394de0810449b0a389d07b\transformed\core-splashscreen-1.0.1\res
+com.vaultpool.customer.android-customer-fragment-ktx-1.6.2-24 C:\Users\ADMIN\.gradle\caches\transforms-3\5ac69b94e231cd5a9c98c691c638408d\transformed\fragment-ktx-1.6.2\res
+com.vaultpool.customer.android-customer-constraintlayout-2.1.4-25 C:\Users\ADMIN\.gradle\caches\transforms-3\5ead0d00d1696689210daa46b89cc81c\transformed\constraintlayout-2.1.4\res
+com.vaultpool.customer.android-customer-fragment-1.6.2-26 C:\Users\ADMIN\.gradle\caches\transforms-3\67d38b575b52ec334c6526b765dc35f3\transformed\fragment-1.6.2\res
+com.vaultpool.customer.android-customer-lifecycle-livedata-2.7.0-27 C:\Users\ADMIN\.gradle\caches\transforms-3\69036f0544841094f8038e9d6b169c83\transformed\lifecycle-livedata-2.7.0\res
+com.vaultpool.customer.android-customer-lifecycle-runtime-2.7.0-28 C:\Users\ADMIN\.gradle\caches\transforms-3\6da8e63f52359965cbc1303a707c694f\transformed\lifecycle-runtime-2.7.0\res
+com.vaultpool.customer.android-customer-savedstate-ktx-1.2.1-29 C:\Users\ADMIN\.gradle\caches\transforms-3\6e6f939173d9d0dd95d603f604d18336\transformed\savedstate-ktx-1.2.1\res
+com.vaultpool.customer.android-customer-activity-ktx-1.8.0-30 C:\Users\ADMIN\.gradle\caches\transforms-3\6f69603dde2c6eefee48648c8bb871cf\transformed\activity-ktx-1.8.0\res
+com.vaultpool.customer.android-customer-transition-1.4.1-31 C:\Users\ADMIN\.gradle\caches\transforms-3\792e6a0c0a0ff744e5876d394b562a3a\transformed\transition-1.4.1\res
+com.vaultpool.customer.android-customer-emoji2-1.2.0-32 C:\Users\ADMIN\.gradle\caches\transforms-3\8891603d4dffd2a83e4ab049e1e6da2f\transformed\emoji2-1.2.0\res
+com.vaultpool.customer.android-customer-appcompat-1.6.1-33 C:\Users\ADMIN\.gradle\caches\transforms-3\8948699fca29846c5365ff0dbf442dc8\transformed\appcompat-1.6.1\res
+com.vaultpool.customer.android-customer-core-ktx-1.12.0-34 C:\Users\ADMIN\.gradle\caches\transforms-3\8caa2238896efff8bfad5ac0f2ad4ec3\transformed\core-ktx-1.12.0\res
+com.vaultpool.customer.android-customer-recyclerview-1.3.1-35 C:\Users\ADMIN\.gradle\caches\transforms-3\9270649e67637f493b348e60aea22a36\transformed\recyclerview-1.3.1\res
+com.vaultpool.customer.android-customer-savedstate-1.2.1-36 C:\Users\ADMIN\.gradle\caches\transforms-3\9423bad28e44502e92adcd433ac08cf8\transformed\savedstate-1.2.1\res
+com.vaultpool.customer.android-customer-material-1.11.0-37 C:\Users\ADMIN\.gradle\caches\transforms-3\944eeeb0d774d974b2aae19c1b2738a1\transformed\material-1.11.0\res
+com.vaultpool.customer.android-customer-drawerlayout-1.1.1-38 C:\Users\ADMIN\.gradle\caches\transforms-3\a2f1286fdf0612e2bd996ed4d220c740\transformed\drawerlayout-1.1.1\res
+com.vaultpool.customer.android-customer-window-1.0.0-39 C:\Users\ADMIN\.gradle\caches\transforms-3\abd493635d463f159b5873642bfcc30f\transformed\window-1.0.0\res
+com.vaultpool.customer.android-customer-profileinstaller-1.3.0-40 C:\Users\ADMIN\.gradle\caches\transforms-3\ad53e66d6e0265c656a19816fd2f11bf\transformed\profileinstaller-1.3.0\res
+com.vaultpool.customer.android-customer-lifecycle-process-2.7.0-41 C:\Users\ADMIN\.gradle\caches\transforms-3\ba57817d6ce1ade8bb5e3420747d5041\transformed\lifecycle-process-2.7.0\res
+com.vaultpool.customer.android-customer-navigation-ui-2.7.7-42 C:\Users\ADMIN\.gradle\caches\transforms-3\c323d9c9247a8006612788c4cbe54f4d\transformed\navigation-ui-2.7.7\res
+com.vaultpool.customer.android-customer-core-runtime-2.2.0-43 C:\Users\ADMIN\.gradle\caches\transforms-3\c5edc86f64135bc505a373c212b909ea\transformed\core-runtime-2.2.0\res
+com.vaultpool.customer.android-customer-activity-1.8.0-44 C:\Users\ADMIN\.gradle\caches\transforms-3\cabce2a8dca11000ea4894b85df9381e\transformed\activity-1.8.0\res
+com.vaultpool.customer.android-customer-play-services-basement-18.1.0-45 C:\Users\ADMIN\.gradle\caches\transforms-3\d0e766ba1dc4ae4f12a5957ef8fe0c10\transformed\play-services-basement-18.1.0\res
+com.vaultpool.customer.android-customer-viewpager2-1.1.0-46 C:\Users\ADMIN\.gradle\caches\transforms-3\d1c6280a0fe3f0208796a63541ec4b92\transformed\viewpager2-1.1.0\res
+com.vaultpool.customer.android-customer-startup-runtime-1.1.1-47 C:\Users\ADMIN\.gradle\caches\transforms-3\d20fcd83f5ce015574fe8abbfa653adf\transformed\startup-runtime-1.1.1\res
+com.vaultpool.customer.android-customer-navigation-fragment-2.7.7-48 C:\Users\ADMIN\.gradle\caches\transforms-3\d5a76d2155a97837e3b05d34435cfb69\transformed\navigation-fragment-2.7.7\res
+com.vaultpool.customer.android-customer-browser-1.4.0-49 C:\Users\ADMIN\.gradle\caches\transforms-3\dd551334c3b2a10680a348842690ee28\transformed\browser-1.4.0\res
+com.vaultpool.customer.android-customer-lifecycle-viewmodel-2.7.0-50 C:\Users\ADMIN\.gradle\caches\transforms-3\df39d1e40353223bd5750471a442e60f\transformed\lifecycle-viewmodel-2.7.0\res
+com.vaultpool.customer.android-customer-customview-poolingcontainer-1.0.0-51 C:\Users\ADMIN\.gradle\caches\transforms-3\e13bc2d6c0bd12396442ad305a9ddf67\transformed\customview-poolingcontainer-1.0.0\res
+com.vaultpool.customer.android-customer-navigation-runtime-2.7.7-52 C:\Users\ADMIN\.gradle\caches\transforms-3\ec989219817b5c85bfbd7c7561daa890\transformed\navigation-runtime-2.7.7\res
+com.vaultpool.customer.android-customer-core-1.12.0-53 C:\Users\ADMIN\.gradle\caches\transforms-3\ff5b48c5356f62c3d44204f45063f039\transformed\core-1.12.0\res

@@ -1,0 +1,20 @@
+{
+    "logs": [
+        {
+            "outputFile": "com.vaultpool.customer.android-customer-mergeDebugResources-3:/values-v29/values-v29.xml",
+            "map": [
+                {
+                    "source": "C:\\Users\\ADMIN\\.gradle\\caches\\8.13\\transforms\\e827278d54f09ec600e5569d808ab944\\transformed\\core-splashscreen-1.0.1\\res\\values-v29\\values-v29.xml",
+                    "from": {
+                        "startLines": "2,7",
+                        "startColumns": "4,4",
+                        "startOffsets": "55,374",
+                        "endLines": "6,8",
+                        "endColumns": "12,12",
+                        "endOffsets": "369,464"
+                    }
+                }
+            ]
+        }
+    ]
+}
