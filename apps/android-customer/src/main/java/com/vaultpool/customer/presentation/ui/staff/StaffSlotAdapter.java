@@ -20,6 +20,7 @@ public class StaffSlotAdapter extends RecyclerView.Adapter<StaffSlotAdapter.View
 
     public interface OnSlotClickListener {
         void onStatusToggle(SlotStaffDto slot);
+        void onSlotClick(SlotStaffDto slot);
     }
 
     public void setOnSlotClickListener(OnSlotClickListener listener) {
@@ -72,14 +73,33 @@ public class StaffSlotAdapter extends RecyclerView.Adapter<StaffSlotAdapter.View
             
             binding.tvStatus.setText(slot.getStatus());
             
-            int colorResId = "ACTIVE".equalsIgnoreCase(slot.getStatus()) 
-                    ? com.vaultpool.customer.R.color.success 
-                    : com.vaultpool.customer.R.color.error;
+            int colorResId;
+            if ("ACTIVE".equalsIgnoreCase(slot.getStatus())) {
+                colorResId = com.vaultpool.customer.R.color.success;
+            } else if ("EXPIRED".equalsIgnoreCase(slot.getStatus())) {
+                colorResId = com.vaultpool.customer.R.color.text_hint;
+            } else {
+                colorResId = com.vaultpool.customer.R.color.error;
+            }
             
             binding.tvStatus.setBackgroundTintList(ContextCompat.getColorStateList(binding.getRoot().getContext(), colorResId));
             
-            binding.tvStatus.setOnClickListener(v -> {
-                if (listener != null) listener.onStatusToggle(slot);
+            // Status Switch logic
+            binding.switchStatus.setOnCheckedChangeListener(null);
+            binding.switchStatus.setChecked("ACTIVE".equalsIgnoreCase(slot.getStatus()));
+            
+            boolean isExpired = "EXPIRED".equalsIgnoreCase(slot.getStatus());
+            binding.switchStatus.setEnabled(!isExpired);
+            binding.switchStatus.setAlpha(isExpired ? 0.5f : 1.0f);
+
+            binding.switchStatus.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                if (listener != null) {
+                    listener.onStatusToggle(slot);
+                }
+            });
+
+            binding.getRoot().setOnClickListener(v -> {
+                if (listener != null) listener.onSlotClick(slot);
             });
         }
     }

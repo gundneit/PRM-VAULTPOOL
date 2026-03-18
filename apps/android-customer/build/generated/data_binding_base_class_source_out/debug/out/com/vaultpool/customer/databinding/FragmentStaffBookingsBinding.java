@@ -28,6 +28,9 @@ public final class FragmentStaffBookingsBinding implements ViewBinding {
   public final RecyclerView rvBookings;
 
   @NonNull
+  public final View titleUnderline;
+
+  @NonNull
   public final TextView tvBookingCount;
 
   @NonNull
@@ -35,10 +38,11 @@ public final class FragmentStaffBookingsBinding implements ViewBinding {
 
   private FragmentStaffBookingsBinding(@NonNull ConstraintLayout rootView,
       @NonNull ProgressBar progressBar, @NonNull RecyclerView rvBookings,
-      @NonNull TextView tvBookingCount, @NonNull TextView tvTitle) {
+      @NonNull View titleUnderline, @NonNull TextView tvBookingCount, @NonNull TextView tvTitle) {
     this.rootView = rootView;
     this.progressBar = progressBar;
     this.rvBookings = rvBookings;
+    this.titleUnderline = titleUnderline;
     this.tvBookingCount = tvBookingCount;
     this.tvTitle = tvTitle;
   }
@@ -82,6 +86,12 @@ public final class FragmentStaffBookingsBinding implements ViewBinding {
         break missingId;
       }
 
+      id = R.id.title_underline;
+      View titleUnderline = ViewBindings.findChildViewById(rootView, id);
+      if (titleUnderline == null) {
+        break missingId;
+      }
+
       id = R.id.tv_booking_count;
       TextView tvBookingCount = ViewBindings.findChildViewById(rootView, id);
       if (tvBookingCount == null) {
@@ -95,7 +105,7 @@ public final class FragmentStaffBookingsBinding implements ViewBinding {
       }
 
       return new FragmentStaffBookingsBinding((ConstraintLayout) rootView, progressBar, rvBookings,
-          tvBookingCount, tvTitle);
+          titleUnderline, tvBookingCount, tvTitle);
     }
     String missingId = rootView.getResources().getResourceName(id);
     throw new NullPointerException("Missing required view with ID: ".concat(missingId));

@@ -3129,6 +3129,7 @@ drawable googleg_disabled_color_18
 drawable googleg_standard_color_18
 drawable ic_apple
 drawable ic_arrow_back_black_24
+drawable ic_back_custom
 drawable ic_call_answer
 drawable ic_call_answer_low
 drawable ic_call_answer_video
@@ -3349,11 +3350,15 @@ id btnResendOtp
 id btnStaff
 id btnVerify
 id btnVerifyOtp
+id btn_add_image
 id btn_add_slot
+id btn_back
 id btn_cancel
+id btn_change_date
 id btn_close
 id btn_create
 id btn_edit_info
+id btn_remove_image
 id btn_save
 id btn_toggle_status
 id btn_view_slots
@@ -3400,6 +3405,7 @@ id customPanel
 id cut
 id dark
 id date_picker_actions
+id date_picker_bar
 id decelerate
 id decelerateAndComplete
 id decor_content_parent
@@ -3464,6 +3470,7 @@ id exitUntilCollapsed
 id expand_activities_button
 id expanded_menu
 id fab_add_pool
+id fab_add_slot
 id fade
 id fill
 id fill_horizontal
@@ -3484,6 +3491,7 @@ id frost
 id fullscreen_header
 id ghost_view
 id ghost_view_holder
+id glide_custom_view_target_tag
 id gone
 id graph
 id graph_wrap
@@ -3516,6 +3524,7 @@ id item_touch_helper_previous_elevation
 id ivHeroImage
 id ivSplashLogo
 id ivSplashRings
+id iv_pool_image
 id jumpToEnd
 id jumpToStart
 id labeled
@@ -3672,6 +3681,7 @@ id rounded
 id row_index_key
 id rtl
 id rv_bookings
+id rv_images
 id rv_pools
 id rv_slots
 id save_non_transition_alpha
@@ -3738,6 +3748,7 @@ id stretch
 id submenuarrow
 id submit_area
 id supportScrollUp
+id switch_status
 id tabMode
 id tag_accessibility_actions
 id tag_accessibility_clickable_spans
@@ -3779,6 +3790,7 @@ id time
 id title
 id titleDividerNoCustom
 id title_template
+id title_underline
 id toggle
 id toolbar
 id toolbar_edit
@@ -3819,6 +3831,9 @@ id tv_amount
 id tv_booking_code
 id tv_booking_count
 id tv_capacity
+id tv_dialog_title
+id tv_header_title
+id tv_image_url
 id tv_open_hours
 id tv_pool_address
 id tv_pool_count
@@ -3828,6 +3843,7 @@ id tv_pool_subtitle
 id tv_pool_title
 id tv_price
 id tv_qty
+id tv_selected_date
 id tv_status
 id tv_time
 id tv_title
@@ -4015,6 +4031,7 @@ layout fragment_staff_slots
 layout ime_base_split_test_activity
 layout ime_secondary_split_test_activity
 layout item_booking_staff
+layout item_pool_image_edit
 layout item_pool_staff
 layout item_slot_staff
 layout layout_pool_options_sheet
@@ -4981,6 +4998,7 @@ style Theme_SplashScreen
 style Theme_SplashScreen_Common
 style Theme_SplashScreen_IconBackground
 style Theme_VaultPool
+style Theme_VaultPool_DatePicker
 style Theme_VaultPool_Splash
 style Theme_VaultPool_Splash_Loaded
 style ThemeOverlay_AppCompat

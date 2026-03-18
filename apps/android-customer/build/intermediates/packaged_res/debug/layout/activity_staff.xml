@@ -10,31 +10,55 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/navy"
-        android:theme="@style/Theme.VaultPool">
+        app:elevation="0dp">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="120dp">
+            android:layout_height="180dp">
 
-            <!-- Background wavy effect for "tràn viền" look -->
+            <!-- Background wavy effect -->
             <View
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@drawable/bg_wavy_header"
-                android:alpha="0.4" />
+                android:alpha="0.3"
+                android:background="@drawable/bg_wavy_header" />
+
+            <!-- Custom Back Button -->
+            <ImageButton
+                android:id="@+id/btn_back"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="32dp"
+                android:background="@drawable/bg_subtle_circle"
+                android:contentDescription="Back"
+                android:padding="12dp"
+                android:scaleType="centerInside"
+                android:src="@drawable/ic_back_custom"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:tint="@color/white" />
+
+            <TextView
+                android:id="@+id/tv_header_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="24dp"
+                android:layout_marginBottom="24dp"
+                android:fontFamily="serif"
+                android:text="Staff\nDashboard"
+                android:textColor="@color/white"
+                android:textSize="32sp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
 
             <androidx.appcompat.widget.Toolbar
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
-                app:contentInsetStart="0dp"
-                app:contentInsetStartWithNavigation="0dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:navigationIcon="?attr/homeAsUpIndicator"
-                app:navigationIconTint="@color/white"
-                app:title="Staff Dashboard"
-                app:titleTextColor="@color/white" />
+                android:visibility="invisible"
+                app:layout_constraintTop_toTopOf="parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -54,6 +78,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/surface"
+        app:elevation="8dp"
         app:itemIconTint="@color/teal"
         app:itemTextColor="@color/navy"
         app:layout_constraintBottom_toBottomOf="parent"

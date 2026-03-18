@@ -29,9 +29,9 @@ public class StaffActivity extends AppCompatActivity {
     private void setupToolbar() {
         setSupportActionBar(binding.toolbar);
         if (getSupportActionBar() != null) {
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            binding.toolbar.setNavigationOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
+            getSupportActionBar().setDisplayShowTitleEnabled(false);
         }
+        binding.btnBack.setOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
     }
 
     private void setupNavigation() {

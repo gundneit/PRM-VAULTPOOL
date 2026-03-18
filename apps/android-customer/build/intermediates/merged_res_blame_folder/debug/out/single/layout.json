@@ -1,90 +1,94 @@
 [
     {
-        "merged": "com.vaultpool.customer.android-customer-mergeDebugResources-50:/layout/fragment_login.xml",
-        "source": "com.vaultpool.customer.android-customer-main-53:/layout/fragment_login.xml"
+        "merged": "com.vaultpool.customer.android-customer-mergeDebugResources-51:/layout/dialog_add_pool.xml",
+        "source": "com.vaultpool.customer.android-customer-main-54:/layout/dialog_add_pool.xml"
     },
     {
-        "merged": "com.vaultpool.customer.android-customer-mergeDebugResources-50:/layout/fragment_edit_pool.xml",
-        "source": "com.vaultpool.customer.android-customer-main-53:/layout/fragment_edit_pool.xml"
+        "merged": "com.vaultpool.customer.android-customer-mergeDebugResources-51:/layout/fragment_staff_slots.xml",
+        "source": "com.vaultpool.customer.android-customer-main-54:/layout/fragment_staff_slots.xml"
     },
     {
-        "merged": "com.vaultpool.customer.android-customer-mergeDebugResources-50:/layout/activity_staff.xml",
-        "source": "com.vaultpool.customer.android-customer-main-53:/layout/activity_staff.xml"
+        "merged": "com.vaultpool.customer.android-customer-mergeDebugResources-51:/layout/fragment_staff_pools.xml",
+        "source": "com.vaultpool.customer.android-customer-main-54:/layout/fragment_staff_pools.xml"
     },
     {
-        "merged": "com.vaultpool.customer.android-customer-mergeDebugResources-50:/layout/activity_onboarding.xml",
-        "source": "com.vaultpool.customer.android-customer-main-53:/layout/activity_onboarding.xml"
+        "merged": "com.vaultpool.customer.android-customer-mergeDebugResources-51:/layout/activity_main.xml",
+        "source": "com.vaultpool.customer.android-customer-main-54:/layout/activity_main.xml"
     },
     {
-        "merged": "com.vaultpool.customer.android-customer-mergeDebugResources-50:/layout/dialog_add_slot.xml",
-        "source": "com.vaultpool.customer.android-customer-main-53:/layout/dialog_add_slot.xml"
+        "merged": "com.vaultpool.customer.android-customer-mergeDebugResources-51:/layout/activity_onboarding.xml",
+        "source": "com.vaultpool.customer.android-customer-main-54:/layout/activity_onboarding.xml"
     },
     {
-        "merged": "com.vaultpool.customer.android-customer-mergeDebugResources-50:/layout/activity_splash.xml",
-        "source": "com.vaultpool.customer.android-customer-main-53:/layout/activity_splash.xml"
+        "merged": "com.vaultpool.customer.android-customer-mergeDebugResources-51:/layout/activity_login.xml",
+        "source": "com.vaultpool.customer.android-customer-main-54:/layout/activity_login.xml"
     },
     {
-        "merged": "com.vaultpool.customer.android-customer-mergeDebugResources-50:/layout/layout_pool_options_sheet.xml",
-        "source": "com.vaultpool.customer.android-customer-main-53:/layout/layout_pool_options_sheet.xml"
+        "merged": "com.vaultpool.customer.android-customer-mergeDebugResources-51:/layout/item_booking_staff.xml",
+        "source": "com.vaultpool.customer.android-customer-main-54:/layout/item_booking_staff.xml"
     },
     {
-        "merged": "com.vaultpool.customer.android-customer-mergeDebugResources-50:/layout/activity_main.xml",
-        "source": "com.vaultpool.customer.android-customer-main-53:/layout/activity_main.xml"
+        "merged": "com.vaultpool.customer.android-customer-mergeDebugResources-51:/layout/item_pool_staff.xml",
+        "source": "com.vaultpool.customer.android-customer-main-54:/layout/item_pool_staff.xml"
     },
     {
-        "merged": "com.vaultpool.customer.android-customer-mergeDebugResources-50:/layout/item_booking_staff.xml",
-        "source": "com.vaultpool.customer.android-customer-main-53:/layout/item_booking_staff.xml"
+        "merged": "com.vaultpool.customer.android-customer-mergeDebugResources-51:/layout/item_slot_staff.xml",
+        "source": "com.vaultpool.customer.android-customer-main-54:/layout/item_slot_staff.xml"
     },
     {
-        "merged": "com.vaultpool.customer.android-customer-mergeDebugResources-50:/layout/activity_auth.xml",
-        "source": "com.vaultpool.customer.android-customer-main-53:/layout/activity_auth.xml"
+        "merged": "com.vaultpool.customer.android-customer-mergeDebugResources-51:/layout/layout_pool_options_sheet.xml",
+        "source": "com.vaultpool.customer.android-customer-main-54:/layout/layout_pool_options_sheet.xml"
     },
     {
-        "merged": "com.vaultpool.customer.android-customer-mergeDebugResources-50:/layout/fragment_register.xml",
-        "source": "com.vaultpool.customer.android-customer-main-53:/layout/fragment_register.xml"
+        "merged": "com.vaultpool.customer.android-customer-mergeDebugResources-51:/layout/activity_staff.xml",
+        "source": "com.vaultpool.customer.android-customer-main-54:/layout/activity_staff.xml"
     },
     {
-        "merged": "com.vaultpool.customer.android-customer-mergeDebugResources-50:/layout/fragment_phone_otp_verification.xml",
-        "source": "com.vaultpool.customer.android-customer-main-53:/layout/fragment_phone_otp_verification.xml"
+        "merged": "com.vaultpool.customer.android-customer-mergeDebugResources-51:/layout/dialog_add_slot.xml",
+        "source": "com.vaultpool.customer.android-customer-main-54:/layout/dialog_add_slot.xml"
     },
     {
-        "merged": "com.vaultpool.customer.android-customer-mergeDebugResources-50:/layout/activity_login.xml",
-        "source": "com.vaultpool.customer.android-customer-main-53:/layout/activity_login.xml"
+        "merged": "com.vaultpool.customer.android-customer-mergeDebugResources-51:/layout/fragment_staff_bookings.xml",
+        "source": "com.vaultpool.customer.android-customer-main-54:/layout/fragment_staff_bookings.xml"
     },
     {
-        "merged": "com.vaultpool.customer.android-customer-mergeDebugResources-50:/layout/dialog_add_pool.xml",
-        "source": "com.vaultpool.customer.android-customer-main-53:/layout/dialog_add_pool.xml"
+        "merged": "com.vaultpool.customer.android-customer-mergeDebugResources-51:/layout/fragment_login.xml",
+        "source": "com.vaultpool.customer.android-customer-main-54:/layout/fragment_login.xml"
     },
     {
-        "merged": "com.vaultpool.customer.android-customer-mergeDebugResources-50:/layout/fragment_staff_bookings.xml",
-        "source": "com.vaultpool.customer.android-customer-main-53:/layout/fragment_staff_bookings.xml"
+        "merged": "com.vaultpool.customer.android-customer-mergeDebugResources-51:/layout/fragment_edit_pool.xml",
+        "source": "com.vaultpool.customer.android-customer-main-54:/layout/fragment_edit_pool.xml"
     },
     {
-        "merged": "com.vaultpool.customer.android-customer-mergeDebugResources-50:/layout/fragment_staff_slots.xml",
-        "source": "com.vaultpool.customer.android-customer-main-53:/layout/fragment_staff_slots.xml"
+        "merged": "com.vaultpool.customer.android-customer-mergeDebugResources-51:/layout/fragment_phone_otp_verification.xml",
+        "source": "com.vaultpool.customer.android-customer-main-54:/layout/fragment_phone_otp_verification.xml"
     },
     {
-        "merged": "com.vaultpool.customer.android-customer-mergeDebugResources-50:/layout/item_pool_staff.xml",
-        "source": "com.vaultpool.customer.android-customer-main-53:/layout/item_pool_staff.xml"
+        "merged": "com.vaultpool.customer.android-customer-mergeDebugResources-51:/layout/activity_splash.xml",
+        "source": "com.vaultpool.customer.android-customer-main-54:/layout/activity_splash.xml"
     },
     {
-        "merged": "com.vaultpool.customer.android-customer-mergeDebugResources-50:/layout/dialog_pool_options.xml",
-        "source": "com.vaultpool.customer.android-customer-main-53:/layout/dialog_pool_options.xml"
+        "merged": "com.vaultpool.customer.android-customer-mergeDebugResources-51:/layout/fragment_email_verification.xml",
+        "source": "com.vaultpool.customer.android-customer-main-54:/layout/fragment_email_verification.xml"
     },
     {
-        "merged": "com.vaultpool.customer.android-customer-mergeDebugResources-50:/layout/fragment_onboarding_page.xml",
-        "source": "com.vaultpool.customer.android-customer-main-53:/layout/fragment_onboarding_page.xml"
+        "merged": "com.vaultpool.customer.android-customer-mergeDebugResources-51:/layout/activity_auth.xml",
+        "source": "com.vaultpool.customer.android-customer-main-54:/layout/activity_auth.xml"
     },
     {
-        "merged": "com.vaultpool.customer.android-customer-mergeDebugResources-50:/layout/fragment_staff_pools.xml",
-        "source": "com.vaultpool.customer.android-customer-main-53:/layout/fragment_staff_pools.xml"
+        "merged": "com.vaultpool.customer.android-customer-mergeDebugResources-51:/layout/item_pool_image_edit.xml",
+        "source": "com.vaultpool.customer.android-customer-main-54:/layout/item_pool_image_edit.xml"
     },
     {
-        "merged": "com.vaultpool.customer.android-customer-mergeDebugResources-50:/layout/fragment_email_verification.xml",
-        "source": "com.vaultpool.customer.android-customer-main-53:/layout/fragment_email_verification.xml"
+        "merged": "com.vaultpool.customer.android-customer-mergeDebugResources-51:/layout/fragment_onboarding_page.xml",
+        "source": "com.vaultpool.customer.android-customer-main-54:/layout/fragment_onboarding_page.xml"
     },
     {
-        "merged": "com.vaultpool.customer.android-customer-mergeDebugResources-50:/layout/item_slot_staff.xml",
-        "source": "com.vaultpool.customer.android-customer-main-53:/layout/item_slot_staff.xml"
+        "merged": "com.vaultpool.customer.android-customer-mergeDebugResources-51:/layout/fragment_register.xml",
+        "source": "com.vaultpool.customer.android-customer-main-54:/layout/fragment_register.xml"
+    },
+    {
+        "merged": "com.vaultpool.customer.android-customer-mergeDebugResources-51:/layout/dialog_pool_options.xml",
+        "source": "com.vaultpool.customer.android-customer-main-54:/layout/dialog_pool_options.xml"
     }
 ]
