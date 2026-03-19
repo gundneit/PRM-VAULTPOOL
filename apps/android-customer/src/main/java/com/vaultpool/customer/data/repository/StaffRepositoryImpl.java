@@ -30,7 +30,6 @@ public class StaffRepositoryImpl implements StaffRepository {
     public Single<Result<List<BookingStaffDto>>> getStaffBookings(String token) {
         return staffApi.getStaffBookings(formatToken(token))
                 .map(this::handleResponse)
-                .onErrorReturn(Result::failure)
                 .subscribeOn(Schedulers.io());
     }
 
@@ -38,7 +37,6 @@ public class StaffRepositoryImpl implements StaffRepository {
     public Single<Result<List<PoolStaffDto>>> getStaffPools(String token) {
         return staffApi.getStaffPools(formatToken(token))
                 .map(this::handleResponse)
-                .onErrorReturn(Result::failure)
                 .subscribeOn(Schedulers.io());
     }
 
@@ -46,7 +44,13 @@ public class StaffRepositoryImpl implements StaffRepository {
     public Single<Result<List<SlotStaffDto>>> getPoolSlots(String token, Long poolId) {
         return staffApi.getPoolSlots(poolId)
                 .map(this::handleResponse)
-                .onErrorReturn(Result::failure)
+                .subscribeOn(Schedulers.io());
+    }
+
+    @Override
+    public Single<Result<List<SlotStaffDto>>> getSlotsByDate(Long poolId, String date) {
+        return staffApi.getSlotsByDate(poolId, date)
+                .map(this::handleResponse)
                 .subscribeOn(Schedulers.io());
     }
 
@@ -54,7 +58,6 @@ public class StaffRepositoryImpl implements StaffRepository {
     public Single<Result<PoolStaffDto>> createPool(String token, PoolStaffDto pool) {
         return staffApi.createPool(formatToken(token), pool)
                 .map(this::handleResponse)
-                .onErrorReturn(Result::failure)
                 .subscribeOn(Schedulers.io());
     }
 
@@ -62,7 +65,6 @@ public class StaffRepositoryImpl implements StaffRepository {
     public Single<Result<PoolStaffDto>> updatePool(String token, Long id, PoolStaffDto pool) {
         return staffApi.updatePool(formatToken(token), id, pool)
                 .map(this::handleResponse)
-                .onErrorReturn(Result::failure)
                 .subscribeOn(Schedulers.io());
     }
 
@@ -72,7 +74,6 @@ public class StaffRepositoryImpl implements StaffRepository {
         body.put("status", status);
         return staffApi.updatePoolStatus(formatToken(token), id, body)
                 .map(this::handleResponse)
-                .onErrorReturn(Result::failure)
                 .subscribeOn(Schedulers.io());
     }
 
@@ -80,7 +81,6 @@ public class StaffRepositoryImpl implements StaffRepository {
     public Single<Result<SlotStaffDto>> createSlot(String token, Long poolId, SlotStaffDto slot) {
         return staffApi.createSlot(formatToken(token), poolId, slot)
                 .map(this::handleResponse)
-                .onErrorReturn(Result::failure)
                 .subscribeOn(Schedulers.io());
     }
 
@@ -88,7 +88,6 @@ public class StaffRepositoryImpl implements StaffRepository {
     public Single<Result<SlotStaffDto>> updateSlot(String token, Long poolId, Long slotId, SlotStaffDto slot) {
         return staffApi.updateSlot(formatToken(token), poolId, slotId, slot)
                 .map(this::handleResponse)
-                .onErrorReturn(Result::failure)
                 .subscribeOn(Schedulers.io());
     }
 
@@ -98,7 +97,6 @@ public class StaffRepositoryImpl implements StaffRepository {
         body.put("status", status);
         return staffApi.updateSlotStatus(formatToken(token), poolId, slotId, body)
                 .map(this::handleResponse)
-                .onErrorReturn(Result::failure)
                 .subscribeOn(Schedulers.io());
     }
 

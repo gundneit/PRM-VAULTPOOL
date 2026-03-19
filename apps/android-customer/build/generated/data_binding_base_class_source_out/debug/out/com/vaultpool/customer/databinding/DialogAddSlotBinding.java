@@ -4,6 +4,7 @@ package com.vaultpool.customer.databinding;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.viewbinding.ViewBinding;
@@ -38,10 +39,14 @@ public final class DialogAddSlotBinding implements ViewBinding {
   @NonNull
   public final TextInputEditText etStartTime;
 
+  @NonNull
+  public final TextView tvDialogTitle;
+
   private DialogAddSlotBinding(@NonNull MaterialCardView rootView,
       @NonNull MaterialButton btnCancel, @NonNull MaterialButton btnCreate,
       @NonNull TextInputEditText etCapacity, @NonNull TextInputEditText etEndTime,
-      @NonNull TextInputEditText etPrice, @NonNull TextInputEditText etStartTime) {
+      @NonNull TextInputEditText etPrice, @NonNull TextInputEditText etStartTime,
+      @NonNull TextView tvDialogTitle) {
     this.rootView = rootView;
     this.btnCancel = btnCancel;
     this.btnCreate = btnCreate;
@@ -49,6 +54,7 @@ public final class DialogAddSlotBinding implements ViewBinding {
     this.etEndTime = etEndTime;
     this.etPrice = etPrice;
     this.etStartTime = etStartTime;
+    this.tvDialogTitle = tvDialogTitle;
   }
 
   @Override
@@ -114,8 +120,14 @@ public final class DialogAddSlotBinding implements ViewBinding {
         break missingId;
       }
 
+      id = R.id.tv_dialog_title;
+      TextView tvDialogTitle = ViewBindings.findChildViewById(rootView, id);
+      if (tvDialogTitle == null) {
+        break missingId;
+      }
+
       return new DialogAddSlotBinding((MaterialCardView) rootView, btnCancel, btnCreate, etCapacity,
-          etEndTime, etPrice, etStartTime);
+          etEndTime, etPrice, etStartTime, tvDialogTitle);
     }
     String missingId = rootView.getResources().getResourceName(id);
     throw new NullPointerException("Missing required view with ID: ".concat(missingId));

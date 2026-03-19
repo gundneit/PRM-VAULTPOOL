@@ -1,10 +1,10 @@
 {
     "logs": [
         {
-            "outputFile": "com.vaultpool.customer.android-customer-mergeDebugResources-49:/values-watch-v21/values-watch-v21.xml",
+            "outputFile": "com.vaultpool.customer.android-customer-mergeDebugResources-50:/values-watch-v21/values-watch-v21.xml",
             "map": [
                 {
-                    "source": "C:\\Users\\QUANG TUAN\\.gradle\\caches\\transforms-3\\8948699fca29846c5365ff0dbf442dc8\\transformed\\appcompat-1.6.1\\res\\values-watch-v21\\values-watch-v21.xml",
+                    "source": "C:\\Users\\QUANG TUAN\\.gradle\\caches\\transforms-3\\b16b38e97b5ea03db83b2d579d3383f0\\transformed\\appcompat-1.6.1\\res\\values-watch-v21\\values-watch-v21.xml",
                     "from": {
                         "startLines": "2,6,10",
                         "startColumns": "4,4,4",

@@ -20,7 +20,8 @@
     <string name="reset_password_sent">Password reset email sent.</string>
     <string name="backend_account_missing">This account is not registered in Lavela yet. Please sign up first.</string>
     <string name="error_verify_email_first">Please verify your email before logging in.</string>
-    <string name="welcome_title">Welcome back</string>
+    <string name="welcome_title">Welcome</string>
+    <string name="health_greeting">Wishing you a great day and stay healthy!</string>
     <string name="guest_user">Guest</string>
     <string name="label_email">Email</string>
     <string name="label_user_id">User ID</string>
@@ -68,5 +69,6 @@
     <string name="loading">Đang tải...</string>
     <string name="please_wait">Vui lòng đợi</string>
 
+    <string name="user_dashboard">User Dashboard</string>
     <string name="logout">Đăng xuất</string>
 </resources>

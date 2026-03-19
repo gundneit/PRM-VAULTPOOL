@@ -9,6 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewbinding.ViewBinding;
 import androidx.viewbinding.ViewBindings;
 import com.google.android.material.button.MaterialButton;
@@ -21,6 +22,9 @@ import java.lang.String;
 public final class FragmentEditPoolBinding implements ViewBinding {
   @NonNull
   private final CoordinatorLayout rootView;
+
+  @NonNull
+  public final MaterialButton btnAddImage;
 
   @NonNull
   public final MaterialButton btnSave;
@@ -41,20 +45,26 @@ public final class FragmentEditPoolBinding implements ViewBinding {
   public final ProgressBar progressBar;
 
   @NonNull
+  public final RecyclerView rvImages;
+
+  @NonNull
   public final Toolbar toolbarEdit;
 
   private FragmentEditPoolBinding(@NonNull CoordinatorLayout rootView,
-      @NonNull MaterialButton btnSave, @NonNull TextInputEditText etAddress,
-      @NonNull TextInputEditText etDescription, @NonNull TextInputEditText etHours,
-      @NonNull TextInputEditText etName, @NonNull ProgressBar progressBar,
+      @NonNull MaterialButton btnAddImage, @NonNull MaterialButton btnSave,
+      @NonNull TextInputEditText etAddress, @NonNull TextInputEditText etDescription,
+      @NonNull TextInputEditText etHours, @NonNull TextInputEditText etName,
+      @NonNull ProgressBar progressBar, @NonNull RecyclerView rvImages,
       @NonNull Toolbar toolbarEdit) {
     this.rootView = rootView;
+    this.btnAddImage = btnAddImage;
     this.btnSave = btnSave;
     this.etAddress = etAddress;
     this.etDescription = etDescription;
     this.etHours = etHours;
     this.etName = etName;
     this.progressBar = progressBar;
+    this.rvImages = rvImages;
     this.toolbarEdit = toolbarEdit;
   }
 
@@ -85,6 +95,12 @@ public final class FragmentEditPoolBinding implements ViewBinding {
     // This is done to optimize the compiled bytecode for size and performance.
     int id;
     missingId: {
+      id = R.id.btn_add_image;
+      MaterialButton btnAddImage = ViewBindings.findChildViewById(rootView, id);
+      if (btnAddImage == null) {
+        break missingId;
+      }
+
       id = R.id.btn_save;
       MaterialButton btnSave = ViewBindings.findChildViewById(rootView, id);
       if (btnSave == null) {
@@ -121,14 +137,20 @@ public final class FragmentEditPoolBinding implements ViewBinding {
         break missingId;
       }
 
+      id = R.id.rv_images;
+      RecyclerView rvImages = ViewBindings.findChildViewById(rootView, id);
+      if (rvImages == null) {
+        break missingId;
+      }
+
       id = R.id.toolbar_edit;
       Toolbar toolbarEdit = ViewBindings.findChildViewById(rootView, id);
       if (toolbarEdit == null) {
         break missingId;
       }
 
-      return new FragmentEditPoolBinding((CoordinatorLayout) rootView, btnSave, etAddress,
-          etDescription, etHours, etName, progressBar, toolbarEdit);
+      return new FragmentEditPoolBinding((CoordinatorLayout) rootView, btnAddImage, btnSave,
+          etAddress, etDescription, etHours, etName, progressBar, rvImages, toolbarEdit);
     }
     String missingId = rootView.getResources().getResourceName(id);
     throw new NullPointerException("Missing required view with ID: ".concat(missingId));

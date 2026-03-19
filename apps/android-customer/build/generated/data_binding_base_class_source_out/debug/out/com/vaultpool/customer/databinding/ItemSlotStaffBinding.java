@@ -10,6 +10,7 @@ import androidx.annotation.Nullable;
 import androidx.viewbinding.ViewBinding;
 import androidx.viewbinding.ViewBindings;
 import com.google.android.material.card.MaterialCardView;
+import com.google.android.material.switchmaterial.SwitchMaterial;
 import com.vaultpool.customer.R;
 import java.lang.NullPointerException;
 import java.lang.Override;
@@ -18,6 +19,9 @@ import java.lang.String;
 public final class ItemSlotStaffBinding implements ViewBinding {
   @NonNull
   private final MaterialCardView rootView;
+
+  @NonNull
+  public final SwitchMaterial switchStatus;
 
   @NonNull
   public final TextView tvCapacity;
@@ -31,9 +35,11 @@ public final class ItemSlotStaffBinding implements ViewBinding {
   @NonNull
   public final TextView tvTime;
 
-  private ItemSlotStaffBinding(@NonNull MaterialCardView rootView, @NonNull TextView tvCapacity,
-      @NonNull TextView tvPrice, @NonNull TextView tvStatus, @NonNull TextView tvTime) {
+  private ItemSlotStaffBinding(@NonNull MaterialCardView rootView,
+      @NonNull SwitchMaterial switchStatus, @NonNull TextView tvCapacity, @NonNull TextView tvPrice,
+      @NonNull TextView tvStatus, @NonNull TextView tvTime) {
     this.rootView = rootView;
+    this.switchStatus = switchStatus;
     this.tvCapacity = tvCapacity;
     this.tvPrice = tvPrice;
     this.tvStatus = tvStatus;
@@ -67,6 +73,12 @@ public final class ItemSlotStaffBinding implements ViewBinding {
     // This is done to optimize the compiled bytecode for size and performance.
     int id;
     missingId: {
+      id = R.id.switch_status;
+      SwitchMaterial switchStatus = ViewBindings.findChildViewById(rootView, id);
+      if (switchStatus == null) {
+        break missingId;
+      }
+
       id = R.id.tv_capacity;
       TextView tvCapacity = ViewBindings.findChildViewById(rootView, id);
       if (tvCapacity == null) {
@@ -91,8 +103,8 @@ public final class ItemSlotStaffBinding implements ViewBinding {
         break missingId;
       }
 
-      return new ItemSlotStaffBinding((MaterialCardView) rootView, tvCapacity, tvPrice, tvStatus,
-          tvTime);
+      return new ItemSlotStaffBinding((MaterialCardView) rootView, switchStatus, tvCapacity,
+          tvPrice, tvStatus, tvTime);
     }
     String missingId = rootView.getResources().getResourceName(id);
     throw new NullPointerException("Missing required view with ID: ".concat(missingId));

@@ -156,6 +156,7 @@
         android:layout_marginTop="28dp"
         android:layout_marginEnd="12dp"
         android:background="@color/divider"
+        android:visibility="gone"
         app:layout_constraintEnd_toStartOf="@+id/tvOrContinue"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btnLogin" />
@@ -168,6 +169,7 @@
         android:text="@string/or_continue_with"
         android:textColor="@color/text_secondary"
         android:textSize="14sp"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btnLogin" />
@@ -180,6 +182,7 @@
         android:layout_marginTop="28dp"
         android:layout_marginEnd="24dp"
         android:background="@color/divider"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/tvOrContinue"
         app:layout_constraintTop_toBottomOf="@+id/btnLogin" />
@@ -195,6 +198,7 @@
         android:text="Google"
         android:textAllCaps="false"
         android:textColor="@color/text_primary"
+        android:visibility="gone"
         app:cornerRadius="26dp"
         app:icon="@drawable/ic_google"
         app:iconGravity="textStart"
@@ -217,6 +221,7 @@
         android:text="Apple"
         android:textAllCaps="false"
         android:textColor="@color/text_primary"
+        android:visibility="gone"
         app:cornerRadius="26dp"
         app:icon="@drawable/ic_apple"
         app:iconGravity="textStart"
@@ -238,7 +243,7 @@
         android:textSize="14sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnGoogle" />
+        app:layout_constraintTop_toBottomOf="@+id/btnLogin" />
 
     <ProgressBar
         android:id="@+id/progressBar"

@@ -5,6 +5,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
+import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
@@ -29,19 +31,28 @@ public final class ActivityStaffBinding implements ViewBinding {
   public final BottomNavigationView bottomNavigation;
 
   @NonNull
+  public final ImageButton btnBack;
+
+  @NonNull
   public final FrameLayout navHostFragment;
 
   @NonNull
   public final Toolbar toolbar;
 
+  @NonNull
+  public final TextView tvHeaderTitle;
+
   private ActivityStaffBinding(@NonNull ConstraintLayout rootView, @NonNull AppBarLayout appBar,
-      @NonNull BottomNavigationView bottomNavigation, @NonNull FrameLayout navHostFragment,
-      @NonNull Toolbar toolbar) {
+      @NonNull BottomNavigationView bottomNavigation, @NonNull ImageButton btnBack,
+      @NonNull FrameLayout navHostFragment, @NonNull Toolbar toolbar,
+      @NonNull TextView tvHeaderTitle) {
     this.rootView = rootView;
     this.appBar = appBar;
     this.bottomNavigation = bottomNavigation;
+    this.btnBack = btnBack;
     this.navHostFragment = navHostFragment;
     this.toolbar = toolbar;
+    this.tvHeaderTitle = tvHeaderTitle;
   }
 
   @Override
@@ -83,6 +94,12 @@ public final class ActivityStaffBinding implements ViewBinding {
         break missingId;
       }
 
+      id = R.id.btn_back;
+      ImageButton btnBack = ViewBindings.findChildViewById(rootView, id);
+      if (btnBack == null) {
+        break missingId;
+      }
+
       id = R.id.nav_host_fragment;
       FrameLayout navHostFragment = ViewBindings.findChildViewById(rootView, id);
       if (navHostFragment == null) {
@@ -95,8 +112,14 @@ public final class ActivityStaffBinding implements ViewBinding {
         break missingId;
       }
 
+      id = R.id.tv_header_title;
+      TextView tvHeaderTitle = ViewBindings.findChildViewById(rootView, id);
+      if (tvHeaderTitle == null) {
+        break missingId;
+      }
+
       return new ActivityStaffBinding((ConstraintLayout) rootView, appBar, bottomNavigation,
-          navHostFragment, toolbar);
+          btnBack, navHostFragment, toolbar, tvHeaderTitle);
     }
     String missingId = rootView.getResources().getResourceName(id);
     throw new NullPointerException("Missing required view with ID: ".concat(missingId));

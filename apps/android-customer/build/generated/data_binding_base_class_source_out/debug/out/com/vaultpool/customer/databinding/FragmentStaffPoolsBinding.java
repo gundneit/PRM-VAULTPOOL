@@ -32,6 +32,9 @@ public final class FragmentStaffPoolsBinding implements ViewBinding {
   public final RecyclerView rvPools;
 
   @NonNull
+  public final View titleUnderline;
+
+  @NonNull
   public final TextView tvPoolCount;
 
   @NonNull
@@ -39,11 +42,13 @@ public final class FragmentStaffPoolsBinding implements ViewBinding {
 
   private FragmentStaffPoolsBinding(@NonNull ConstraintLayout rootView,
       @NonNull FloatingActionButton fabAddPool, @NonNull ProgressBar progressBar,
-      @NonNull RecyclerView rvPools, @NonNull TextView tvPoolCount, @NonNull TextView tvTitle) {
+      @NonNull RecyclerView rvPools, @NonNull View titleUnderline, @NonNull TextView tvPoolCount,
+      @NonNull TextView tvTitle) {
     this.rootView = rootView;
     this.fabAddPool = fabAddPool;
     this.progressBar = progressBar;
     this.rvPools = rvPools;
+    this.titleUnderline = titleUnderline;
     this.tvPoolCount = tvPoolCount;
     this.tvTitle = tvTitle;
   }
@@ -93,6 +98,12 @@ public final class FragmentStaffPoolsBinding implements ViewBinding {
         break missingId;
       }
 
+      id = R.id.title_underline;
+      View titleUnderline = ViewBindings.findChildViewById(rootView, id);
+      if (titleUnderline == null) {
+        break missingId;
+      }
+
       id = R.id.tv_pool_count;
       TextView tvPoolCount = ViewBindings.findChildViewById(rootView, id);
       if (tvPoolCount == null) {
@@ -106,7 +117,7 @@ public final class FragmentStaffPoolsBinding implements ViewBinding {
       }
 
       return new FragmentStaffPoolsBinding((ConstraintLayout) rootView, fabAddPool, progressBar,
-          rvPools, tvPoolCount, tvTitle);
+          rvPools, titleUnderline, tvPoolCount, tvTitle);
     }
     String missingId = rootView.getResources().getResourceName(id);
     throw new NullPointerException("Missing required view with ID: ".concat(missingId));

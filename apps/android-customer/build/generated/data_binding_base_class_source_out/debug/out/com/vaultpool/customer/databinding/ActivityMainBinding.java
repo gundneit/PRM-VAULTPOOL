@@ -29,6 +29,9 @@ public final class ActivityMainBinding implements ViewBinding {
   public final MaterialButton btnStaff;
 
   @NonNull
+  public final MaterialButton btnUserDashboard;
+
+  @NonNull
   public final CardView cardProfile;
 
   @NonNull
@@ -42,6 +45,9 @@ public final class ActivityMainBinding implements ViewBinding {
 
   @NonNull
   public final TextView tvHeader;
+
+  @NonNull
+  public final TextView tvHealthGreeting;
 
   @NonNull
   public final TextView tvStatusLabel;
@@ -59,19 +65,22 @@ public final class ActivityMainBinding implements ViewBinding {
   public final TextView tvWelcome;
 
   private ActivityMainBinding(@NonNull ConstraintLayout rootView, @NonNull MaterialButton btnLogout,
-      @NonNull MaterialButton btnStaff, @NonNull CardView cardProfile,
-      @NonNull ProgressBar progressBar, @NonNull TextView tvEmailLabel,
-      @NonNull TextView tvEmailValue, @NonNull TextView tvHeader, @NonNull TextView tvStatusLabel,
+      @NonNull MaterialButton btnStaff, @NonNull MaterialButton btnUserDashboard,
+      @NonNull CardView cardProfile, @NonNull ProgressBar progressBar,
+      @NonNull TextView tvEmailLabel, @NonNull TextView tvEmailValue, @NonNull TextView tvHeader,
+      @NonNull TextView tvHealthGreeting, @NonNull TextView tvStatusLabel,
       @NonNull TextView tvStatusValue, @NonNull TextView tvUserIdLabel,
       @NonNull TextView tvUserIdValue, @NonNull TextView tvWelcome) {
     this.rootView = rootView;
     this.btnLogout = btnLogout;
     this.btnStaff = btnStaff;
+    this.btnUserDashboard = btnUserDashboard;
     this.cardProfile = cardProfile;
     this.progressBar = progressBar;
     this.tvEmailLabel = tvEmailLabel;
     this.tvEmailValue = tvEmailValue;
     this.tvHeader = tvHeader;
+    this.tvHealthGreeting = tvHealthGreeting;
     this.tvStatusLabel = tvStatusLabel;
     this.tvStatusValue = tvStatusValue;
     this.tvUserIdLabel = tvUserIdLabel;
@@ -118,6 +127,12 @@ public final class ActivityMainBinding implements ViewBinding {
         break missingId;
       }
 
+      id = R.id.btnUserDashboard;
+      MaterialButton btnUserDashboard = ViewBindings.findChildViewById(rootView, id);
+      if (btnUserDashboard == null) {
+        break missingId;
+      }
+
       id = R.id.cardProfile;
       CardView cardProfile = ViewBindings.findChildViewById(rootView, id);
       if (cardProfile == null) {
@@ -145,6 +160,12 @@ public final class ActivityMainBinding implements ViewBinding {
       id = R.id.tvHeader;
       TextView tvHeader = ViewBindings.findChildViewById(rootView, id);
       if (tvHeader == null) {
+        break missingId;
+      }
+
+      id = R.id.tvHealthGreeting;
+      TextView tvHealthGreeting = ViewBindings.findChildViewById(rootView, id);
+      if (tvHealthGreeting == null) {
         break missingId;
       }
 
@@ -178,9 +199,9 @@ public final class ActivityMainBinding implements ViewBinding {
         break missingId;
       }
 
-      return new ActivityMainBinding((ConstraintLayout) rootView, btnLogout, btnStaff, cardProfile,
-          progressBar, tvEmailLabel, tvEmailValue, tvHeader, tvStatusLabel, tvStatusValue,
-          tvUserIdLabel, tvUserIdValue, tvWelcome);
+      return new ActivityMainBinding((ConstraintLayout) rootView, btnLogout, btnStaff,
+          btnUserDashboard, cardProfile, progressBar, tvEmailLabel, tvEmailValue, tvHeader,
+          tvHealthGreeting, tvStatusLabel, tvStatusValue, tvUserIdLabel, tvUserIdValue, tvWelcome);
     }
     String missingId = rootView.getResources().getResourceName(id);
     throw new NullPointerException("Missing required view with ID: ".concat(missingId));
