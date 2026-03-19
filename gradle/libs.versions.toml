@@ -33,6 +33,9 @@ rxandroid = "3.0.2"
 # Security
 securityCrypto = "1.1.0-alpha06"
 
+# Images
+glide = "4.16.0"
+
 # Spring Boot
 springBoot = "3.2.3"
 springDoc = "2.3.0"
@@ -84,6 +87,10 @@ rxandroid = { group = "io.reactivex.rxjava3", name = "rxandroid", version.ref = 
 
 # Security
 androidx-security-crypto = { group = "androidx.security", name = "security-crypto", version.ref = "securityCrypto" }
+
+# Images
+glide = { group = "com.github.bumptech.glide", name = "glide", version.ref = "glide" }
+glide-compiler = { group = "com.github.bumptech.glide", name = "compiler", version.ref = "glide" }
 
 # Spring Boot
 spring-boot-starter-web = { group = "org.springframework.boot", name = "spring-boot-starter-web" }

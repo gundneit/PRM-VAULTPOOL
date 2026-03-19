@@ -22,12 +22,45 @@
     <string name="lavela_pool">Lavela Pool</string>
     <string name="login">Login</string>
     <string name="login_title">Login</string>
+<<<<<<< HEAD
     <string name="register">Register</string>
     <string name="full_name">Full Name</string>
     <string name="phone">Phone Number</string>
     <string name="confirm_password">Confirm Password</string>
     <string name="email_verification">Email Verification</string>
     <string name="sms_verification">SMS Verification</string>
+=======
+    <string name="onboarding_page_one_title">Escape to Paradise</string>
+    <string name="onboarding_page_one_desc">Discover the most exclusive pools and private beach clubs.</string>
+    <string name="onboarding_page_two_title">Unwind in Luxury</string>
+    <string name="onboarding_page_two_desc">Experience world-class amenities and personalized poolside service.</string>
+    <string name="onboarding_page_three_title">Book Your Experience</string>
+    <string name="onboarding_page_three_desc">Reserve your spot instantly and elevate your relaxation game.</string>
+    <string name="next">Next</string>
+    <string name="get_started">Get Started</string>
+    <string name="or_continue_with">or continue with</string>
+    <string name="continue_with_google">Continue with Google</string>
+    <string name="continue_with_apple">Continue with Apple</string>
+    <string name="forgot_password_en">Forgot Password?</string>
+    <string name="create_account">Don\'t have an account? Sign up</string>
+    <string name="register_success_en">Account created. Please verify your email before logging in.</string>
+    <string name="reset_password_sent">Password reset email sent.</string>
+    <string name="backend_account_missing">This account is not registered in Lavela yet. Please sign up first.</string>
+    <string name="error_verify_email_first">Please verify your email before logging in.</string>
+    <string name="welcome_title">Welcome</string>
+    <string name="health_greeting">Wishing you a great day and stay healthy!</string>
+    <string name="guest_user">Guest</string>
+    <string name="label_email">Email</string>
+    <string name="label_user_id">User ID</string>
+    <string name="label_status">Session</string>
+    <string name="status_active">Authenticated with backend</string>
+    <string name="status_missing">Session data missing</string>
+    <string name="status_refreshing">Refreshing profile from backend...</string>
+    <string name="session_expired">Your session expired. Please sign in again.</string>
+
+    <string name="login">Đăng nhập</string>
+    <string name="register">Đăng ký</string>
+>>>>>>> ceb226ad88f1dd6e98540f47a1007b48e91ae017
     <string name="email">Email</string>
     <string name="password">Password</string>
     <string name="forgot_password">Forgot Password?</string>
@@ -60,10 +93,32 @@
     <string name="view_all">View all pools</string>
     <string name="learn_more">Learn More</string>
 
+<<<<<<< HEAD
     <!-- Tickets -->
     <string name="ticket_marketplace">Ticket Marketplace</string>
     <string name="filter_weekday">Weekday</string>
     <string name="filter_weekend">Weekend</string>
     <string name="label_vip">VIP</string>
     <string name="btn_book">Book</string>
+=======
+    <string name="login_success">Đăng nhập thành công</string>
+    <string name="register_success">Đăng ký thành công. Vui lòng kiểm tra email/SMS để lấy mã OTP.</string>
+    <string name="otp_sent">Mã OTP đã được gửi. Vui lòng kiểm tra email/SMS.</string>
+    <string name="otp_verified">Xác thực thành công</string>
+
+    <string name="error_required">Trường này không được để trống</string>
+    <string name="error_invalid_email">Email không hợp lệ</string>
+    <string name="error_invalid_phone">Số điện thoại không hợp lệ</string>
+    <string name="error_password_too_short">Mật khẩu phải có ít nhất 8 ký tự</string>
+    <string name="error_password_mismatch">Mật khẩu không khớp</string>
+    <string name="error_invalid_otp">Mã OTP không đúng</string>
+    <string name="error_network">Lỗi kết nối. Vui lòng thử lại.</string>
+    <string name="error_unknown">Đã xảy ra lỗi. Vui lòng thử lại sau.</string>
+
+    <string name="loading">Đang tải...</string>
+    <string name="please_wait">Vui lòng đợi</string>
+
+    <string name="user_dashboard">User Dashboard</string>
+    <string name="logout">Đăng xuất</string>
+>>>>>>> ceb226ad88f1dd6e98540f47a1007b48e91ae017
 </resources>

@@ -88,14 +88,6 @@ public class StaffPoolsFragment extends Fragment {
             }
         });
 
-        viewModel.getSlotActionUpdate().observe(getViewLifecycleOwner(), result -> {
-            if (result.isSuccess()) {
-                Toast.makeText(getContext(), "Slot Created Successfully", Toast.LENGTH_SHORT).show();
-            } else if (result.isFailure()) {
-                Toast.makeText(getContext(), result.getErrorMessage(), Toast.LENGTH_LONG).show();
-            }
-        });
-
         viewModel.getLoading().observe(getViewLifecycleOwner(), loading -> {
             binding.progressBar.setVisibility(loading ? View.VISIBLE : View.GONE);
         });

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/surface">
@@ -44,6 +45,8 @@
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:paddingBottom="80dp"
+        android:clipToPadding="false"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <LinearLayout
@@ -58,18 +61,47 @@
                 android:layout_height="wrap_content"
                 android:textColor="@color/on_surface"
                 android:textSize="28sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                tools:text="La Vela Pool" />
 
             <TextView
                 android:id="@+id/tvDetailAddress"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
+                android:layout_marginTop="8dp"
                 android:drawablePadding="8dp"
+                android:gravity="center_vertical"
                 android:textColor="@color/on_surface_variant"
                 android:textSize="14sp"
                 app:drawableStartCompat="@android:drawable/ic_menu_mylocation"
-                app:drawableTint="@color/primary" />
+                app:drawableTint="@color/primary"
+                tools:text="12 Tran Phu, Nha Trang" />
+
+            <TextView
+                android:id="@+id/tvDetailOpenHours"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:drawablePadding="8dp"
+                android:gravity="center_vertical"
+                android:textColor="@color/on_surface_variant"
+                android:textSize="14sp"
+                app:drawableStartCompat="@android:drawable/ic_menu_recent_history"
+                app:drawableTint="@color/primary"
+                tools:text="06:30 - 20:30" />
+
+            <TextView
+                android:id="@+id/tvDetailCoords"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:drawablePadding="8dp"
+                android:gravity="center_vertical"
+                android:textColor="@color/on_surface_variant"
+                android:textSize="14sp"
+                app:drawableStartCompat="@android:drawable/ic_dialog_map"
+                app:drawableTint="@color/primary"
+                tools:text="12.2388, 109.1967" />
 
             <View
                 android:layout_width="match_parent"
@@ -93,9 +125,12 @@
                 android:layout_marginTop="8dp"
                 android:lineSpacingExtra="4dp"
                 android:textColor="@color/on_surface_variant"
-                android:textSize="15sp" />
+                android:textSize="15sp"
+                tools:text="Description goes here..." />
 
+            <!-- Chúng ta có thể giữ phần này hoặc ẩn đi nếu muốn dùng hoàn toàn bằng Pop-up -->
             <TextView
+                android:id="@+id/tvLabelSlots"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
@@ -113,5 +148,30 @@
 
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
+
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        app:cardElevation="8dp"
+        app:cardCornerRadius="0dp"
+        app:strokeWidth="0dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="16dp"
+            android:background="@color/surface">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnMainBook"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:text="Book Now"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                app:cornerRadius="12dp" />
+        </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

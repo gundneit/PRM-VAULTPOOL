@@ -35,7 +35,10 @@ public class PoolDto {
     public Long getId() { return id; }
     public String getName() { return name; }
     public String getAddress() { return address; }
+    public Double getGeoLat() { return geoLat; }
+    public Double getGeoLng() { return geoLng; }
     public String getDescription() { return description; }
+    public String getOpenHours() { return openHours; }
     public String getStatus() { return status; }
     public List<PoolImageDto> getImages() { return images; }
 

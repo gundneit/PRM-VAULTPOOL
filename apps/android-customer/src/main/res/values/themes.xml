@@ -32,6 +32,13 @@
         <item name="postSplashScreenTheme">@style/Theme.VaultPool</item>
     </style>
 
+    <style name="Theme.VaultPool.DatePicker" parent="Theme.Material3.Light.Dialog">
+        <item name="colorPrimary">#2196F3</item> <!-- Material Blue 500 -->
+        <item name="colorOnPrimary">@color/white</item>
+        <item name="colorSurface">@color/white</item>
+        <item name="colorOnSurface">@color/navy</item>
+    </style>
+
     <!-- Theme phụ để SplashActivity hiển thị Logo hình vuông đầy đủ -->
     <style name="Theme.VaultPool.Splash.Loaded" parent="Theme.VaultPool">
         <item name="android:windowBackground">@drawable/bg_splash_square_logo</item>

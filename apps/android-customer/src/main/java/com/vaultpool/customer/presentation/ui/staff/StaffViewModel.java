@@ -86,6 +86,20 @@ public class StaffViewModel extends ViewModel {
                 }));
     }
 
+    public void fetchSlotsByDate(Long poolId, String date) {
+        loading.setValue(true);
+        disposables.add(staffRepository.getSlotsByDate(poolId, date)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(result -> {
+                    loading.setValue(false);
+                    slots.setValue(result);
+                }, throwable -> {
+                    loading.setValue(false);
+                    slots.setValue(Result.failure(throwable.getMessage()));
+                }));
+    }
+
     public void createPool(PoolStaffDto pool) {
         loading.setValue(true);
         disposables.add(authRepository.getIdToken()
@@ -143,10 +157,26 @@ public class StaffViewModel extends ViewModel {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(result -> {
                     loading.setValue(false);
-                    slotActionUpdate.setValue(result);
+                    if (result.isFailure()) {
+                        String msg = result.getErrorMessage();
+                        if (msg != null && (msg.contains("400") || msg.toLowerCase().contains("bad request"))) {
+                            msg = "This slot has expired and cannot be edited.";
+                        }
+                        slotActionUpdate.setValue(Result.failure(msg));
+                    } else {
+                        slotActionUpdate.setValue(result);
+                    }
                 }, throwable -> {
                     loading.setValue(false);
-                    slotActionUpdate.setValue(Result.failure(throwable.getMessage()));
+                    String message = throwable.getMessage();
+                    if (throwable instanceof retrofit2.HttpException) {
+                        if (((retrofit2.HttpException) throwable).code() == 400) {
+                            message = "This slot has expired and cannot be edited.";
+                        }
+                    } else if (message != null && (message.contains("400") || message.toLowerCase().contains("bad request"))) {
+                        message = "This slot has expired and cannot be edited.";
+                    }
+                    slotActionUpdate.setValue(Result.failure(message));
                 }));
     }
 
@@ -158,15 +188,37 @@ public class StaffViewModel extends ViewModel {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(result -> {
                     loading.setValue(false);
-                    slotActionUpdate.setValue(result);
+                    if (result.isFailure()) {
+                        String msg = result.getErrorMessage();
+                        if (msg != null && (msg.contains("400") || msg.toLowerCase().contains("bad request"))) {
+                            msg = "This slot has expired and cannot be edited.";
+                        }
+                        slotActionUpdate.setValue(Result.failure(msg));
+                    } else {
+                        slotActionUpdate.setValue(result);
+                    }
                 }, throwable -> {
                     loading.setValue(false);
-                    slotActionUpdate.setValue(Result.failure(throwable.getMessage()));
+                    String message = throwable.getMessage();
+                    if (throwable instanceof retrofit2.HttpException) {
+                        if (((retrofit2.HttpException) throwable).code() == 400) {
+                            message = "This slot has expired and cannot be edited.";
+                        }
+                    } else if (message != null && (message.contains("400") || message.toLowerCase().contains("bad request"))) {
+                        message = "This slot has expired and cannot be edited.";
+                    }
+                    slotActionUpdate.setValue(Result.failure(message));
                 }));
     }
 
     public void updateSlotStatus(Long poolId, Long slotId, String currentStatus) {
-        String newStatus = "ACTIVE".equalsIgnoreCase(currentStatus) ? "INACTIVE" : "ACTIVE";
+        String newStatus;
+        if ("ACTIVE".equalsIgnoreCase(currentStatus)) {
+            newStatus = "INACTIVE";
+        } else {
+            newStatus = "ACTIVE";
+        }
+
         loading.setValue(true);
         disposables.add(authRepository.getIdToken()
                 .flatMap(token -> staffRepository.updateSlotStatus(token, poolId, slotId, newStatus))
@@ -174,10 +226,26 @@ public class StaffViewModel extends ViewModel {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(result -> {
                     loading.setValue(false);
-                    slotActionUpdate.setValue(result);
+                    if (result.isFailure()) {
+                        String msg = result.getErrorMessage();
+                        if (msg != null && (msg.contains("400") || msg.toLowerCase().contains("bad request"))) {
+                            msg = "This slot has expired and cannot be edited.";
+                        }
+                        slotActionUpdate.setValue(Result.failure(msg));
+                    } else {
+                        slotActionUpdate.setValue(result);
+                    }
                 }, throwable -> {
                     loading.setValue(false);
-                    slotActionUpdate.setValue(Result.failure(throwable.getMessage()));
+                    String message = throwable.getMessage();
+                    if (throwable instanceof retrofit2.HttpException) {
+                        if (((retrofit2.HttpException) throwable).code() == 400) {
+                            message = "This slot has expired and cannot be edited.";
+                        }
+                    } else if (message != null && (message.contains("400") || message.toLowerCase().contains("bad request"))) {
+                        message = "This slot has expired and cannot be edited.";
+                    }
+                    slotActionUpdate.setValue(Result.failure(message));
                 }));
     }
 
