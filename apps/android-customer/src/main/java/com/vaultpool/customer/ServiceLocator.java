@@ -1,5 +1,9 @@
 package com.vaultpool.customer;
 
+import com.vaultpool.customer.data.remote.api.PoolApi;
+import com.vaultpool.customer.data.repository.PoolRepositoryImpl;
+import com.vaultpool.customer.domain.repository.PoolRepository;
+
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava3.RxJava3CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -20,6 +24,10 @@ public class ServiceLocator {
     // Staff Dependencies
     private com.vaultpool.customer.data.remote.api.StaffApi staffApi;
     private com.vaultpool.customer.domain.repository.StaffRepository staffRepository;
+    
+    // Pool Dependencies
+    private PoolApi poolApi;
+    private PoolRepository poolRepository;
 
     private ServiceLocator() {
     }
@@ -37,7 +45,7 @@ public class ServiceLocator {
         
         // Setup Retrofit
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://10.0.2.2:8080/")
+                .baseUrl(BuildConfig.BACKEND_BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
                 .build();
@@ -55,6 +63,10 @@ public class ServiceLocator {
         // Initialize Staff dependencies
         staffApi = retrofit.create(com.vaultpool.customer.data.remote.api.StaffApi.class);
         staffRepository = new com.vaultpool.customer.data.repository.StaffRepositoryImpl(staffApi);
+
+        // Initialize Pool dependencies
+        poolApi = retrofit.create(PoolApi.class);
+        poolRepository = new PoolRepositoryImpl(poolApi);
     }
 
     public com.vaultpool.customer.domain.repository.AuthRepository getAuthRepository() {
@@ -75,5 +87,9 @@ public class ServiceLocator {
     
     public com.vaultpool.customer.domain.repository.StaffRepository getStaffRepository() {
         return staffRepository;
+    }
+
+    public PoolRepository getPoolRepository() {
+        return poolRepository;
     }
 }

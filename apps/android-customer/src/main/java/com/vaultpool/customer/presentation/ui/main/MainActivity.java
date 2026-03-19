@@ -3,15 +3,16 @@ package com.vaultpool.customer.presentation.ui.main;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Toast;
-
 import androidx.appcompat.app.AppCompatActivity;
-
+import androidx.navigation.NavController;
+import androidx.navigation.fragment.NavHostFragment;
+import androidx.navigation.ui.NavigationUI;
+import com.vaultpool.customer.R;
 import com.vaultpool.customer.ServiceLocator;
 import com.vaultpool.customer.data.auth.AuthFlowManager;
 import com.vaultpool.customer.data.local.prefs.PreferencesManager;
 import com.vaultpool.customer.databinding.ActivityMainBinding;
 import com.vaultpool.customer.presentation.ui.login.LoginActivity;
-
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
@@ -19,13 +20,14 @@ import io.reactivex.rxjava3.schedulers.Schedulers;
 /**
  * Main Activity.
  * Entry point after successful authentication.
+ * Manages Bottom Navigation and Fragment switching.
  */
 public class MainActivity extends AppCompatActivity {
 
     private ActivityMainBinding binding;
-    private final CompositeDisposable disposables = new CompositeDisposable();
-    private PreferencesManager preferencesManager;
     private AuthFlowManager authFlowManager;
+    private PreferencesManager preferencesManager;
+    private final CompositeDisposable disposables = new CompositeDisposable();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,53 +35,69 @@ public class MainActivity extends AppCompatActivity {
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        ServiceLocator.getInstance().init(getApplicationContext());
-        preferencesManager = ServiceLocator.getInstance().getPreferencesManager();
         authFlowManager = ServiceLocator.getInstance().getAuthFlowManager();
+        preferencesManager = ServiceLocator.getInstance().getPreferencesManager();
 
-        bindProfile();
+        // Setup Navigation Component
+        NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.nav_host_fragment);
+        
+        if (navHostFragment != null) {
+            NavController navController = navHostFragment.getNavController();
+            // Link BottomNavigationView with NavController
+            if (binding.bottomNavigation != null) {
+                NavigationUI.setupWithNavController(binding.bottomNavigation, navController);
+            }
+        }
+
+        setupProfileDisplay();
         setupActions();
         refreshProfile();
     }
 
-    private void bindProfile() {
-        String userName = preferencesManager.getUserName();
-        String userEmail = preferencesManager.getUserEmail();
-        String userId = preferencesManager.getUserId();
-        boolean loggedIn = preferencesManager.isLoggedIn();
-        boolean isStaff = preferencesManager.isStaff();
+    private void setupProfileDisplay() {
+        if (binding.tvWelcome == null) return; // Not in the simple layout mode
 
-        binding.tvWelcome.setText(userName != null && !userName.isEmpty()
-                ? userName
-                : getString(com.vaultpool.customer.R.string.guest_user));
-        binding.tvEmailValue.setText(userEmail != null && !userEmail.isEmpty() ? userEmail : "-");
-        binding.tvUserIdValue.setText(userId != null && !userId.isEmpty() ? userId : "-");
-        binding.tvStatusValue.setText(getString(
-                loggedIn
-                        ? com.vaultpool.customer.R.string.status_active
-                        : com.vaultpool.customer.R.string.status_missing
-        ));
+        boolean isStaff = preferencesManager.isStaff();
         
         // Show user dashboard button if user is not staff
         binding.btnUserDashboard.setVisibility(!isStaff ? android.view.View.VISIBLE : android.view.View.GONE);
         
         // Hide staff button if user is not staff
         binding.btnStaff.setVisibility(isStaff ? android.view.View.VISIBLE : android.view.View.GONE);
+        
+        bindProfile();
+    }
+
+    private void bindProfile() {
+        if (binding.tvWelcome == null) return;
+        
+        String email = preferencesManager.getUserEmail();
+        binding.tvWelcome.setText(getString(R.string.welcome_title));
+        binding.tvEmailValue.setText(email != null ? email : getString(R.string.guest_user));
     }
 
     private void setupActions() {
-        binding.btnLogout.setOnClickListener(v -> logout());
-        binding.btnUserDashboard.setOnClickListener(v -> {
-            Toast.makeText(this, "Redirecting to User Dashboard...", Toast.LENGTH_SHORT).show();
-        });
-        binding.btnStaff.setOnClickListener(v -> {
-            Intent intent = new Intent(this, com.vaultpool.customer.presentation.ui.staff.StaffActivity.class);
-            startActivity(intent);
-        });
+        if (binding.btnLogout != null) {
+            binding.btnLogout.setOnClickListener(v -> logout());
+        }
+        if (binding.btnUserDashboard != null) {
+            binding.btnUserDashboard.setOnClickListener(v -> {
+                Toast.makeText(this, "Redirecting to User Dashboard...", Toast.LENGTH_SHORT).show();
+            });
+        }
+        if (binding.btnStaff != null) {
+            binding.btnStaff.setOnClickListener(v -> {
+                Intent intent = new Intent(this, com.vaultpool.customer.presentation.ui.staff.StaffActivity.class);
+                startActivity(intent);
+            });
+        }
     }
 
     private void refreshProfile() {
-        binding.tvStatusValue.setText(getString(com.vaultpool.customer.R.string.status_refreshing));
+        if (binding.tvStatusValue == null) return;
+
+        binding.tvStatusValue.setText(getString(R.string.status_refreshing));
         setLoading(true);
 
         disposables.add(
@@ -103,41 +121,26 @@ public class MainActivity extends AppCompatActivity {
     private void handleRefreshFailure(String message) {
         bindProfile();
         if (!preferencesManager.isLoggedIn()) {
-            Toast.makeText(this, getString(com.vaultpool.customer.R.string.session_expired), Toast.LENGTH_LONG).show();
+            Toast.makeText(this, getString(R.string.session_expired), Toast.LENGTH_LONG).show();
             Intent intent = new Intent(this, LoginActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);
             finish();
-            return;
-        }
-
-        if (message != null && !message.isEmpty()) {
-            Toast.makeText(this, message, Toast.LENGTH_LONG).show();
         }
     }
 
     private void logout() {
-        setLoading(true);
-        disposables.add(
-                authFlowManager.logout()
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(result -> {
-                            setLoading(false);
-                            Intent intent = new Intent(this, LoginActivity.class);
-                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                            startActivity(intent);
-                            finish();
-                        }, throwable -> {
-                            setLoading(false);
-                            Toast.makeText(this, throwable.getMessage(), Toast.LENGTH_LONG).show();
-                        })
-        );
+        authFlowManager.logout();
+        Intent intent = new Intent(this, LoginActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+        finish();
     }
 
     private void setLoading(boolean loading) {
-        binding.progressBar.setVisibility(loading ? android.view.View.VISIBLE : android.view.View.GONE);
-        binding.btnLogout.setEnabled(!loading);
+        if (binding.progressBar != null) {
+            binding.progressBar.setVisibility(loading ? android.view.View.VISIBLE : android.view.View.GONE);
+        }
     }
 
     @Override
