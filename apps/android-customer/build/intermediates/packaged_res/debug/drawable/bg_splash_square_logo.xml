@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Nền xanh Navy -->
+    <item android:drawable="@color/navy" />
+
+    <!-- Họa tiết vòng tròn trang trí (tùy chọn) -->
+    <item
+        android:drawable="@drawable/bg_splash_rings"
+        android:gravity="center"
+        android:alpha="0.2" />
+
+    <!-- Logo hình vuông của bạn - không bị cắt tròn -->
+    <item
+        android:drawable="@drawable/logo"
+        android:gravity="center"
+        android:width="220dp"
+        android:height="220dp" />
+</layer-list>
