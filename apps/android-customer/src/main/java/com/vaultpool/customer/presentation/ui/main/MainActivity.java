@@ -60,12 +60,18 @@ public class MainActivity extends AppCompatActivity {
                         : com.vaultpool.customer.R.string.status_missing
         ));
         
+        // Show user dashboard button if user is not staff
+        binding.btnUserDashboard.setVisibility(!isStaff ? android.view.View.VISIBLE : android.view.View.GONE);
+        
         // Hide staff button if user is not staff
         binding.btnStaff.setVisibility(isStaff ? android.view.View.VISIBLE : android.view.View.GONE);
     }
 
     private void setupActions() {
         binding.btnLogout.setOnClickListener(v -> logout());
+        binding.btnUserDashboard.setOnClickListener(v -> {
+            Toast.makeText(this, "Redirecting to User Dashboard...", Toast.LENGTH_SHORT).show();
+        });
         binding.btnStaff.setOnClickListener(v -> {
             Intent intent = new Intent(this, com.vaultpool.customer.presentation.ui.staff.StaffActivity.class);
             startActivity(intent);

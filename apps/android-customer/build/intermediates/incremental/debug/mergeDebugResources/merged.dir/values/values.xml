@@ -2116,6 +2116,7 @@
     <string name="google_crash_reporting_api_key" translatable="false">AIzaSyCmj8ucnawf3BW0cXPr68-zWsqv-KhGYPA</string>
     <string name="google_storage_bucket" translatable="false">vault-pool.firebasestorage.app</string>
     <string name="guest_user">Guest</string>
+    <string name="health_greeting">Wishing you a great day and stay healthy!</string>
     <string name="hide_bottom_view_on_scroll_behavior" translatable="false">com.google.android.material.behavior.HideBottomViewOnScrollBehavior</string>
     <string description="Content description for an icon that appears in the title area of a dialog" name="icon_content_description">Dialog Icon</string>
     <string name="item_view_role_description">Tab</string>
@@ -2276,10 +2277,11 @@
     <string name="status_bar_notification_info_overflow">999+</string>
     <string name="status_missing">Session data missing</string>
     <string name="status_refreshing">Refreshing profile from backend...</string>
+    <string name="user_dashboard">User Dashboard</string>
     <string name="verification_channel">Phương thức xác thực</string>
     <string name="verify">Xác thực</string>
     <string name="verify_otp">Xác thực OTP</string>
-    <string name="welcome_title">Welcome back</string>
+    <string name="welcome_title">Welcome</string>
     <style name="AlertDialog.AppCompat" parent="Base.AlertDialog.AppCompat"/>
     <style name="AlertDialog.AppCompat.Light" parent="Base.AlertDialog.AppCompat.Light"/>
     <style name="Animation.AppCompat.Dialog" parent="Base.Animation.AppCompat.Dialog"/>

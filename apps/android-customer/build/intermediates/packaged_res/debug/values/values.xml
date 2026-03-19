@@ -57,6 +57,7 @@
     <string name="google_crash_reporting_api_key" translatable="false">AIzaSyCmj8ucnawf3BW0cXPr68-zWsqv-KhGYPA</string>
     <string name="google_storage_bucket" translatable="false">vault-pool.firebasestorage.app</string>
     <string name="guest_user">Guest</string>
+    <string name="health_greeting">Wishing you a great day and stay healthy!</string>
     <string name="label_email">Email</string>
     <string name="label_status">Session</string>
     <string name="label_user_id">User ID</string>
@@ -92,10 +93,11 @@
     <string name="status_active">Authenticated with backend</string>
     <string name="status_missing">Session data missing</string>
     <string name="status_refreshing">Refreshing profile from backend...</string>
+    <string name="user_dashboard">User Dashboard</string>
     <string name="verification_channel">Phương thức xác thực</string>
     <string name="verify">Xác thực</string>
     <string name="verify_otp">Xác thực OTP</string>
-    <string name="welcome_title">Welcome back</string>
+    <string name="welcome_title">Welcome</string>
     <style name="Theme.VaultPool" parent="Theme.Material3.Light.NoActionBar">
         
         <item name="colorPrimary">@color/navy</item>

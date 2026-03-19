@@ -123,17 +123,49 @@ public class AuthFlowManager {
         return authRepository.getIdToken()
                 .flatMap(token -> {
                     if (token == null) return Single.just(Result.<User>failure("No token"));
-                    return authRepository.getProfileFromBackend(token);
+                    
+                    return authRepository.getProfileFromBackend(token)
+                            .flatMap(profileResult -> {
+                                if (profileResult.isSuccess()) {
+                                    User user = profileResult.getData();
+                                    saveSession(token, user);
+                                    sessionSubject.onNext(SessionState.authenticated(token, user));
+                                    return Single.just(Result.success(user));
+                                } else {
+                                    // Backend profile failed (could be 403 for regular users).
+                                    // Fallback to reloading the basic Firebase profile.
+                                    return authRepository.reloadUser()
+                                            .map(reloadResult -> {
+                                                if (reloadResult.isSuccess()) {
+                                                    User user = reloadResult.getData();
+                                                    saveSession(token, user);
+                                                    sessionSubject.onNext(SessionState.authenticated(token, user));
+                                                    // Return success even if backend call failed,
+                                                    // as long as we have a valid Firebase user.
+                                                    return Result.success(user);
+                                                } else {
+                                                    return reloadResult;
+                                                }
+                                            })
+                                            .onErrorReturn(throwable -> Result.failure(throwable));
+                                }
+                            })
+                            .onErrorResumeNext(throwable -> {
+                                // If even the network call failed, try Firebase reload
+                                return authRepository.reloadUser()
+                                        .map(reloadResult -> {
+                                            if (reloadResult.isSuccess()) {
+                                                User user = reloadResult.getData();
+                                                saveSession(token, user);
+                                                sessionSubject.onNext(SessionState.authenticated(token, user));
+                                                return Result.success(user);
+                                            } else {
+                                                return Result.<User>failure(throwable);
+                                            }
+                                        });
+                            });
                 })
-                .doOnSuccess(result -> {
-                    if (result.isSuccess()) {
-                        User user = result.getData();
-                        String token = preferencesManager.getFirebaseToken();
-                        saveSession(token, user);
-                        sessionSubject.onNext(SessionState.authenticated(token, user));
-                    }
-                })
-                .onErrorReturn(throwable -> Result.<User>failure(throwable));
+                .subscribeOn(Schedulers.io());
     }
 
     private void saveSession(String token, User user) {

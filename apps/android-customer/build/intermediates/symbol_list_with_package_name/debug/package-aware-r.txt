@@ -3348,6 +3348,7 @@ id btnRegister
 id btnResendEmail
 id btnResendOtp
 id btnStaff
+id btnUserDashboard
 id btnVerify
 id btnVerifyOtp
 id btn_add_image
@@ -3813,6 +3814,7 @@ id tvEmailLabel
 id tvEmailValue
 id tvForgotPassword
 id tvHeader
+id tvHealthGreeting
 id tvInstruction
 id tvLoginLink
 id tvLoginTitle
@@ -4206,6 +4208,7 @@ string google_app_id
 string google_crash_reporting_api_key
 string google_storage_bucket
 string guest_user
+string health_greeting
 string hide_bottom_view_on_scroll_behavior
 string icon_content_description
 string item_view_role_description
@@ -4358,6 +4361,7 @@ string status_active
 string status_bar_notification_info_overflow
 string status_missing
 string status_refreshing
+string user_dashboard
 string verification_channel
 string verify
 string verify_otp
