@@ -26,8 +26,6 @@ public class BookingResponse {
 
     private BookingStatus status;
     private String paymentStatus;
-    /** Lý do hủy / thanh toán thất bại (ví dụ sau webhook ZaloPay). */
-    private String cancelReason;
 
     private LocalDateTime expiresAt;
     private LocalDateTime createdAt;
