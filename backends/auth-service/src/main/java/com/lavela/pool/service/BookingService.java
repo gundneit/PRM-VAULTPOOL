@@ -61,25 +61,19 @@ public class BookingService {
         if (!STATUS_ACTIVE.equalsIgnoreCase(slot.getStatus())) {
             throw new BookingConflictException("Slot is not available (status: " + slot.getStatus() + ")");
         }
-        boolean isCart = req.getStatus() == BookingStatus.IN_CART;
-        BookingStatus statusToSave = req.getStatus() != null ? req.getStatus() : BookingStatus.PENDING_PAYMENT;
-        int newAvailable = slot.getCapacityAvailable();
-
-        if (!isCart) {
-            if (slot.getCapacityAvailable() < req.getQty()) {
-                throw new BookingConflictException(
-                        "Not enough capacity. Available: " + slot.getCapacityAvailable() + ", requested: " + req.getQty()
-                );
-            }
-
-            // 4. Giảm capacity
-            newAvailable = slot.getCapacityAvailable() - req.getQty();
-            slot.setCapacityAvailable(newAvailable);
-            if (newAvailable == 0) {
-                slot.setStatus(STATUS_FULL);
-            }
-            slotRepository.save(slot);
+        if (slot.getCapacityAvailable() < req.getQty()) {
+            throw new BookingConflictException(
+                    "Not enough capacity. Available: " + slot.getCapacityAvailable() + ", requested: " + req.getQty()
+            );
         }
+
+        // 4. Giảm capacity
+        int newAvailable = slot.getCapacityAvailable() - req.getQty();
+        slot.setCapacityAvailable(newAvailable);
+        if (newAvailable == 0) {
+            slot.setStatus(STATUS_FULL);
+        }
+        slotRepository.save(slot);
 
         // 5. Tạo booking
         String bookingCode = generateBookingCode();
@@ -89,16 +83,14 @@ public class BookingService {
                 .slot(slot)
                 .qty(req.getQty())
                 .amount(slot.getPrice().multiply(java.math.BigDecimal.valueOf(req.getQty())))
-                .status(statusToSave)
+                .status(BookingStatus.PENDING_PAYMENT)
                 .bookingCode(bookingCode)
-                .expiresAt(isCart ? LocalDateTime.now().plusDays(7) : LocalDateTime.now().plusMinutes(BOOKING_TTL_MINUTES))
+                .expiresAt(LocalDateTime.now().plusMinutes(BOOKING_TTL_MINUTES))
                 .build();
         bookingRepository.save(booking);
 
         // 6. Ghi audit log
-        if (!isCart) {
-            saveInventoryLog(slot, booking, -req.getQty(), newAvailable, "RESERVE", firebaseUid);
-        }
+        saveInventoryLog(slot, booking, -req.getQty(), newAvailable, "RESERVE", firebaseUid);
 
         log.info("Booking created: code={}, slotId={}, userId={}, qty={}, newAvailable={}",
                 bookingCode, slot.getId(), userId, req.getQty(), newAvailable);
@@ -291,18 +283,6 @@ public class BookingService {
                 log.error("Failed to expire bookingId={}: {}", booking.getId(), e.getMessage(), e);
             }
         }
-
-        // ============================================
-        // CLEAN UP EXPIRED CART ITEMS
-        // Xóa những item đang nằm trong giỏ nhưng Slot của hồ bơi đã bắt đầu/qua giờ.
-        // ============================================
-        List<Booking> staleCarts = bookingRepository.findByStatusAndSlotStartTimeBefore(
-                BookingStatus.IN_CART, LocalDateTime.now()
-        );
-        if (!staleCarts.isEmpty()) {
-            log.info("Deleting {} expired cart booking(s)", staleCarts.size());
-            bookingRepository.deleteAllInBatch(staleCarts);
-        }
     }
 
     private void expireSingleBooking(Booking booking) {
@@ -373,6 +353,7 @@ public class BookingService {
                 .amount(b.getAmount())
                 .status(b.getStatus())
                 .paymentStatus(b.getPaymentStatus())
+                .cancelReason(b.getCancelReason())
                 .expiresAt(b.getExpiresAt())
                 .createdAt(b.getCreatedAt())
                 .build();

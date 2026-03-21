@@ -5,8 +5,8 @@ spring:
     # Connect → MySQL CLI → copy host + user + password
     # ──────────────────────────────────────────────────────────────────
     url: jdbc:mysql://gateway01.ap-southeast-1.prod.aws.tidbcloud.com:4000/lavela_pool?sslMode=VERIFY_IDENTITY&enabledTLSProtocols=TLSv1.2,TLSv1.3&serverTimezone=Asia/Ho_Chi_Minh
-    username: ${TIDB_USERNAME}
-    password: ${TIDB_PASSWORD}
+    username: WbnWVMnydCuPte3.root
+    password: XPbx6tV6xc9kwLzU
     driver-class-name: com.mysql.cj.jdbc.Driver
     hikari:
       maximum-pool-size: 5
@@ -40,3 +40,14 @@ app:
     enabled: true
     bearer-token: dev-admin-token
     firebase-uid: dev-admin-uid
+
+  zalopay:
+    sandbox:
+      app-id: ${ZALOPAY_SANDBOX_APP_ID:2554}
+      key1: ${ZALOPAY_SANDBOX_KEY1:sdngKKJmqEMzvh5QQcdD2A9XBSKUNaYn}
+      key2: ${ZALOPAY_SANDBOX_KEY2:trMrHtvjo6myautxDUiAcYsVtaeQ8nhf}
+      create-url: ${ZALOPAY_SANDBOX_CREATE_URL:https://sb-openapi.zalopay.vn/v2/create}
+      # URL để ZaloPay server-to-server callback về backend (endpoint ở PaymentController)
+      callback-url: ${ZALOPAY_SANDBOX_CALLBACK_URL:http://localhost:8080/webhooks/payment/ZALOPAY}
+      
+      bank-code: ${ZALOPAY_SANDBOX_BANK_CODE:zalopayapp}
