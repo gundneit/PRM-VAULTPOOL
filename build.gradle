@@ -1,0 +1,18 @@
+// Top-level build file
+buildscript {
+    repositories {
+        google()
+        mavenCentral()
+    }
+    dependencies {
+        classpath('com.android.tools.build:gradle:9.0.1')
+        classpath("com.google.gms:google-services:4.4.0")
+    }
+}
+
+allprojects {
+    // Empty - using repositories from settings.gradle.kts
+}
+tasks.register("clean", Delete) {
+    delete(rootProject.buildDir)
+}

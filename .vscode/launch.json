@@ -1,0 +1,14 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "java",
+      "name": "Chạy Backend (auth-service)",
+      "request": "launch",
+      "mainClass": "com.lavela.pool.LaVelaApplication",
+      "projectName": "pool-booking",
+      "cwd": "${workspaceFolder}/backends/auth-service",
+      "vmArgs": "-Dspring.profiles.active=dev,local-mysql"
+    }
+  ]
+}
