@@ -353,6 +353,7 @@ public class BookingService {
                 .amount(b.getAmount())
                 .status(b.getStatus())
                 .paymentStatus(b.getPaymentStatus())
+                .cancelReason(b.getCancelReason())
                 .expiresAt(b.getExpiresAt())
                 .createdAt(b.getCreatedAt())
                 .build();

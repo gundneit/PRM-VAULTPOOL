@@ -12,8 +12,6 @@
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/apps" />
             <option value="$PROJECT_DIR$/apps/android-customer" />
-            <option value="$PROJECT_DIR$/backends" />
-            <option value="$PROJECT_DIR$/backends/auth-service" />
             <option value="$PROJECT_DIR$/libraries" />
             <option value="$PROJECT_DIR$/libraries/common-models" />
           </set>

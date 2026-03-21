@@ -3,6 +3,17 @@ plugins {
     id "com.google.gms.google-services"
 }
 
+// Backend URL: emulator default 10.0.2.2; máy thật set trong root local.properties → BACKEND_BASE_URL
+def localProps = new Properties()
+def lpFile = rootProject.file("local.properties")
+if (lpFile.exists()) {
+    lpFile.withInputStream { localProps.load(it) }
+}
+def backendBaseUrl = localProps.getProperty("BACKEND_BASE_URL", "http://10.0.2.2:8080/")
+if (!backendBaseUrl.endsWith("/")) {
+    backendBaseUrl += "/"
+}
+
 android {
     namespace "com.vaultpool.customer"
     compileSdk 34
@@ -14,7 +25,7 @@ android {
         versionCode 1
         versionName "1.0.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-        buildConfigField "String", "BACKEND_BASE_URL", '"http://10.0.2.2:8080/"'
+        buildConfigField "String", "BACKEND_BASE_URL", "\"${backendBaseUrl}\""
     }
 
     buildTypes {
@@ -88,4 +99,7 @@ dependencies {
     testImplementation "junit:junit:4.13.2"
     androidTestImplementation "androidx.test.ext:junit:1.1.5"
     androidTestImplementation "androidx.test.espresso:espresso-core:3.5.1"
+
+    // ZaloPay ZPDK — dùng flatDir (settings.gradle) để AGP luôn đưa AAR vào compile classpath
+    implementation(name: "zpdk-release-v3.1", ext: "aar")
 }

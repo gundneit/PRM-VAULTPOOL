@@ -1,5 +1,6 @@
 package com.vaultpool.customer.presentation.ui.main.home;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -10,14 +11,27 @@ import com.bumptech.glide.Glide;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.vaultpool.customer.ServiceLocator;
+import com.vaultpool.customer.BuildConfig;
 import com.vaultpool.customer.data.remote.dto.PoolDto;
 import com.vaultpool.customer.data.remote.dto.SlotDto;
 import com.vaultpool.customer.databinding.ActivityPoolDetailBinding;
 import com.vaultpool.customer.databinding.DialogBookSlotsBinding;
+import com.vaultpool.customer.data.local.prefs.PreferencesManager;
+import com.vaultpool.customer.data.remote.api.BookingApi;
+import com.vaultpool.customer.data.remote.api.PaymentApi;
+import com.vaultpool.customer.data.remote.dto.BookingResponseDto;
+import com.vaultpool.customer.data.remote.dto.CreateBookingRequestDto;
+import com.vaultpool.customer.data.remote.dto.CreatePaymentRequestDto;
+import com.vaultpool.customer.data.remote.dto.PaymentResponseDto;
 import com.vaultpool.customer.domain.repository.PoolRepository;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
+import io.reactivex.rxjava3.core.Single;
 import io.reactivex.rxjava3.schedulers.Schedulers;
+import retrofit2.Retrofit;
+import retrofit2.adapter.rxjava3.RxJava3CallAdapterFactory;
+import retrofit2.converter.gson.GsonConverterFactory;
+import com.vaultpool.customer.presentation.ui.payment.ZaloPaymentActivity;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -30,6 +44,9 @@ public class PoolDetailActivity extends AppCompatActivity {
     public static final String EXTRA_POOL_ID = "extra_pool_id";
     private ActivityPoolDetailBinding binding;
     private PoolRepository poolRepository;
+    private PreferencesManager preferencesManager;
+    private BookingApi bookingApi;
+    private PaymentApi paymentApi;
     private final CompositeDisposable disposables = new CompositeDisposable();
     private Long poolId;
     private List<SlotDto> allSlots = new ArrayList<>();
@@ -54,6 +71,15 @@ public class PoolDetailActivity extends AppCompatActivity {
         }
 
         poolRepository = ServiceLocator.getInstance().getPoolRepository();
+        preferencesManager = ServiceLocator.getInstance().getPreferencesManager();
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(BuildConfig.BACKEND_BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
+                .build();
+        bookingApi = retrofit.create(BookingApi.class);
+        paymentApi = retrofit.create(PaymentApi.class);
         
         setupToolbar();
         setupClickListeners();
@@ -267,7 +293,69 @@ public class PoolDetailActivity extends AppCompatActivity {
     }
 
     private void handleBooking(SlotDto slot) {
-        Toast.makeText(this, "Booking confirmed for " + guestCount + " guests at " + slot.getStartTime(), Toast.LENGTH_LONG).show();
+        if (preferencesManager == null || preferencesManager.getFirebaseToken() == null) {
+            Toast.makeText(this, "Bạn cần đăng nhập để đặt booking.", Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        Long slotId = slot.getId();
+        if (slotId == null) {
+            Toast.makeText(this, "Slot không hợp lệ.", Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        String token = formatToken(preferencesManager.getFirebaseToken());
+        CreateBookingRequestDto bookingRequest = new CreateBookingRequestDto(slotId, guestCount);
+
+        Toast.makeText(this, "Đang tạo booking...", Toast.LENGTH_SHORT).show();
+
+        disposables.add(
+                bookingApi.createBooking(token, bookingRequest)
+                        .subscribeOn(Schedulers.io())
+                        .flatMap(bookingResp -> {
+                            if (bookingResp == null || !bookingResp.isSuccess() || bookingResp.getData() == null) {
+                                String msg = bookingResp != null ? bookingResp.getMessage() : "Booking failed";
+                                return Single.error(new Exception(msg));
+                            }
+                            BookingResponseDto bookingData = bookingResp.getData();
+                            Long bookingId = bookingData.getId();
+                            if (bookingId == null) {
+                                return Single.error(new Exception("bookingId missing"));
+                            }
+
+                            CreatePaymentRequestDto paymentRequest =
+                                    new CreatePaymentRequestDto(bookingId, "ZALOPAY");
+                            return paymentApi.createPayment(token, paymentRequest);
+                        })
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(paymentResp -> {
+                            if (paymentResp == null || !paymentResp.isSuccess() || paymentResp.getData() == null) {
+                                String msg = paymentResp != null ? paymentResp.getMessage() : "Payment failed";
+                                Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
+                                return;
+                            }
+
+                            PaymentResponseDto paymentData = paymentResp.getData();
+                            if (paymentData.getRedirectUrl() == null || paymentData.getRedirectUrl().isBlank()) {
+                                Toast.makeText(this, "Thiếu zp_trans_token từ response.", Toast.LENGTH_LONG).show();
+                                return;
+                            }
+
+                            Intent intent = new Intent(this, ZaloPaymentActivity.class);
+                            intent.putExtra(ZaloPaymentActivity.EXTRA_ZP_TRANS_TOKEN, paymentData.getRedirectUrl());
+                            intent.putExtra(ZaloPaymentActivity.EXTRA_BOOKING_ID, paymentData.getBookingId());
+                            startActivity(intent);
+                        }, throwable -> {
+                            Toast.makeText(this,
+                                    throwable != null && throwable.getMessage() != null ? throwable.getMessage() : "Lỗi tạo booking/payment",
+                                    Toast.LENGTH_LONG).show();
+                        })
+        );
+    }
+
+    private String formatToken(String token) {
+        if (token == null) return "";
+        return token.startsWith("Bearer ") ? token : "Bearer " + token;
     }
 
     @Override
