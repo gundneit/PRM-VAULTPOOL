@@ -8,4 +8,8 @@
         android:id="@+id/navigation_pools"
         android:icon="@android:drawable/ic_menu_mapmode"
         android:title="Pools" />
+    <item
+        android:id="@+id/navigation_checkin"
+        android:icon="@android:drawable/ic_menu_camera"
+        android:title="Check-in" />
 </menu>

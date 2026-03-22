@@ -11,6 +11,7 @@ import io.reactivex.rxjava3.core.Single;
 
 public interface StaffRepository {
     Single<Result<List<BookingStaffDto>>> getStaffBookings(String token);
+    Single<Result<BookingStaffDto>> checkInByQr(String token, String bookingCode);
     Single<Result<List<PoolStaffDto>>> getStaffPools(String token);
     Single<Result<List<SlotStaffDto>>> getPoolSlots(String token, Long poolId);
     Single<Result<List<SlotStaffDto>>> getSlotsByDate(Long poolId, String date);

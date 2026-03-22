@@ -2,6 +2,7 @@ package com.vaultpool.customer.data.remote.api;
 
 import com.vaultpool.customer.data.remote.dto.ApiResponse;
 import com.vaultpool.customer.data.remote.dto.staff.BookingStaffDto;
+import com.vaultpool.customer.data.remote.dto.staff.CheckInRequest;
 import com.vaultpool.customer.data.remote.dto.staff.PoolStaffDto;
 import com.vaultpool.customer.data.remote.dto.staff.SlotStaffDto;
 
@@ -26,6 +27,12 @@ public interface StaffApi {
 
     @GET("api/staff/pools")
     Single<ApiResponse<List<PoolStaffDto>>> getStaffPools(@Header("Authorization") String token);
+
+    @POST("bookings/checkin")
+    Single<ApiResponse<BookingStaffDto>> checkInByQr(
+            @Header("Authorization") String token,
+            @Body CheckInRequest request
+    );
 
     @Multipart
     @POST("api/staff/pools")

@@ -237,8 +237,8 @@ public class StaffSlotsFragment extends Fragment {
 
                 slot.setPrice(Long.parseLong(dialogBinding.etPrice.getText().toString().trim()));
                 slot.setCapacityTotal(Integer.parseInt(dialogBinding.etCapacity.getText().toString().trim()));
+                slot.setCapacityAvailable(slot.getCapacityTotal());
                 if (slotToEdit == null) {
-                    slot.setCapacityAvailable(slot.getCapacityTotal());
                     slot.setStatus("ACTIVE");
                     pendingCreateSlotAction = true;
                     viewModel.createSlot(pool.getId(), slot);
