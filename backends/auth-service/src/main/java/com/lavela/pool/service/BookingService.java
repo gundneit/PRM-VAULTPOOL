@@ -116,9 +116,14 @@ public class BookingService {
      * Staff/Admin → dùng getAllBySlot hoặc endpoint riêng (thuộc BE2).
      */
     @Transactional(readOnly = true)
-    public List<BookingResponse> getMyBookings(Long userId) {
-        return bookingRepository.findByUserIdOrderByCreatedAtDesc(userId)
-                .stream()
+    public List<BookingResponse> getMyBookings(Long userId, BookingStatus status) {
+        List<Booking> bookings;
+        if (status != null) {
+            bookings = bookingRepository.findByUserIdAndStatusOrderByCreatedAtDesc(userId, status);
+        } else {
+            bookings = bookingRepository.findByUserIdOrderByCreatedAtDesc(userId);
+        }
+        return bookings.stream()
                 .map(this::toResponse)
                 .toList();
     }
@@ -284,20 +289,15 @@ public class BookingService {
      * Idempotent: nếu đã CHECKED_IN rồi thì return 200 luôn, không lỗi.
      */
     @Transactional
-    public BookingResponse checkIn(Long bookingId, String hash, String staffFirebaseUid) {
+    public BookingResponse checkIn(String bookingCode, String staffFirebaseUid) {
         // Khoá pessimistic để tránh concurrent check-in
-        Booking booking = bookingRepository.findByIdWithLock(bookingId)
-                .orElseThrow(() -> new ResourceNotFoundException("Booking not found: " + bookingId));
+        Booking booking = bookingRepository.findByBookingCodeWithLock(bookingCode)
+                .orElseThrow(() -> new ResourceNotFoundException("Booking not found with code: " + bookingCode));
 
         // Idempotent — đã check-in rồi thì không làm gì thêm
         if (booking.getStatus() == BookingStatus.CHECKED_IN) {
-            log.info("Check-in idempotent: bookingId={}, staff={}", bookingId, staffFirebaseUid);
+            log.info("Check-in idempotent: bookingCode={}, staff={}", bookingCode, staffFirebaseUid);
             return toResponse(booking);
-        }
-
-        // Verify hash (MVP: so sánh với booking_code)
-        if (!booking.getBookingCode().equalsIgnoreCase(hash.trim())) {
-            throw new BookingConflictException("Invalid QR hash");
         }
 
         // Chỉ cho phép check-in khi CONFIRMED
@@ -319,8 +319,8 @@ public class BookingService {
                 "CONFIRM", staffFirebaseUid
         );
 
-        log.info("Check-in successful: bookingId={}, code={}, staff={}",
-                bookingId, booking.getBookingCode(), staffFirebaseUid);
+        log.info("Check-in successful: bookingCode={}, staff={}",
+                bookingCode, staffFirebaseUid);
 
         return toResponse(booking);
     }

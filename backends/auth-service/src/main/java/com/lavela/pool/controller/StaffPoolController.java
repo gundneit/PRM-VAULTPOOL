@@ -8,12 +8,17 @@ import com.lavela.pool.dto.response.PoolResponse;
 import com.lavela.pool.dto.response.SlotResponse;
 import com.lavela.pool.service.PoolService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -34,16 +39,16 @@ public class StaffPoolController {
     }
 
     @Operation(summary = "Create pool")
-    @PostMapping
-    public ApiResponse<PoolResponse> createPool(@Valid @RequestBody PoolUpsertRequest request) {
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ApiResponse<PoolResponse> createPool(@Valid @ModelAttribute PoolUpsertRequest request) {
         return ApiResponse.ok(poolService.createPool(request));
     }
 
     @Operation(summary = "Update pool")
-    @PutMapping("/{id}")
+    @PutMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ApiResponse<PoolResponse> updatePool(
             @PathVariable Long id,
-            @Valid @RequestBody PoolUpsertRequest request
+            @Valid @ModelAttribute PoolUpsertRequest request
     ) {
         return ApiResponse.ok(poolService.updatePool(id, request));
     }

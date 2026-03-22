@@ -66,4 +66,11 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
             @Param("start") LocalDateTime start,
             @Param("end")   LocalDateTime end
     );
+
+    /**
+     * Find booking by bookingCode with pessimistic lock for check-in
+     */
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
+    @Query("SELECT b FROM Booking b WHERE b.bookingCode = :bookingCode")
+    Optional<Booking> findByBookingCodeWithLock(@Param("bookingCode") String bookingCode);
 }

@@ -41,6 +41,11 @@ app:
     bearer-token: dev-admin-token
     firebase-uid: dev-admin-uid
 
+  cloudinary:
+    cloud-name: ${CLOUDINARY_CLOUD_NAME:dsmahwdgz}
+    api-key: ${CLOUDINARY_API_KEY:885534219753498}
+    api-secret: ${CLOUDINARY_API_SECRET:3hjQabkiX9y2Py980cWu3SuFQ58}
+
   zalopay:
     sandbox:
       app-id: ${ZALOPAY_SANDBOX_APP_ID:2554}
