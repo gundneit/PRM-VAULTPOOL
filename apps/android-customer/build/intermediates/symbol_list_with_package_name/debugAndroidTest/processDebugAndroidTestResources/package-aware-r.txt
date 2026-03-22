@@ -1,3 +1,0 @@
-com.vaultpool.customer.test
-style WhiteBackgroundDialogTheme
-style WhiteBackgroundTheme

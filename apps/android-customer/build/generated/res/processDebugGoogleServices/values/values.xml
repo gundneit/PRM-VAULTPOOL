@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <string name="gcm_defaultSenderId" translatable="false">154310563994</string>
-    <string name="google_api_key" translatable="false">AIzaSyCmj8ucnawf3BW0cXPr68-zWsqv-KhGYPA</string>
-    <string name="google_app_id" translatable="false">1:154310563994:android:newclientid123</string>
-    <string name="google_crash_reporting_api_key" translatable="false">AIzaSyCmj8ucnawf3BW0cXPr68-zWsqv-KhGYPA</string>
-    <string name="google_storage_bucket" translatable="false">vault-pool.firebasestorage.app</string>
-    <string name="project_id" translatable="false">vault-pool</string>
-</resources>
