@@ -77,6 +77,21 @@ public class BookingController {
     }
 
     /**
+     * POST /bookings/{id}/checkout
+     * Checkout 1 booking từ giỏ hàng (IN_CART) sang PENDING_PAYMENT.
+     */
+    @Operation(summary = "Checkout a cart booking",
+               description = "Transitions a specific IN_CART booking to PENDING_PAYMENT and reserves slot capacity.")
+    @PostMapping("/{id}/checkout")
+    @PreAuthorize("isAuthenticated()")
+    public ApiResponse<BookingResponse> checkoutBooking(
+            @PathVariable Long id,
+            @AuthenticationPrincipal UserPrincipal principal
+    ) {
+        return ApiResponse.ok(bookingService.checkoutBooking(id, principal.getUserId(), principal.getFirebaseUid()));
+    }
+
+    /**
      * GET /bookings/{id}
      * Chỉ user sở hữu booking mới xem được. Trả 404 nếu không tìm thấy hoặc không phải của mình.
      */

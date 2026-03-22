@@ -135,6 +135,56 @@ public class BookingService {
     }
 
     /**
+     * Checkout 1 booking cụ thể từ giỏ hàng: Chuyển từ IN_CART sang PENDING_PAYMENT,
+     * trừ capacity của slot và ghi log.
+     */
+    @Transactional
+    public BookingResponse checkoutBooking(Long bookingId, Long userId, String firebaseUid) {
+        Booking booking = bookingRepository.findByIdAndUserId(bookingId, userId)
+                .orElseThrow(() -> new ResourceNotFoundException("Booking not found: " + bookingId));
+
+        if (booking.getStatus() != BookingStatus.IN_CART) {
+            throw new BookingConflictException("Booking is not in cart. Status: " + booking.getStatus());
+        }
+
+        // Lock slot để đảm bảo capacity chính xác
+        Slot slot = slotRepository.findByIdForUpdate(booking.getSlot().getId())
+                .orElseThrow(() -> new ResourceNotFoundException("Slot not found for booking: " + booking.getBookingCode()));
+
+        // Validate slot
+        if (slot.getStartTime().isBefore(LocalDateTime.now())) {
+            throw new BookingConflictException("Slot has already started for booking: " + booking.getBookingCode());
+        }
+        if (!STATUS_ACTIVE.equalsIgnoreCase(slot.getStatus())) {
+            throw new BookingConflictException("Slot is no longer active for booking: " + booking.getBookingCode());
+        }
+        if (slot.getCapacityAvailable() < booking.getQty()) {
+            throw new BookingConflictException("Not enough capacity for slot of booking: " + booking.getBookingCode());
+        }
+
+        // Cập nhật capacity
+        int newAvailable = slot.getCapacityAvailable() - booking.getQty();
+        slot.setCapacityAvailable(newAvailable);
+        if (newAvailable == 0) {
+            slot.setStatus(STATUS_FULL);
+        }
+        slotRepository.save(slot);
+
+        // Cập nhật trạng thái booking
+        booking.setStatus(BookingStatus.PENDING_PAYMENT);
+        booking.setExpiresAt(LocalDateTime.now().plusMinutes(BOOKING_TTL_MINUTES));
+        bookingRepository.save(booking);
+
+        // Ghi audit log
+        saveInventoryLog(slot, booking, -booking.getQty(), newAvailable, "RESERVE", firebaseUid);
+        
+        log.info("Booking checked out from cart: bookingCode={}, slotId={}, userId={}, qty={}",
+                booking.getBookingCode(), slot.getId(), userId, booking.getQty());
+
+        return toResponse(booking);
+    }
+
+    /**
      * Chi tiết booking — user chỉ xem được của mình (userId check),
      * staff không dùng endpoint này (họ dùng endpoint riêng ở BE2).
      */
