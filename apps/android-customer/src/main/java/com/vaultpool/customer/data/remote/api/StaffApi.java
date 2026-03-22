@@ -2,6 +2,7 @@ package com.vaultpool.customer.data.remote.api;
 
 import com.vaultpool.customer.data.remote.dto.ApiResponse;
 import com.vaultpool.customer.data.remote.dto.staff.BookingStaffDto;
+import com.vaultpool.customer.data.remote.dto.staff.PoolStaffUpsertRequest;
 import com.vaultpool.customer.data.remote.dto.staff.PoolStaffDto;
 import com.vaultpool.customer.data.remote.dto.staff.SlotStaffDto;
 
@@ -24,10 +25,10 @@ public interface StaffApi {
     Single<ApiResponse<List<PoolStaffDto>>> getStaffPools(@Header("Authorization") String token);
 
     @POST("api/staff/pools")
-    Single<ApiResponse<PoolStaffDto>> createPool(@Header("Authorization") String token, @Body PoolStaffDto pool);
+    Single<ApiResponse<PoolStaffDto>> createPool(@Header("Authorization") String token, @Body PoolStaffUpsertRequest pool);
 
     @PUT("api/staff/pools/{id}")
-    Single<ApiResponse<PoolStaffDto>> updatePool(@Header("Authorization") String token, @Path("id") Long id, @Body PoolStaffDto pool);
+    Single<ApiResponse<PoolStaffDto>> updatePool(@Header("Authorization") String token, @Path("id") Long id, @Body PoolStaffUpsertRequest pool);
 
     @PATCH("api/staff/pools/{id}/status")
     Single<ApiResponse<PoolStaffDto>> updatePoolStatus(@Header("Authorization") String token, @Path("id") Long id, @Body java.util.Map<String, String> status);

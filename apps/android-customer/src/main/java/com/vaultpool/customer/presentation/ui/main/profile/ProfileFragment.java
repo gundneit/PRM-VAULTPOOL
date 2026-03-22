@@ -52,20 +52,14 @@ public class ProfileFragment extends Fragment {
 
         String userName = preferencesManager.getUserName();
         String userEmail = preferencesManager.getUserEmail();
-        String userId = preferencesManager.getUserId();
-        boolean loggedIn = preferencesManager.isLoggedIn();
         boolean isStaff = preferencesManager.isStaff();
 
-        binding.tvWelcome.setText(userName != null && !userName.isEmpty()
+        binding.tvWelcome.setText("WELCOME");
+        binding.tvWelcomeSub.setText(userName != null && !userName.isEmpty()
                 ? userName
                 : getString(com.vaultpool.customer.R.string.guest_user));
         binding.tvEmailValue.setText(userEmail != null && !userEmail.isEmpty() ? userEmail : "-");
-        binding.tvUserIdValue.setText(userId != null && !userId.isEmpty() ? userId : "-");
-        binding.tvStatusValue.setText(getString(
-                loggedIn
-                        ? com.vaultpool.customer.R.string.status_active
-                        : com.vaultpool.customer.R.string.status_missing
-        ));
+        binding.tvMoodFeedback.setText(getString(com.vaultpool.customer.R.string.mood_prompt));
         
         binding.btnStaff.setVisibility(isStaff ? View.VISIBLE : View.GONE);
     }
@@ -76,10 +70,17 @@ public class ProfileFragment extends Fragment {
             Intent intent = new Intent(requireContext(), com.vaultpool.customer.presentation.ui.staff.StaffActivity.class);
             startActivity(intent);
         });
+        binding.btnMoodSad.setOnClickListener(v -> showMoodFeedback(com.vaultpool.customer.R.string.mood_feedback_sad));
+        binding.btnMoodNeutral.setOnClickListener(v -> showMoodFeedback(com.vaultpool.customer.R.string.mood_feedback_neutral));
+        binding.btnMoodHappy.setOnClickListener(v -> showMoodFeedback(com.vaultpool.customer.R.string.mood_feedback_happy));
+    }
+
+    private void showMoodFeedback(int messageRes) {
+        if (binding == null) return;
+        binding.tvMoodFeedback.setText(getString(messageRes));
     }
 
     private void refreshProfile() {
-        binding.tvStatusValue.setText(getString(com.vaultpool.customer.R.string.status_refreshing));
         setLoading(true);
 
         disposables.add(

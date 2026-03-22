@@ -151,31 +151,7 @@ curl -X POST http://localhost:8080/webhooks/payment/ZALOPAY \
   -e ZALOPAY_KEY2="${ZALOPAY_KEY2}" -e DATA="${DATA}"
 ```
 
-Ví dụ (giả lập THẤT BẠI/CANCEL):
-
-Lưu ý: backend của bạn sẽ **không** quyết định success/fail chỉ dựa trên webhook payload.
-Sau khi verify MAC xong, backend sẽ tự gọi **ZaloPay order-query** (`POST /v2/query`) để lấy `return_code`.
-Vì vậy để test nhánh FAILED/CANCELED:
-- Bạn phải tạo payment trên ZaloPay và thực sự **cancel/failed** trên app (sandbox).
-- Sau đó dùng **cùng** `app_trans_id` (providerTxnId) để gọi lại webhook này.
-
-```bash
-# Thay APP_TRANS_ID bằng providerTxnId bạn vừa tạo
-APP_TRANS_ID="MOCK_APP_TRANS_ID"
-DATA="{\"app_trans_id\":\"$APP_TRANS_ID\"}"
-MAC=$(node -e "const crypto=require('crypto'); const key=process.env.ZALOPAY_KEY2; const data=process.env.DATA; console.log(crypto.createHmac('sha256', key).update(data).digest('hex'));")
-
-curl -X POST http://localhost:8080/webhooks/payment/ZALOPAY \
-  -H "Content-Type: application/json" \
-  -d "{\"data\":\"$DATA\",\"mac\":\"$MAC\",\"type\":1}" \
-  -e ZALOPAY_KEY2="${ZALOPAY_KEY2}" -e DATA="${DATA}"
-```
-
-Kỳ vọng kết quả backend:
-- Payment `.status` -> `FAILED`
-- Booking `.status` -> `FAILED` (theo code hiện tại)
-
-Lưu ý: khi nhận callback, backend sẽ tự động gọi **ZaloPay order-query** (`/v2/query`) để lấy `return_code` nhằm quyết định `SUCCESS` hay `FAILED`. Vì vậy test cần cấu hình sandbox đúng và có kết nối tới ZaloPay.
+**Webhook sau khi verify MAC:** backend **không** gọi ZaloPay order-query; mọi callback hợp lệ sẽ **xác nhận thanh toán** (`SUCCESS` / booking `CONFIRMED`). Để giả lập “thất bại” qua webhook curl như trên **không** còn tách nhánh FAILED — cần xử lý hủy/ hoàn tiền bằng luồng khác (ví dụ staff refund) hoặc bổ sung lại đối chiếu query sau này.
 
 `providerTxnId` lấy từ response của `POST /payments` (field `providerTxnId`).
 
@@ -210,13 +186,11 @@ curl -X POST http://localhost:8080/api/staff/payments/1/refund \
 
 ---
 
-## 4b. Luồng test thất bại (Booking + Payment)
+## 4b. Luồng “thất bại” sau khi bỏ order-query
 
-1. Thực hiện bước **1-4** như trên để tạo `booking` và `payment` trên ZaloPay.
-2. Mở ZaloPay và thực hiện thao tác **cancel/failed** cho đơn thanh toán trên app (sandbox).
-3. Sau đó gọi:
-   - `POST /webhooks/payment/ZALOPAY` với cùng `app_trans_id` (tức `providerTxnId`) và `mac` đúng.
-4. `GET /bookings/{id}` với token → kiểm tra `status: FAILED`
+Backend **không** còn phân nhánh FAILED từ webhook + query. Webhook MAC hợp lệ luôn dẫn tới **CONFIRMED**.
+
+Để kiểm tra hủy / hoàn tiền sau thanh toán thành công, dùng **staff refund** (`POST /api/staff/payments/{id}/refund`) hoặc luồng nghiệp vụ tương đương — không dựa vào `POST /webhooks/payment/ZALOPAY` để mong `booking.status: FAILED`.
 
 ---
 

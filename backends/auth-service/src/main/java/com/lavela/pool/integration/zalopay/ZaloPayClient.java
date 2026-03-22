@@ -28,7 +28,7 @@ import java.util.UUID;
  * Minimal ZaloPay client for:
  * - Create order (POST /v2/create) using key1 (HMACSHA256)
  * - Verify callback MAC using key2 (HMACSHA256)
- *
+ * <p>
  * App-to-App flow: backend returns zp_trans_token to client, client calls ZaloPay SDK.
  */
 @Slf4j
@@ -51,9 +51,6 @@ public class ZaloPayClient {
 
     @Value("${app.zalopay.sandbox.create-url:https://sb-openapi.zalopay.vn/v2/create}")
     private String createUrl;
-
-    @Value("${app.zalopay.sandbox.query-url:https://sb-openapi.zalopay.vn/v2/query}")
-    private String queryUrl;
 
     @Value("${app.zalopay.sandbox.callback-url:http://localhost:8080/webhooks/payment/ZALOPAY}")
     private String callbackUrl;
@@ -215,61 +212,6 @@ public class ZaloPayClient {
             return appTransId.trim();
         } catch (Exception e) {
             throw new IllegalStateException("Failed to parse ZaloPay callback data JSON", e);
-        }
-    }
-
-    /**
-     * Query order status for reconciliation (order-query).
-     * Used to handle callback that does not include explicit success/failure state.
-     */
-    public ZaloPayQueryOrderResult queryOrder(String appTransId) {
-        assertConfigured();
-
-        String appIdTrim = appId.trim();
-
-        // Per ZaloPay Integration Doc §3 Query Order:
-        // mac = HMAC(mackey, app_id + "|" + app_trans_id + "|" + mackey)
-        // Sandbox/prod: mackey for query is Key2 (same family as callbackkey in callback section).
-        String hmacInput = appIdTrim + "|" + appTransId + "|" + key2;
-        String mac = hmacSha256Hex(key2, hmacInput);
-
-        try {
-            // Official PDF examples send app_id as JSON string, not number — avoid HMAC/parse mismatches.
-            var body = objectMapper.createObjectNode();
-            body.put("app_id", appIdTrim);
-            body.put("app_trans_id", appTransId);
-            body.put("mac", mac);
-
-            HttpClient client = HttpClient.newHttpClient();
-            HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create(queryUrl))
-                    .header("Content-Type", "application/json")
-                    .header("Accept", "application/json")
-                    .POST(HttpRequest.BodyPublishers.ofString(objectMapper.writeValueAsString(body)))
-                    .build();
-
-            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-            String respBody = response.body();
-            if (response.statusCode() < 200 || response.statusCode() >= 300) {
-                throw new IllegalStateException("ZaloPay queryOrder HTTP error: " + response.statusCode());
-            }
-
-            JsonNode root = objectMapper.readTree(respBody);
-            int returnCode = root.path("return_code").asInt();
-            String returnMessage = root.path("return_message").asText(null);
-            Integer subReturnCode = root.hasNonNull("sub_return_code") ? root.path("sub_return_code").asInt() : null;
-            String subReturnMessage = root.path("sub_return_message").asText(null);
-            boolean zpProcessing = root.path("is_processing").asBoolean(false);
-
-            return ZaloPayQueryOrderResult.builder()
-                    .returnCode(returnCode)
-                    .returnMessage(returnMessage)
-                    .subReturnCode(subReturnCode)
-                    .subReturnMessage(subReturnMessage)
-                    .zpProcessingFlag(zpProcessing)
-                    .build();
-        } catch (Exception e) {
-            throw new IllegalStateException("ZaloPay queryOrder failed", e);
         }
     }
 

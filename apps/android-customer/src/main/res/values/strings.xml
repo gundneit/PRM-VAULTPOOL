@@ -43,6 +43,15 @@
     <string name="status_missing">Session data missing</string>
     <string name="status_refreshing">Refreshing profile from backend...</string>
     <string name="session_expired">Your session expired. Please sign in again.</string>
+    <string name="profile_english_wish">May your day be smooth, joyful, and full of wins!</string>
+    <string name="profile_daily_title">HOW ARE YOU TODAY?</string>
+    <string name="mood_sad">😞</string>
+    <string name="mood_neutral">😐</string>
+    <string name="mood_happy">😄</string>
+    <string name="mood_prompt">Tap one emoji to share how you feel today.</string>
+    <string name="mood_feedback_sad">It is okay to have a hard day. Take a short break, breathe slowly, and be kind to yourself.</string>
+    <string name="mood_feedback_neutral">A normal day is still a good day. Pick one small goal and finish it strong.</string>
+    <string name="mood_feedback_happy">Love this energy. Keep the momentum and spread the good vibe around you.</string>
 
     <string name="email">Email</string>
     <string name="password">Password</string>
