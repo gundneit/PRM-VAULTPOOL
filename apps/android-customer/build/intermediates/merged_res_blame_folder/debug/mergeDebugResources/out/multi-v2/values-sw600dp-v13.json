@@ -1,10 +1,10 @@
 {
     "logs": [
         {
-            "outputFile": "com.vaultpool.customer.android-customer-mergeDebugResources-50:/values-sw600dp-v13/values-sw600dp-v13.xml",
+            "outputFile": "com.vaultpool.customer.android-customer-mergeDebugResources-3:/values-sw600dp-v13/values-sw600dp-v13.xml",
             "map": [
                 {
-                    "source": "C:\\Users\\HP\\.gradle\\caches\\9.2.1\\transforms\\72a90ad228dee9bd2901d1c37ab188d5\\workspace\\transformed\\appcompat-1.6.1\\res\\values-sw600dp-v13\\values-sw600dp-v13.xml",
+                    "source": "C:\\Users\\ADMIN\\.gradle\\caches\\8.13\\transforms\\fefc6cc9b76f66e3f4e4b98aa1731011\\transformed\\appcompat-1.6.1\\res\\values-sw600dp-v13\\values-sw600dp-v13.xml",
                     "from": {
                         "startLines": "2,3,4,5,6,7,8,9",
                         "startColumns": "4,4,4,4,4,4,4,4",
@@ -14,7 +14,7 @@
                     }
                 },
                 {
-                    "source": "C:\\Users\\HP\\.gradle\\caches\\9.2.1\\transforms\\1276f6e07a414cd242836d442a34b7ea\\workspace\\transformed\\material-1.11.0\\res\\values-sw600dp-v13\\values-sw600dp-v13.xml",
+                    "source": "C:\\Users\\ADMIN\\.gradle\\caches\\8.13\\transforms\\1b883c2f96b67e72b600e8622a2e8b9f\\transformed\\material-1.11.0\\res\\values-sw600dp-v13\\values-sw600dp-v13.xml",
                     "from": {
                         "startLines": "2,3,4,5,6,7,8,10,11,12,13,14",
                         "startColumns": "4,4,4,4,4,4,4,4,4,4,4,4",

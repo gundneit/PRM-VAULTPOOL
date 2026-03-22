@@ -1,10 +1,10 @@
 {
     "logs": [
         {
-            "outputFile": "com.vaultpool.customer.android-customer-mergeDebugResources-50:/values-ldltr-v21/values-ldltr-v21.xml",
+            "outputFile": "com.vaultpool.customer.android-customer-mergeDebugResources-3:/values-ldltr-v21/values-ldltr-v21.xml",
             "map": [
                 {
-                    "source": "C:\\Users\\HP\\.gradle\\caches\\9.2.1\\transforms\\72a90ad228dee9bd2901d1c37ab188d5\\workspace\\transformed\\appcompat-1.6.1\\res\\values-ldltr-v21\\values-ldltr-v21.xml",
+                    "source": "C:\\Users\\ADMIN\\.gradle\\caches\\8.13\\transforms\\fefc6cc9b76f66e3f4e4b98aa1731011\\transformed\\appcompat-1.6.1\\res\\values-ldltr-v21\\values-ldltr-v21.xml",
                     "from": {
                         "startLines": "2",
                         "startColumns": "4",
