@@ -17,9 +17,24 @@ import java.util.Optional;
 public interface BookingRepository extends JpaRepository<Booking, Long> {
 
     /**
+     * Đếm số lượng Booking theo user và trạng thái (dùng cho Cart - chỉ tính những slot chưa bắt đầu)
+     */
+    int countByUserIdAndStatusAndSlotStartTimeAfter(Long userId, BookingStatus status, LocalDateTime time);
+
+    /**
+     * Tìm các Booking trong giỏ hàng (IN_CART) đã qua thời gian bắt đầu của slot
+     */
+    List<Booking> findByStatusAndSlotStartTimeBefore(BookingStatus status, LocalDateTime time);
+
+    /**
      * Lấy danh sách booking của user, mới nhất trước
      */
     List<Booking> findByUserIdOrderByCreatedAtDesc(Long userId);
+
+    /**
+     * Lấy danh sách booking của user theo trạng thái (vd: IN_CART)
+     */
+    List<Booking> findByUserIdAndStatusOrderByCreatedAtDesc(Long userId, BookingStatus status);
 
     /**
      * Lấy booking theo id + userId — đảm bảo user chỉ xem của mình

@@ -5,14 +5,21 @@ pluginManagement {
         gradlePluginPortal()
     }
 }
+plugins {
+    id 'org.gradle.toolchains.foojay-resolver-convention' version '1.0.0'
+}
 dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
     repositories {
         google()
         mavenCentral()
+        // Local ZaloPay ZPDK AAR (apps/android-customer/libs/*.aar)
+        flatDir {
+            dirs("${rootDir}/apps/android-customer/libs")
+        }
     }
 }
 rootProject.name = "VAULTPOOL"
 include(":apps:android-customer")
-include(":backends:auth-service")
+// backends/auth-service is Maven-only (pom.xml); do not include as a Gradle subproject
 include(":libraries:common-models")

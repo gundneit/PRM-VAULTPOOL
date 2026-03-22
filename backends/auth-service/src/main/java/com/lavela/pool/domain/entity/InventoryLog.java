@@ -30,6 +30,13 @@ public class InventoryLog {
     private Booking booking;
 
     /**
+     * Optional: reference payment when reason = CONFIRM (audit link).
+     */
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "payment_id")
+    private Payment payment;
+
+    /**
      * Âm = giữ chỗ (RESERVE), Dương = trả chỗ (RELEASE/EXPIRE/CANCEL)
      */
     @Column(name = "delta", nullable = false)

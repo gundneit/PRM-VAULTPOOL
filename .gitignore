@@ -6,3 +6,14 @@
 
 # Generic build outputs
 **/build/
+.gradle/
+.idea/
+**/build/
+**/target/
+**/local.properties
+**/libs/*.aar
+*.class
+*.iml
+out/
+.DS_Store
+Thumbs.db

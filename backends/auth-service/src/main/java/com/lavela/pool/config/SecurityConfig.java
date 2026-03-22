@@ -33,6 +33,8 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.POST, "/api/auth/register").permitAll()
                 // Public pool catalog endpoints
                 .requestMatchers(HttpMethod.GET, "/pools/**").permitAll()
+                // ZaloPay callback — called by payment provider (no auth; verify signature in production)
+                .requestMatchers(HttpMethod.POST, "/webhooks/payment/ZALOPAY").permitAll()
                 // Everything else requires authentication
                 .anyRequest().authenticated()
             )
