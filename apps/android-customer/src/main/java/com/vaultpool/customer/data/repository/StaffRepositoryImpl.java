@@ -3,11 +3,14 @@ package com.vaultpool.customer.data.repository;
 import com.vaultpool.customer.data.remote.api.StaffApi;
 import com.vaultpool.customer.data.remote.dto.ApiResponse;
 import com.vaultpool.customer.data.remote.dto.staff.BookingStaffDto;
+import com.vaultpool.customer.data.remote.dto.staff.ImageStaffDto;
 import com.vaultpool.customer.data.remote.dto.staff.PoolStaffDto;
+import com.vaultpool.customer.data.remote.dto.staff.PoolStaffUpsertRequest;
 import com.vaultpool.customer.data.remote.dto.staff.SlotStaffDto;
 import com.vaultpool.customer.domain.model.Result;
 import com.vaultpool.customer.domain.repository.StaffRepository;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import io.reactivex.rxjava3.core.Single;
@@ -56,14 +59,14 @@ public class StaffRepositoryImpl implements StaffRepository {
 
     @Override
     public Single<Result<PoolStaffDto>> createPool(String token, PoolStaffDto pool) {
-        return staffApi.createPool(formatToken(token), pool)
+        return staffApi.createPool(formatToken(token), toPoolUpsertRequest(pool))
                 .map(this::handleResponse)
                 .subscribeOn(Schedulers.io());
     }
 
     @Override
     public Single<Result<PoolStaffDto>> updatePool(String token, Long id, PoolStaffDto pool) {
-        return staffApi.updatePool(formatToken(token), id, pool)
+        return staffApi.updatePool(formatToken(token), id, toPoolUpsertRequest(pool))
                 .map(this::handleResponse)
                 .subscribeOn(Schedulers.io());
     }
@@ -106,5 +109,29 @@ public class StaffRepositoryImpl implements StaffRepository {
         } else {
             return Result.failure(response.getMessage());
         }
+    }
+
+    private PoolStaffUpsertRequest toPoolUpsertRequest(PoolStaffDto pool) {
+        PoolStaffUpsertRequest request = new PoolStaffUpsertRequest();
+        request.setName(pool.getName());
+        request.setAddress(pool.getAddress());
+        request.setGeoLat(pool.getGeoLat());
+        request.setGeoLng(pool.getGeoLng());
+        request.setDescription(pool.getDescription());
+        request.setOpenHours(pool.getOpenHours());
+
+        List<String> imageUrls = new ArrayList<>();
+        if (pool.getImages() != null) {
+            for (ImageStaffDto image : pool.getImages()) {
+                if (image != null && image.getImageUrl() != null) {
+                    String url = image.getImageUrl().trim();
+                    if (!url.isEmpty()) {
+                        imageUrls.add(url);
+                    }
+                }
+            }
+        }
+        request.setImageUrls(imageUrls);
+        return request;
     }
 }

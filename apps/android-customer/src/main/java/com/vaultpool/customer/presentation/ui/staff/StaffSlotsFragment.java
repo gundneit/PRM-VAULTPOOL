@@ -2,6 +2,7 @@ package com.vaultpool.customer.presentation.ui.staff;
 
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -23,10 +24,13 @@ import com.vaultpool.customer.databinding.DialogAddSlotBinding;
 import com.vaultpool.customer.databinding.FragmentStaffSlotsBinding;
 import com.vaultpool.customer.domain.model.Result;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
-import java.util.Locale;
 
 public class StaffSlotsFragment extends Fragment {
+
+    private static final DateTimeFormatter API_DATE_FORMATTER = DateTimeFormatter.ISO_LOCAL_DATE;
 
     private FragmentStaffSlotsBinding binding;
     private StaffViewModel viewModel;
@@ -53,9 +57,8 @@ public class StaffSlotsFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         pool = (PoolStaffDto) getArguments().getSerializable("pool");
-        
-        // Default date
-        selectedDate = "2026-03-18";
+
+        selectedDate = LocalDate.now().format(API_DATE_FORMATTER);
         binding.tvSelectedDate.setText(selectedDate);
         
         setupViewModel();
@@ -102,25 +105,48 @@ public class StaffSlotsFragment extends Fragment {
 
     private void showDatePicker() {
         Calendar cal = Calendar.getInstance();
-        // If we want to start from the currently selected date:
         try {
-            String[] parts = selectedDate.split("-");
-            cal.set(Integer.parseInt(parts[0]), Integer.parseInt(parts[1]) - 1, Integer.parseInt(parts[2]));
+            LocalDate parsedDate = LocalDate.parse(selectedDate, API_DATE_FORMATTER);
+            cal.set(parsedDate.getYear(), parsedDate.getMonthValue() - 1, parsedDate.getDayOfMonth());
         } catch (Exception ignored) {}
 
         DatePickerDialog datePickerDialog = new DatePickerDialog(
                 requireContext(),
-                com.vaultpool.customer.R.style.Theme_VaultPool_DatePicker,
                 (view, year, month, dayOfMonth) -> {
-                    selectedDate = String.format(Locale.getDefault(), "%04d-%02d-%02d", year, month + 1, dayOfMonth);
-                    binding.tvSelectedDate.setText(selectedDate);
-                    refreshSlots();
+                    applySelectedDate(year, month, dayOfMonth);
                 },
                 cal.get(Calendar.YEAR),
                 cal.get(Calendar.MONTH),
                 cal.get(Calendar.DAY_OF_MONTH)
         );
+
+        datePickerDialog.getDatePicker().init(
+                cal.get(Calendar.YEAR),
+                cal.get(Calendar.MONTH),
+                cal.get(Calendar.DAY_OF_MONTH),
+                (view, year, monthOfYear, dayOfMonth) -> applySelectedDate(year, monthOfYear, dayOfMonth)
+        );
+
+        datePickerDialog.setOnShowListener(dialog -> {
+            if (datePickerDialog.getButton(DialogInterface.BUTTON_NEGATIVE) != null) {
+                datePickerDialog.getButton(DialogInterface.BUTTON_NEGATIVE).setText("Back");
+            }
+            if (datePickerDialog.getButton(DialogInterface.BUTTON_POSITIVE) != null) {
+                datePickerDialog.getButton(DialogInterface.BUTTON_POSITIVE).setText("Select");
+            }
+        });
+
+        datePickerDialog.setButton(DialogInterface.BUTTON_NEGATIVE, "Back", (dialog, which) -> dialog.dismiss());
         datePickerDialog.show();
+    }
+
+    private void applySelectedDate(int year, int monthZeroBased, int dayOfMonth) {
+        String newDate = LocalDate.of(year, monthZeroBased + 1, dayOfMonth).format(API_DATE_FORMATTER);
+        if (!newDate.equals(selectedDate)) {
+            selectedDate = newDate;
+            binding.tvSelectedDate.setText(selectedDate);
+            refreshSlots();
+        }
     }
 
     private void refreshSlots() {

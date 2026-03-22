@@ -1,0 +1,8 @@
+# Workspace-wide generated artifacts
+/.gradle/
+
+# Android build outputs
+/apps/android-customer/build/
+
+# Generic build outputs
+**/build/

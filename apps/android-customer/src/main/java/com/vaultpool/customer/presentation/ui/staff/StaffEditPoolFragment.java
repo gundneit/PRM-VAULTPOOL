@@ -27,6 +27,7 @@ public class StaffEditPoolFragment extends Fragment {
     private StaffViewModel viewModel;
     private PoolStaffDto pool;
     private StaffPoolImageAdapter imageAdapter;
+    private boolean pendingSaveAction = false;
 
     public static StaffEditPoolFragment newInstance(PoolStaffDto pool) {
         StaffEditPoolFragment fragment = new StaffEditPoolFragment();
@@ -67,8 +68,16 @@ public class StaffEditPoolFragment extends Fragment {
         viewModel = new ViewModelProvider(requireActivity(), factory).get(StaffViewModel.class);
         
         viewModel.getPoolActionUpdate().observe(getViewLifecycleOwner(), result -> {
+            if (!pendingSaveAction || result == null) {
+                return;
+            }
+
             if (result.isSuccess()) {
+                pendingSaveAction = false;
                 requireActivity().getSupportFragmentManager().popBackStack();
+            } else if (result.isFailure()) {
+                pendingSaveAction = false;
+                Toast.makeText(getContext(), result.getErrorMessage(), Toast.LENGTH_LONG).show();
             }
         });
         
@@ -113,6 +122,8 @@ public class StaffEditPoolFragment extends Fragment {
             // Default geo coordinates if missing
             if (pool.getGeoLat() == null) pool.setGeoLat(10.762622);
             if (pool.getGeoLng() == null) pool.setGeoLng(106.660172);
+
+            pendingSaveAction = true;
 
             if (pool.getId() == null) {
                 viewModel.createPool(pool);
