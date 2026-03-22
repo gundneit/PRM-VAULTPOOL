@@ -41,6 +41,11 @@ app:
     bearer-token: dev-admin-token
     firebase-uid: dev-admin-uid
 
+  cloudinary:
+    cloud-name: ${CLOUDINARY_CLOUD_NAME:dsmahwdgz}
+    api-key: ${CLOUDINARY_API_KEY:885534219753498}
+    api-secret: ${CLOUDINARY_API_SECRET:3hjQabkiX9y2Py980cWu3SuFQ58}
+
   zalopay:
     sandbox:
       app-id: ${ZALOPAY_SANDBOX_APP_ID:2554}
@@ -48,6 +53,7 @@ app:
       key2: ${ZALOPAY_SANDBOX_KEY2:trMrHtvjo6myautxDUiAcYsVtaeQ8nhf}
       create-url: ${ZALOPAY_SANDBOX_CREATE_URL:https://sb-openapi.zalopay.vn/v2/create}
       # URL để ZaloPay server-to-server callback về backend (endpoint ở PaymentController)
+      #callback-url: ${ZALOPAY_SANDBOX_CALLBACK_URL:https://inheritably-expansible-angeline.ngrok-free.dev/webhooks/payment/ZALOPAY}
       callback-url: ${ZALOPAY_SANDBOX_CALLBACK_URL:http://localhost:8080/webhooks/payment/ZALOPAY}
       
       bank-code: ${ZALOPAY_SANDBOX_BANK_CODE:zalopayapp}

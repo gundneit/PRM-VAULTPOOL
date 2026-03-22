@@ -2,8 +2,7 @@ package com.lavela.pool.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
-
-import java.util.List;
+import org.springframework.web.multipart.MultipartFile;
 
 @Data
 public class PoolUpsertRequest {
@@ -18,5 +17,7 @@ public class PoolUpsertRequest {
     private Double geoLng;
     private String description;
     private String openHours;
-    private List<String> imageUrls;
+    
+    // Thêm trường image để nhận file từ multipart/form-data
+    private MultipartFile image;
 }

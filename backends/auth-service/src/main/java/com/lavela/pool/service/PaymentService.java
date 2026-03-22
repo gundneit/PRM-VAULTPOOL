@@ -21,9 +21,7 @@ import java.time.LocalDateTime;
 /**
  * BE2: Payment + ZaloPay callback handling.
  * - POST /payments: create ZaloPay order, return redirectUrl (zp_trans_token for SDK payOrder).
- * - POST /webhooks/payment/ZALOPAY: verify MAC, reconcile via order-query, then:
- *   - SUCCESS -> booking CONFIRMED, inventory_log CONFIRM
- *   - FAILED/CANCELED -> booking FAILED, release slot, inventory_log RELEASE
+ * - POST /webhooks/payment/ZALOPAY: verify MAC, then confirm payment (no ZaloPay order-query).
  */
 @Slf4j
 @Service
@@ -103,8 +101,7 @@ public class PaymentService {
 
     /**
      * ZaloPay callback (App-to-App order callback, type=1).
-     * - Verify callback MAC using key2.
-     * - SUCCESS: update payment/booking + inventory confirm.
+     * Verifies MAC (key2), then confirms payment (no order-query).
      */
     @Transactional
     public void handleZaloPayWebhook(ZaloPayCallbackRequest callback) {
@@ -129,30 +126,9 @@ public class PaymentService {
         Booking booking = bookingRepository.findByIdWithLock(payment.getBooking().getId())
                 .orElseThrow(() -> new ResourceNotFoundException("Booking not found for payment " + payment.getId()));
 
-        // ZaloPay callback request does not always include explicit "SUCCESS/FAIL" mapping for us.
-        // We reconcile using order-query to decide SUCCESS vs FAILED.
-        var orderStatus = zaloPayClient.queryOrder(appTransId);
-        log.info(
-                "ZaloPay order-query reconcile: paymentId={}, bookingId={}, app_trans_id={}, return_code={}, return_message={}, sub_return_code={}, sub_return_message={}, zp_processing={}",
-                payment.getId(), booking.getId(), appTransId,
-                orderStatus.getReturnCode(), orderStatus.getReturnMessage(),
-                orderStatus.getSubReturnCode(), orderStatus.getSubReturnMessage(),
-                orderStatus.isZpProcessingFlag());
-
-        if (orderStatus.isSuccess()) {
-            applyPaymentSuccess(payment, booking);
-            return;
-        }
-
-        if (orderStatus.isProcessing()) {
-            log.info("ZaloPay webhook processing: paymentId={}, bookingId={}, app_trans_id={}",
-                    payment.getId(), booking.getId(), appTransId);
-            return;
-        }
-
-        applyPaymentFailed(payment, booking,
-                "ZALOPAY_FAIL(return_code=" + orderStatus.getReturnCode()
-                        + ", message=" + orderStatus.getReturnMessage() + ")");
+        log.info("ZaloPay webhook verified: paymentId={}, bookingId={}, app_trans_id={} — confirming without order-query",
+                payment.getId(), booking.getId(), appTransId);
+        applyPaymentSuccess(payment, booking);
     }
 
     private void applyPaymentSuccess(Payment payment, Booking booking) {
@@ -176,37 +152,6 @@ public class PaymentService {
                 .build());
 
         log.info("Payment success: paymentId={}, bookingId={}, CONFIRMED", payment.getId(), booking.getId());
-    }
-
-    private void applyPaymentFailed(Payment payment, Booking booking, String webhookStatus) {
-        payment.setStatus(PaymentStatus.FAILED);
-        paymentRepository.save(payment);
-
-        booking.setStatus(BookingStatus.FAILED);
-        booking.setPaymentStatus("FAILED");
-        booking.setCancelReason("Payment " + webhookStatus);
-        bookingRepository.save(booking);
-
-        Slot slot = slotRepository.findByIdForUpdate(booking.getSlot().getId())
-                .orElseThrow(() -> new ResourceNotFoundException("Slot not found"));
-        int released = booking.getQty();
-        int newAvailable = slot.getCapacityAvailable() + released;
-        slot.setCapacityAvailable(newAvailable);
-        if (STATUS_FULL.equalsIgnoreCase(slot.getStatus()) && newAvailable > 0) {
-            slot.setStatus(STATUS_ACTIVE);
-        }
-        slotRepository.save(slot);
-
-        inventoryLogRepository.save(InventoryLog.builder()
-                .slot(slot)
-                .booking(booking)
-                .delta(released)
-                .capacityAfter(newAvailable)
-                .reason("RELEASE")
-                .actor("WEBHOOK")
-                .build());
-
-        log.info("Payment failed: paymentId={}, bookingId={}, released qty={}", payment.getId(), booking.getId(), released);
     }
 
     private String normalizeProvider(String method) {

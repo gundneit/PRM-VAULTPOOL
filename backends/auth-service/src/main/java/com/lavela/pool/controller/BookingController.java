@@ -9,6 +9,7 @@ import com.lavela.pool.service.BookingService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import com.lavela.pool.domain.enums.BookingStatus;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -53,13 +54,14 @@ public class BookingController {
      * MVP: chỉ hỗ trợ ?me=true. STAFF xem theo userId sẽ làm ở BE2.
      */
     @Operation(summary = "Get my bookings",
-               description = "Returns bookings of the authenticated user, newest first.")
+               description = "Returns bookings of the authenticated user, newest first. Optional filter by status.")
     @GetMapping
     @PreAuthorize("hasAnyRole('USER','STAFF','ADMIN')")
     public ApiResponse<List<BookingResponse>> getMyBookings(
-            @AuthenticationPrincipal UserPrincipal principal
+            @AuthenticationPrincipal UserPrincipal principal,
+            @RequestParam(required = false) BookingStatus status
     ) {
-        return ApiResponse.ok(bookingService.getMyBookings(principal.getUserId()));
+        return ApiResponse.ok(bookingService.getMyBookings(principal.getUserId(), status));
     }
 
     /**
@@ -74,6 +76,21 @@ public class BookingController {
             @AuthenticationPrincipal UserPrincipal principal
     ) {
         return ApiResponse.ok(bookingService.getCart(principal.getUserId()));
+    }
+
+    /**
+     * POST /bookings/{id}/checkout
+     * Checkout 1 booking từ giỏ hàng (IN_CART) sang PENDING_PAYMENT.
+     */
+    @Operation(summary = "Checkout a cart booking",
+               description = "Transitions a specific IN_CART booking to PENDING_PAYMENT and reserves slot capacity.")
+    @PostMapping("/{id}/checkout")
+    @PreAuthorize("isAuthenticated()")
+    public ApiResponse<BookingResponse> checkoutBooking(
+            @PathVariable Long id,
+            @AuthenticationPrincipal UserPrincipal principal
+    ) {
+        return ApiResponse.ok(bookingService.checkoutBooking(id, principal.getUserId(), principal.getFirebaseUid()));
     }
 
     /**
@@ -99,15 +116,14 @@ public class BookingController {
      */
     @Operation(summary = "Staff check-in via QR",
                description = "Validates the QR hash and transitions booking to CHECKED_IN. Idempotent.")
-    @PostMapping("/{id}/checkin")
+    @PostMapping("/checkin")
     @PreAuthorize("hasAnyRole('STAFF','ADMIN')")
     public ApiResponse<BookingResponse> checkIn(
-            @PathVariable Long id,
             @Valid @RequestBody CheckInRequest request,
             @AuthenticationPrincipal UserPrincipal principal
     ) {
         return ApiResponse.ok(
-                bookingService.checkIn(id, request.getHash(), principal.getFirebaseUid())
+                bookingService.checkIn(request.getBookingCode(), principal.getFirebaseUid())
         );
     }
 

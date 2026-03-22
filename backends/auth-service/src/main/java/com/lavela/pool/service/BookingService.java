@@ -116,9 +116,14 @@ public class BookingService {
      * Staff/Admin → dùng getAllBySlot hoặc endpoint riêng (thuộc BE2).
      */
     @Transactional(readOnly = true)
-    public List<BookingResponse> getMyBookings(Long userId) {
-        return bookingRepository.findByUserIdOrderByCreatedAtDesc(userId)
-                .stream()
+    public List<BookingResponse> getMyBookings(Long userId, BookingStatus status) {
+        List<Booking> bookings;
+        if (status != null) {
+            bookings = bookingRepository.findByUserIdAndStatusOrderByCreatedAtDesc(userId, status);
+        } else {
+            bookings = bookingRepository.findByUserIdOrderByCreatedAtDesc(userId);
+        }
+        return bookings.stream()
                 .map(this::toResponse)
                 .toList();
     }
@@ -132,6 +137,56 @@ public class BookingService {
                 .stream()
                 .map(this::toResponse)
                 .toList();
+    }
+
+    /**
+     * Checkout 1 booking cụ thể từ giỏ hàng: Chuyển từ IN_CART sang PENDING_PAYMENT,
+     * trừ capacity của slot và ghi log.
+     */
+    @Transactional
+    public BookingResponse checkoutBooking(Long bookingId, Long userId, String firebaseUid) {
+        Booking booking = bookingRepository.findByIdAndUserId(bookingId, userId)
+                .orElseThrow(() -> new ResourceNotFoundException("Booking not found: " + bookingId));
+
+        if (booking.getStatus() != BookingStatus.IN_CART) {
+            throw new BookingConflictException("Booking is not in cart. Status: " + booking.getStatus());
+        }
+
+        // Lock slot để đảm bảo capacity chính xác
+        Slot slot = slotRepository.findByIdForUpdate(booking.getSlot().getId())
+                .orElseThrow(() -> new ResourceNotFoundException("Slot not found for booking: " + booking.getBookingCode()));
+
+        // Validate slot
+        if (slot.getStartTime().isBefore(LocalDateTime.now())) {
+            throw new BookingConflictException("Slot has already started for booking: " + booking.getBookingCode());
+        }
+        if (!STATUS_ACTIVE.equalsIgnoreCase(slot.getStatus())) {
+            throw new BookingConflictException("Slot is no longer active for booking: " + booking.getBookingCode());
+        }
+        if (slot.getCapacityAvailable() < booking.getQty()) {
+            throw new BookingConflictException("Not enough capacity for slot of booking: " + booking.getBookingCode());
+        }
+
+        // Cập nhật capacity
+        int newAvailable = slot.getCapacityAvailable() - booking.getQty();
+        slot.setCapacityAvailable(newAvailable);
+        if (newAvailable == 0) {
+            slot.setStatus(STATUS_FULL);
+        }
+        slotRepository.save(slot);
+
+        // Cập nhật trạng thái booking
+        booking.setStatus(BookingStatus.PENDING_PAYMENT);
+        booking.setExpiresAt(LocalDateTime.now().plusMinutes(BOOKING_TTL_MINUTES));
+        bookingRepository.save(booking);
+
+        // Ghi audit log
+        saveInventoryLog(slot, booking, -booking.getQty(), newAvailable, "RESERVE", firebaseUid);
+        
+        log.info("Booking checked out from cart: bookingCode={}, slotId={}, userId={}, qty={}",
+                booking.getBookingCode(), slot.getId(), userId, booking.getQty());
+
+        return toResponse(booking);
     }
 
     /**
@@ -234,20 +289,15 @@ public class BookingService {
      * Idempotent: nếu đã CHECKED_IN rồi thì return 200 luôn, không lỗi.
      */
     @Transactional
-    public BookingResponse checkIn(Long bookingId, String hash, String staffFirebaseUid) {
+    public BookingResponse checkIn(String bookingCode, String staffFirebaseUid) {
         // Khoá pessimistic để tránh concurrent check-in
-        Booking booking = bookingRepository.findByIdWithLock(bookingId)
-                .orElseThrow(() -> new ResourceNotFoundException("Booking not found: " + bookingId));
+        Booking booking = bookingRepository.findByBookingCodeWithLock(bookingCode)
+                .orElseThrow(() -> new ResourceNotFoundException("Booking not found with code: " + bookingCode));
 
         // Idempotent — đã check-in rồi thì không làm gì thêm
         if (booking.getStatus() == BookingStatus.CHECKED_IN) {
-            log.info("Check-in idempotent: bookingId={}, staff={}", bookingId, staffFirebaseUid);
+            log.info("Check-in idempotent: bookingCode={}, staff={}", bookingCode, staffFirebaseUid);
             return toResponse(booking);
-        }
-
-        // Verify hash (MVP: so sánh với booking_code)
-        if (!booking.getBookingCode().equalsIgnoreCase(hash.trim())) {
-            throw new BookingConflictException("Invalid QR hash");
         }
 
         // Chỉ cho phép check-in khi CONFIRMED
@@ -269,8 +319,8 @@ public class BookingService {
                 "CONFIRM", staffFirebaseUid
         );
 
-        log.info("Check-in successful: bookingId={}, code={}, staff={}",
-                bookingId, booking.getBookingCode(), staffFirebaseUid);
+        log.info("Check-in successful: bookingCode={}, staff={}",
+                bookingCode, staffFirebaseUid);
 
         return toResponse(booking);
     }

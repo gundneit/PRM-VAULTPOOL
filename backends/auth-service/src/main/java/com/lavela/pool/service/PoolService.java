@@ -15,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -32,6 +33,7 @@ public class PoolService {
 
     private final PoolRepository poolRepository;
     private final SlotRepository slotRepository;
+    private final CloudinaryService cloudinaryService;
 
     @Transactional(readOnly = true)
     public List<PoolResponse> getAllPoolsForStaff() {
@@ -99,7 +101,13 @@ public class PoolService {
                 .images(new ArrayList<>())
                 .build();
 
-        replaceImages(pool, request.getImageUrls());
+        List<String> imageUrls = new ArrayList<>();
+        MultipartFile file = request.getImage();
+        if (file != null && !file.isEmpty()) {
+            imageUrls.add(cloudinaryService.upload(file));
+        }
+
+        replaceImages(pool, imageUrls);
         return toPoolResponse(poolRepository.save(pool));
     }
 
@@ -115,8 +123,10 @@ public class PoolService {
         pool.setDescription(request.getDescription());
         pool.setOpenHours(request.getOpenHours());
 
-        if (request.getImageUrls() != null) {
-            replaceImages(pool, request.getImageUrls());
+        MultipartFile file = request.getImage();
+        if (file != null && !file.isEmpty()) {
+            String newUrl = cloudinaryService.upload(file);
+            replaceImages(pool, List.of(newUrl));
         }
 
         return toPoolResponse(poolRepository.save(pool));
