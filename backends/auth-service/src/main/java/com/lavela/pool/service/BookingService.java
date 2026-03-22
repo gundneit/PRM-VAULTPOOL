@@ -124,6 +124,17 @@ public class BookingService {
     }
 
     /**
+     * Lấy danh sách booking đang trong giỏ hàng (IN_CART) của user.
+     */
+    @Transactional(readOnly = true)
+    public List<BookingResponse> getCart(Long userId) {
+        return bookingRepository.findByUserIdAndStatusOrderByCreatedAtDesc(userId, BookingStatus.IN_CART)
+                .stream()
+                .map(this::toResponse)
+                .toList();
+    }
+
+    /**
      * Chi tiết booking — user chỉ xem được của mình (userId check),
      * staff không dùng endpoint này (họ dùng endpoint riêng ở BE2).
      */

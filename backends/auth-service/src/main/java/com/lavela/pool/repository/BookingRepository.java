@@ -32,6 +32,11 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
     List<Booking> findByUserIdOrderByCreatedAtDesc(Long userId);
 
     /**
+     * Lấy danh sách booking của user theo trạng thái (vd: IN_CART)
+     */
+    List<Booking> findByUserIdAndStatusOrderByCreatedAtDesc(Long userId, BookingStatus status);
+
+    /**
      * Lấy booking theo id + userId — đảm bảo user chỉ xem của mình
      */
     Optional<Booking> findByIdAndUserId(Long id, Long userId);

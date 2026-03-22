@@ -63,6 +63,20 @@ public class BookingController {
     }
 
     /**
+     * GET /bookings/cart
+     * Lấy danh sách booking đang trong giỏ hàng (IN_CART) của user.
+     */
+    @Operation(summary = "Get my cart",
+               description = "Returns bookings with IN_CART status for the authenticated user.")
+    @GetMapping("/cart")
+    @PreAuthorize("isAuthenticated()")
+    public ApiResponse<List<BookingResponse>> getCart(
+            @AuthenticationPrincipal UserPrincipal principal
+    ) {
+        return ApiResponse.ok(bookingService.getCart(principal.getUserId()));
+    }
+
+    /**
      * GET /bookings/{id}
      * Chỉ user sở hữu booking mới xem được. Trả 404 nếu không tìm thấy hoặc không phải của mình.
      */
