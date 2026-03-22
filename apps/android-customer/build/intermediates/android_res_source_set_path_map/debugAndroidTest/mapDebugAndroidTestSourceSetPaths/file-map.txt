@@ -1,0 +1,7 @@
+com.vaultpool.customer.test.android-customer-core-1.5.0-0 C:\Users\HP\.gradle\caches\9.2.1\transforms\343dee44899cd6c87d7b7e7f77da989f\workspace\transformed\core-1.5.0\res
+com.vaultpool.customer.test.android-customer-annotation-experimental-1.4.0-1 C:\Users\HP\.gradle\caches\9.2.1\transforms\634fa2a682ad98050a2d12839491d306\workspace\transformed\annotation-experimental-1.4.0\res
+com.vaultpool.customer.test.android-customer-androidTest-2 C:\Users\HP\Documents\GitHub\PRM-VAULTPOOL\apps\android-customer\build\generated\res\resValues\androidTest\debug
+com.vaultpool.customer.test.android-customer-updated_navigation_xml-3 C:\Users\HP\Documents\GitHub\PRM-VAULTPOOL\apps\android-customer\build\generated\updated_navigation_xml\debugAndroidTest
+com.vaultpool.customer.test.android-customer-mergeDebugAndroidTestResources-4 C:\Users\HP\Documents\GitHub\PRM-VAULTPOOL\apps\android-customer\build\intermediates\incremental\debugAndroidTest\mergeDebugAndroidTestResources\merged.dir
+com.vaultpool.customer.test.android-customer-mergeDebugAndroidTestResources-5 C:\Users\HP\Documents\GitHub\PRM-VAULTPOOL\apps\android-customer\build\intermediates\incremental\debugAndroidTest\mergeDebugAndroidTestResources\stripped.dir
+com.vaultpool.customer.test.android-customer-debugAndroidTest-6 C:\Users\HP\Documents\GitHub\PRM-VAULTPOOL\apps\android-customer\build\intermediates\merged_res\debugAndroidTest\mergeDebugAndroidTestResources

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.VaultPool" parent="Theme.Material3.Light.NoActionBar">
+        <!-- Primary Brand Color -->
+        <item name="colorPrimary">@color/navy</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <item name="colorPrimaryContainer">@color/primary_light</item>
+        <item name="colorOnPrimaryContainer">@color/white</item>
+
+        <!-- Secondary Brand Color -->
+        <item name="colorSecondary">@color/gold</item>
+        <item name="colorOnSecondary">@color/navy</item>
+        <item name="colorSecondaryContainer">@color/accent_dark</item>
+        <item name="colorOnSecondaryContainer">@color/white</item>
+
+        <!-- UI Colors -->
+        <item name="colorSurface">@color/surface</item>
+        <item name="android:colorBackground">@color/background</item>
+
+        <!-- System UI -->
+        <item name="android:windowBackground">@color/background</item>
+        <item name="android:statusBarColor">@color/navy</item>
+        <item name="android:navigationBarColor">@color/background</item>
+        <item name="android:windowLightStatusBar">false</item>
+    </style>
+
+    <!-- Theme Splash "Mẹo": Làm icon hệ thống biến mất để hiện logo vuông phía dưới -->
+    <style name="Theme.VaultPool.Splash" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">@color/navy</item>
+        <!-- Dùng icon rỗng/trong suốt để hệ thống không hiện hình tròn nữa -->
+        <item name="windowSplashScreenAnimatedIcon">@android:color/transparent</item>
+        <item name="postSplashScreenTheme">@style/Theme.VaultPool</item>
+    </style>
+
+    <style name="Theme.VaultPool.DatePicker" parent="Theme.Material3.Light.Dialog">
+        <item name="colorPrimary">#2196F3</item> <!-- Material Blue 500 -->
+        <item name="colorOnPrimary">@color/white</item>
+        <item name="colorSurface">@color/white</item>
+        <item name="colorOnSurface">@color/navy</item>
+    </style>
+
+    <!-- Theme phụ để SplashActivity hiển thị Logo hình vuông đầy đủ -->
+    <style name="Theme.VaultPool.Splash.Loaded" parent="Theme.VaultPool">
+        <item name="android:windowBackground">@drawable/bg_splash_square_logo</item>
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+    </style>
+</resources>
