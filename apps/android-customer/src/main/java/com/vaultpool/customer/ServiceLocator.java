@@ -4,6 +4,8 @@ import com.vaultpool.customer.data.remote.api.PoolApi;
 import com.vaultpool.customer.data.repository.PoolRepositoryImpl;
 import com.vaultpool.customer.domain.repository.PoolRepository;
 
+import okhttp3.OkHttpClient;
+import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava3.RxJava3CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -43,9 +45,18 @@ public class ServiceLocator {
         // Initialize common dependencies
         preferencesManager = new com.vaultpool.customer.data.local.prefs.PreferencesManager(context);
         
+        // Setup Logging Interceptor
+        HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
+        logging.setLevel(HttpLoggingInterceptor.Level.BODY);
+
+        OkHttpClient client = new OkHttpClient.Builder()
+                .addInterceptor(logging)
+                .build();
+
         // Setup Retrofit
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(BuildConfig.BACKEND_BASE_URL)
+                .client(client)
                 .addConverterFactory(GsonConverterFactory.create())
                 .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
                 .build();

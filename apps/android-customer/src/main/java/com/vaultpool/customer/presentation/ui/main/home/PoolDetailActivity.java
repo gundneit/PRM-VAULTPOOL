@@ -2,10 +2,12 @@ package com.vaultpool.customer.presentation.ui.main.home;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import com.bumptech.glide.Glide;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
@@ -28,6 +30,8 @@ import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
 import io.reactivex.rxjava3.core.Single;
 import io.reactivex.rxjava3.schedulers.Schedulers;
+import okhttp3.OkHttpClient;
+import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava3.RxJava3CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -73,8 +77,17 @@ public class PoolDetailActivity extends AppCompatActivity {
         poolRepository = ServiceLocator.getInstance().getPoolRepository();
         preferencesManager = ServiceLocator.getInstance().getPreferencesManager();
 
+        // Trong PoolDetailActivity.onCreate(), thay đoạn tạo Retrofit thành:
+        HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
+        logging.setLevel(HttpLoggingInterceptor.Level.BODY);
+
+        OkHttpClient client = new OkHttpClient.Builder()
+                .addInterceptor(logging)
+                .build();
+
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(BuildConfig.BACKEND_BASE_URL)
+                .client(client)  // ← thêm dòng này
                 .addConverterFactory(GsonConverterFactory.create())
                 .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
                 .build();
@@ -223,6 +236,7 @@ public class PoolDetailActivity extends AppCompatActivity {
         updateFooter(dialogBinding);
 
         dialogBinding.btnContinuePayment.setOnClickListener(v -> {
+            Log.d("BOOKING_DEBUG", "Continue clicked, selectedSlot=" + selectedSlot);
             if (selectedSlot == null) {
                 Toast.makeText(this, "Please select a time slot", Toast.LENGTH_SHORT).show();
                 return;
@@ -261,6 +275,11 @@ public class PoolDetailActivity extends AppCompatActivity {
             else afternoonSlots.add(slot);
         }
 
+        dialogBinding.rvMorningSlots.setLayoutManager(
+                new GridLayoutManager(this, 3));
+        dialogBinding.rvAfternoonSlots.setLayoutManager(
+                new GridLayoutManager(this, 3));
+
         morningAdapter = new TimeSlotAdapter(morningSlots, (slot, adapter) -> {
             selectedSlot = slot;
             afternoonAdapter.clearSelection(); // Bỏ chọn bên Afternoon
@@ -293,6 +312,8 @@ public class PoolDetailActivity extends AppCompatActivity {
     }
 
     private void handleBooking(SlotDto slot) {
+        Log.d("BOOKING_DEBUG", "handleBooking called, slotId=" + slot.getId());
+
         if (preferencesManager == null || preferencesManager.getFirebaseToken() == null) {
             Toast.makeText(this, "Bạn cần đăng nhập để đặt booking.", Toast.LENGTH_LONG).show();
             return;
