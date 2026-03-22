@@ -127,7 +127,7 @@
                 style="@style/Widget.Material3.Button.TextButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="+ Add Image URL"
+                android:text="+ Select Image"
                 android:textColor="@color/teal"
                 app:icon="@android:drawable/ic_input_add"
                 app:iconTint="@color/teal" />

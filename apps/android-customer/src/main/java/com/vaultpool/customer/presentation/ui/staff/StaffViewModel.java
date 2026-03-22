@@ -11,6 +11,7 @@ import com.vaultpool.customer.domain.model.Result;
 import com.vaultpool.customer.domain.repository.AuthRepository;
 import com.vaultpool.customer.domain.repository.StaffRepository;
 
+import java.io.File;
 import java.util.List;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
@@ -100,10 +101,10 @@ public class StaffViewModel extends ViewModel {
                 }));
     }
 
-    public void createPool(PoolStaffDto pool) {
+    public void createPool(PoolStaffDto pool, File imageFile) {
         loading.setValue(true);
         disposables.add(authRepository.getIdToken()
-                .flatMap(token -> staffRepository.createPool(token, pool))
+                .flatMap(token -> staffRepository.createPool(token, pool, imageFile))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(result -> {
@@ -116,10 +117,10 @@ public class StaffViewModel extends ViewModel {
                 }));
     }
 
-    public void updatePool(Long id, PoolStaffDto pool) {
+    public void updatePool(Long id, PoolStaffDto pool, File imageFile) {
         loading.setValue(true);
         disposables.add(authRepository.getIdToken()
-                .flatMap(token -> staffRepository.updatePool(token, id, pool))
+                .flatMap(token -> staffRepository.updatePool(token, id, pool, imageFile))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(result -> {
