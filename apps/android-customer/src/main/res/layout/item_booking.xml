@@ -144,7 +144,41 @@
             </LinearLayout>
         </LinearLayout>
 
-        <!-- Booking code -->
+        <!-- QR Code section -->
+        <LinearLayout
+                android:id="@+id/layoutQrCode"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+            <ImageView
+                    android:id="@+id/ivQrCode"
+                    android:layout_width="160dp"
+                    android:layout_height="160dp"
+                    android:layout_marginVertical="8dp" />
+
+            <TextView
+                    android:id="@+id/tvBookingCodeLarge"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="monospace"
+                    android:textColor="@color/text_primary"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="Present this QR code for check-in"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="11sp" />
+        </LinearLayout>
+
+        <!-- Booking code small -->
         <TextView
                 android:id="@+id/tvBookingCode"
                 android:layout_width="wrap_content"

@@ -14,9 +14,15 @@ import java.util.List;
 public class CartItemAdapter extends RecyclerView.Adapter<CartItemAdapter.ViewHolder> {
 
     private List<BookingResponseDto> items;
+    private final OnItemSelectionChangeListener listener;
 
-    public CartItemAdapter(List<BookingResponseDto> items) {
+    public interface OnItemSelectionChangeListener {
+        void onSelectionChanged();
+    }
+
+    public CartItemAdapter(List<BookingResponseDto> items, OnItemSelectionChangeListener listener) {
         this.items = items;
+        this.listener = listener;
     }
 
     public void updateItems(List<BookingResponseDto> newItems) {
@@ -49,7 +55,7 @@ public class CartItemAdapter extends RecyclerView.Adapter<CartItemAdapter.ViewHo
         return items.size();
     }
 
-    static class ViewHolder extends RecyclerView.ViewHolder {
+    class ViewHolder extends RecyclerView.ViewHolder {
         private final ItemCartBinding binding;
 
         ViewHolder(ItemCartBinding binding) {
@@ -63,6 +69,16 @@ public class CartItemAdapter extends RecyclerView.Adapter<CartItemAdapter.ViewHo
             binding.tvQuantity.setText("Quantity: " + booking.getQty());
             binding.tvAmount.setText(String.format("₫ %,d", booking.getAmount() != null ? booking.getAmount() : 0));
             binding.tvBookingCode.setText("Code: " + booking.getBookingCode());
+
+            // Handle selection
+            binding.cbSelect.setOnCheckedChangeListener(null); // Clear listener to avoid recursive calls
+            binding.cbSelect.setChecked(booking.isSelected());
+            binding.cbSelect.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                booking.setSelected(isChecked);
+                if (listener != null) {
+                    listener.onSelectionChanged();
+                }
+            });
         }
     }
 }

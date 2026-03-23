@@ -1,5 +1,6 @@
 package com.vaultpool.customer.presentation.ui.main.cart;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,21 +12,26 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import com.google.gson.Gson;
 import com.vaultpool.customer.ServiceLocator;
 import com.vaultpool.customer.databinding.FragmentCartBinding;
 import com.vaultpool.customer.data.local.prefs.PreferencesManager;
 import com.vaultpool.customer.data.remote.api.BookingApi;
+import com.vaultpool.customer.data.remote.dto.ApiResponse;
 import com.vaultpool.customer.data.remote.dto.BookingResponseDto;
+import com.vaultpool.customer.presentation.ui.payment.ConfirmPaymentActivity;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
+import retrofit2.HttpException;
 
-public class CartFragment extends Fragment {
+public class CartFragment extends Fragment implements CartItemAdapter.OnItemSelectionChangeListener {
 
     private FragmentCartBinding binding;
     private PreferencesManager preferencesManager;
@@ -48,7 +54,6 @@ public class CartFragment extends Fragment {
         bookingApi = ServiceLocator.getInstance().getBookingApi();
 
         setupRecyclerView();
-        fetchCart();
         setupCheckoutButton();
     }
 
@@ -61,9 +66,14 @@ public class CartFragment extends Fragment {
     }
 
     private void setupRecyclerView() {
-        adapter = new CartItemAdapter(new ArrayList<>());
+        adapter = new CartItemAdapter(new ArrayList<>(), this);
         binding.rvCart.setLayoutManager(new LinearLayoutManager(getContext()));
         binding.rvCart.setAdapter(adapter);
+    }
+
+    @Override
+    public void onSelectionChanged() {
+        updateTotalAmount();
     }
 
     private void fetchCart() {
@@ -90,7 +100,7 @@ public class CartFragment extends Fragment {
                             }
                         }, error -> {
                             setLoading(false);
-                            showMessage("Error loading cart: " + error.getMessage());
+                            showMessage("Error loading cart: " + getErrorMessage(error));
                         })
         );
     }
@@ -104,13 +114,25 @@ public class CartFragment extends Fragment {
             binding.tvEmptyCart.setVisibility(View.GONE);
             binding.rvCart.setVisibility(View.VISIBLE);
             binding.layoutCheckout.setVisibility(View.VISIBLE);
-
-            long total = 0;
-            for (BookingResponseDto item : items) {
-                total += item.getAmount() != null ? item.getAmount() : 0;
-            }
-            binding.tvTotalAmount.setText(String.format("₫ %,d", total));
+            updateTotalAmount();
         }
+    }
+
+    private void updateTotalAmount() {
+        List<BookingResponseDto> items = adapter.getItems();
+        long total = 0;
+        int selectedCount = 0;
+        if (items != null) {
+            for (BookingResponseDto item : items) {
+                if (item.isSelected()) {
+                    total += item.getAmount() != null ? item.getAmount() : 0;
+                    selectedCount++;
+                }
+            }
+        }
+        binding.tvTotalAmount.setText(String.format("₫ %,d", total));
+        binding.btnCheckout.setEnabled(selectedCount > 0);
+        binding.btnCheckout.setText(selectedCount > 0 ? "Checkout (" + selectedCount + ")" : "Checkout");
     }
 
     private void setupCheckoutButton() {
@@ -120,9 +142,18 @@ public class CartFragment extends Fragment {
     }
 
     private void performCheckout() {
-        List<BookingResponseDto> items = adapter.getItems();
-        if (items == null || items.isEmpty()) {
+        List<BookingResponseDto> allItems = adapter.getItems();
+        if (allItems == null || allItems.isEmpty()) {
             showMessage("Cart is empty");
+            return;
+        }
+
+        List<BookingResponseDto> selectedItems = allItems.stream()
+                .filter(BookingResponseDto::isSelected)
+                .collect(Collectors.toList());
+
+        if (selectedItems.isEmpty()) {
+            showMessage("Please select at least one item");
             return;
         }
 
@@ -131,27 +162,57 @@ public class CartFragment extends Fragment {
         String token = firebaseToken.startsWith("Bearer ") ? firebaseToken : "Bearer " + firebaseToken;
 
         setLoading(true);
-        // Checkout all items in the cart
         disposables.add(
-                Observable.fromIterable(items)
-                        .flatMapSingle(item -> bookingApi.checkoutBooking(token, item.getId()))
+                Observable.fromIterable(selectedItems)
+                        .concatMapSingle(item -> bookingApi.checkoutBooking(token, item.getId()))
                         .toList()
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(results -> {
                             setLoading(false);
-                            showMessage("Checkout successful!");
-                            fetchCart(); // Refresh cart
+                            if (!results.isEmpty()) {
+                                // Lấy ID của booking đầu tiên vừa checkout thành công
+                                Long firstBookingId = results.get(0).getData().getId();
+                                
+                                // Chuyển sang màn hình xác nhận thanh toán (Reuse luồng Book Now)
+                                Intent intent = new Intent(getContext(), ConfirmPaymentActivity.class);
+                                intent.putExtra(ConfirmPaymentActivity.EXTRA_BOOKING_ID, firstBookingId);
+                                startActivity(intent);
+                            } else {
+                                fetchCart();
+                            }
                         }, error -> {
                             setLoading(false);
-                            showMessage("Checkout failed: " + error.getMessage());
+                            showMessage("Checkout failed: " + getErrorMessage(error));
                         })
         );
     }
 
+    private String getErrorMessage(Throwable error) {
+        if (error instanceof HttpException) {
+            try {
+                HttpException httpException = (HttpException) error;
+                if (httpException.response() != null && httpException.response().errorBody() != null) {
+                    String errorBody = httpException.response().errorBody().string();
+                    ApiResponse<?> apiResponse = new Gson().fromJson(errorBody, ApiResponse.class);
+                    if (apiResponse != null) {
+                        if (apiResponse.getError() != null && !apiResponse.getError().isEmpty()) {
+                            return apiResponse.getError();
+                        }
+                        if (apiResponse.getMessage() != null && !apiResponse.getMessage().isEmpty()) {
+                            return apiResponse.getMessage();
+                        }
+                    }
+                }
+            } catch (Exception e) {
+                // Ignore parsing errors
+            }
+        }
+        return error.getMessage();
+    }
+
     private void setLoading(boolean loading) {
         binding.btnCheckout.setEnabled(!loading);
-        // If you have a progress bar in layout, toggle it here
         // binding.progressBar.setVisibility(loading ? View.VISIBLE : View.GONE);
     }
 

@@ -13,6 +13,9 @@ public class ApiResponse<T> {
     @SerializedName("message")
     private String message;
 
+    @SerializedName("error")
+    private String error;
+
     @SerializedName("data")
     private T data;
 
@@ -44,6 +47,14 @@ public class ApiResponse<T> {
 
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    public String getError() {
+        return error;
+    }
+
+    public void setError(String error) {
+        this.error = error;
     }
 
     public T getData() {
