@@ -20,6 +20,8 @@ import com.vaultpool.customer.presentation.ui.login.LoginActivity;
 import com.vaultpool.customer.presentation.ui.main.bookings.BookingsFragment;
 import com.vaultpool.customer.presentation.ui.payment.ZaloPaymentActivity;
 
+import java.util.List;
+
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
@@ -96,15 +98,10 @@ public class MainActivity extends AppCompatActivity {
         if (currentSelected == R.id.nav_bookings) {
             // Fragment đang active, dùng post để đảm bảo fragment đã resume
             binding.getRoot().post(() -> {
-                NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager()
-                        .findFragmentById(R.id.nav_host_fragment);
-                if (navHostFragment != null) {
-                    Fragment current = navHostFragment.getChildFragmentManager()
-                            .getPrimaryNavigationFragment();
-                    if (current instanceof BookingsFragment && tabStatus != null) {
-                        ((BookingsFragment) current).selectTab(tabStatus);
-                        BookingsFragment.pendingTabStatus = null;
-                    }
+                BookingsFragment bookingsFragment = findActiveBookingsFragment();
+                if (bookingsFragment != null && tabStatus != null) {
+                    bookingsFragment.selectTab(tabStatus);
+                    BookingsFragment.pendingTabStatus = null;
                 }
             });
         } else {
@@ -116,6 +113,28 @@ public class MainActivity extends AppCompatActivity {
         intent.removeExtra("navigate_to");
         intent.removeExtra("tab_status");
         intent.removeExtra(ZaloPaymentActivity.EXTRA_PAID_BOOKING_ID);
+    }
+
+    private BookingsFragment findActiveBookingsFragment() {
+        NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.nav_host_fragment);
+        if (navHostFragment == null) {
+            return null;
+        }
+
+        Fragment primary = navHostFragment.getChildFragmentManager().getPrimaryNavigationFragment();
+        if (primary instanceof BookingsFragment) {
+            return (BookingsFragment) primary;
+        }
+
+        List<Fragment> fragments = navHostFragment.getChildFragmentManager().getFragments();
+        for (Fragment fragment : fragments) {
+            if (fragment instanceof BookingsFragment && fragment.isAdded()) {
+                return (BookingsFragment) fragment;
+            }
+        }
+
+        return null;
     }
 
     @Override

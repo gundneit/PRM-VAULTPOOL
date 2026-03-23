@@ -157,24 +157,19 @@ public class BookingsFragment extends Fragment {
 
     private void setupFilterChips() {
         binding.chipAll.setOnClickListener(v -> {
-            currentFilter = null;
-            fetchBookings(null);
+            selectTab(null);
         });
         binding.chipConfirmed.setOnClickListener(v -> {
-            currentFilter = "CONFIRMED";
-            fetchBookings("CONFIRMED");
+            selectTab("CONFIRMED");
         });
         binding.chipCheckedIn.setOnClickListener(v -> {
-            currentFilter = "CHECKED_IN";
-            fetchBookings("CHECKED_IN");
+            selectTab("CHECKED_IN");
         });
         binding.chipPending.setOnClickListener(v -> {
-            currentFilter = "PENDING_PAYMENT";
-            fetchBookings("PENDING_PAYMENT");
+            selectTab("PENDING_PAYMENT");
         });
         binding.chipExpired.setOnClickListener(v -> {
-            currentFilter = "EXPIRED";
-            fetchBookings("EXPIRED");
+            selectTab("EXPIRED");
         });
     }
 
@@ -183,6 +178,12 @@ public class BookingsFragment extends Fragment {
     // =========================================================================
 
     private void setChipChecked(String status) {
+        binding.chipAll.setChecked(false);
+        binding.chipConfirmed.setChecked(false);
+        binding.chipCheckedIn.setChecked(false);
+        binding.chipPending.setChecked(false);
+        binding.chipExpired.setChecked(false);
+
         if (status == null) {
             binding.chipAll.setChecked(true);
             return;
