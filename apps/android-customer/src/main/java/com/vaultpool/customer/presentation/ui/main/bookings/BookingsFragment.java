@@ -81,7 +81,7 @@ public class BookingsFragment extends Fragment {
             case "CONFIRMED":       binding.chipConfirmed.setChecked(true); break;
             case "PENDING_PAYMENT": binding.chipPending.setChecked(true);   break;
             case "CHECKED_IN":      binding.chipCheckedIn.setChecked(true); break;
-            case "CANCELED":        binding.chipCanceled.setChecked(true);  break;
+            case "EXPIRED":         binding.chipExpired.setChecked(true);   break;
             default:                binding.chipAll.setChecked(true);       break;
         }
         fetchBookings(status);
@@ -154,9 +154,9 @@ public class BookingsFragment extends Fragment {
             currentFilter = "PENDING_PAYMENT";
             fetchBookings("PENDING_PAYMENT");
         });
-        binding.chipCanceled.setOnClickListener(v -> {
-            currentFilter = "CANCELED";
-            fetchBookings("CANCELED");
+        binding.chipExpired.setOnClickListener(v -> {
+            currentFilter = "EXPIRED";
+            fetchBookings("EXPIRED");
         });
     }
 
