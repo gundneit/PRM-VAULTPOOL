@@ -6,7 +6,7 @@ spring:
     # ──────────────────────────────────────────────────────────────────
     url: jdbc:mysql://gateway01.ap-southeast-1.prod.aws.tidbcloud.com:4000/lavela_pool?sslMode=VERIFY_IDENTITY&enabledTLSProtocols=TLSv1.2,TLSv1.3&serverTimezone=Asia/Ho_Chi_Minh
     username: WbnWVMnydCuPte3.root
-    password: XPbx6tV6xc9kwLzU
+    password: GYIUnoKoSa6tRSPh
     driver-class-name: com.mysql.cj.jdbc.Driver
     hikari:
       maximum-pool-size: 5

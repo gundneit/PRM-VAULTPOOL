@@ -1,6 +1,7 @@
 package com.vaultpool.customer.presentation.ui.main.home;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -28,7 +29,6 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.gson.Gson;
 import com.vaultpool.customer.R;
 import com.vaultpool.customer.ServiceLocator;
-import com.vaultpool.customer.BuildConfig;
 import com.vaultpool.customer.data.remote.dto.ApiResponse;
 import com.vaultpool.customer.data.remote.dto.PoolDto;
 import com.vaultpool.customer.data.remote.dto.SlotDto;
@@ -36,24 +36,15 @@ import com.vaultpool.customer.databinding.ActivityPoolDetailBinding;
 import com.vaultpool.customer.databinding.DialogBookSlotsBinding;
 import com.vaultpool.customer.data.local.prefs.PreferencesManager;
 import com.vaultpool.customer.data.remote.api.BookingApi;
-import com.vaultpool.customer.data.remote.api.PaymentApi;
 import com.vaultpool.customer.data.remote.dto.CreateBookingRequestDto;
-import com.vaultpool.customer.data.remote.dto.CreatePaymentRequestDto;
 import com.vaultpool.customer.domain.repository.PoolRepository;
 import com.vaultpool.customer.presentation.ui.payment.ConfirmPaymentActivity;
-import com.vaultpool.customer.presentation.ui.payment.ZaloPaymentActivity;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
-import io.reactivex.rxjava3.core.Single;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 
 import retrofit2.HttpException;
-import retrofit2.Retrofit;
-import retrofit2.adapter.rxjava3.RxJava3CallAdapterFactory;
-import retrofit2.converter.gson.GsonConverterFactory;
-import okhttp3.OkHttpClient;
-import okhttp3.logging.HttpLoggingInterceptor;
 
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
@@ -132,7 +123,6 @@ public class PoolDetailActivity extends AppCompatActivity {
         if (actionView != null) {
             tvCartBadge = actionView.findViewById(R.id.tvCartBadge);
             actionView.setOnClickListener(v -> {
-                // Navigate to Cart in MainActivity
                 Intent intent = new Intent(this, com.vaultpool.customer.presentation.ui.main.MainActivity.class);
                 intent.putExtra("navigate_to", "cart");
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
@@ -147,7 +137,7 @@ public class PoolDetailActivity extends AppCompatActivity {
         String firebaseToken = preferencesManager.getFirebaseToken();
         if (firebaseToken == null || tvCartBadge == null) return;
         
-        String token = firebaseToken.startsWith("Bearer ") ? firebaseToken : "Bearer " + firebaseToken;
+        String token = formatToken(firebaseToken);
 
         disposables.add(
                 bookingApi.getCartCount(token)
@@ -168,8 +158,8 @@ public class PoolDetailActivity extends AppCompatActivity {
     }
 
     private void setupClickListeners() {
-        binding.btnMainBook.setOnClickListener(v -> showBookingDialog());
-        binding.btnAddToCart.setOnClickListener(v -> showAddToCartDialog());
+        binding.btnMainBook.setOnClickListener(v -> showBookingDialog(false));
+        binding.btnAddToCart.setOnClickListener(v -> showBookingDialog(true));
     }
 
     private void fetchPoolDetail() {
@@ -246,18 +236,18 @@ public class PoolDetailActivity extends AppCompatActivity {
     }
 
     private void setupSlotsRecyclerView(List<SlotDto> slots) {
-        SlotAdapter adapter = new SlotAdapter(slots, slot -> showBookingDialog());
+        SlotAdapter adapter = new SlotAdapter(slots, slot -> showBookingDialog(false));
         binding.rvSlots.setLayoutManager(new LinearLayoutManager(this));
         binding.rvSlots.setAdapter(adapter);
     }
 
-    private void showBookingDialog() {
+    private void showBookingDialog(boolean isAddToCart) {
         BottomSheetDialog dialog = new BottomSheetDialog(this);
         DialogBookSlotsBinding dialogBinding = DialogBookSlotsBinding.inflate(getLayoutInflater());
         dialog.setContentView(dialogBinding.getRoot());
 
         selectedSlot = null;
-        guestCount = 1; // Reset to default minimum
+        guestCount = 1;
 
         dialog.setOnShowListener(dialogInterface -> {
             BottomSheetDialog d = (BottomSheetDialog) dialogInterface;
@@ -308,17 +298,30 @@ public class PoolDetailActivity extends AppCompatActivity {
         });
 
         displaySlotsInDialog(allSlots, dialogBinding);
+        
+        if (isAddToCart) {
+            dialogBinding.btnContinuePayment.setText("Add to Cart");
+            dialogBinding.btnContinuePayment.setOnClickListener(v -> {
+                if (selectedSlot == null) {
+                    Toast.makeText(this, "Please select a time slot", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                addToCart(selectedSlot);
+                dialog.dismiss();
+            });
+        } else {
+            dialogBinding.btnContinuePayment.setText("Continue to Payment");
+            dialogBinding.btnContinuePayment.setOnClickListener(v -> {
+                if (selectedSlot == null) {
+                    Toast.makeText(this, "Please select a time slot", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                handleBooking(selectedSlot);
+                dialog.dismiss();
+            });
+        }
+        
         updateFooter(dialogBinding);
-
-        dialogBinding.btnContinuePayment.setOnClickListener(v -> {
-            if (selectedSlot == null) {
-                Toast.makeText(this, "Please select a time slot", Toast.LENGTH_SHORT).show();
-                return;
-            }
-            handleBooking(selectedSlot);
-            dialog.dismiss();
-        });
-
         dialog.show();
     }
 
@@ -374,85 +377,29 @@ public class PoolDetailActivity extends AppCompatActivity {
             String timePart = selectedSlot.getStartTime().substring(11, 16);
             dialogBinding.tvFooterSelection.setText(datePart + " • " + timePart);
 
-            double totalPrice = selectedSlot.getPrice() * guestCount;
-            NumberFormat formatter = NumberFormat.getCurrencyInstance(new Locale("vi", "VN"));
-            dialogBinding.tvFooterPrice.setText(formatter.format(totalPrice));
+            int available = selectedSlot.getCapacityAvailable() != null ? selectedSlot.getCapacityAvailable() : 0;
+
+            if (guestCount > available) {
+                dialogBinding.tvFooterPrice.setText("Không đủ chỗ");
+                dialogBinding.tvFooterPrice.setTextColor(Color.RED);
+                dialogBinding.btnContinuePayment.setEnabled(false);
+                dialogBinding.btnContinuePayment.setAlpha(0.5f);
+                Toast.makeText(this, "Slot này chỉ còn " + available + " chỗ trống", Toast.LENGTH_SHORT).show();
+            } else {
+                double totalPrice = selectedSlot.getPrice() * guestCount;
+                NumberFormat formatter = NumberFormat.getCurrencyInstance(new Locale("vi", "VN"));
+                dialogBinding.tvFooterPrice.setText(formatter.format(totalPrice));
+                dialogBinding.tvFooterPrice.setTextColor(Color.parseColor("#0077B6"));
+                dialogBinding.btnContinuePayment.setEnabled(true);
+                dialogBinding.btnContinuePayment.setAlpha(1.0f);
+            }
         } else {
             dialogBinding.tvFooterSelection.setText("Select a slot");
             dialogBinding.tvFooterPrice.setText("0đ");
+            dialogBinding.tvFooterPrice.setTextColor(Color.parseColor("#0077B6"));
+            dialogBinding.btnContinuePayment.setEnabled(false);
+            dialogBinding.btnContinuePayment.setAlpha(0.5f);
         }
-    }
-
-    private void showAddToCartDialog() {
-        BottomSheetDialog dialog = new BottomSheetDialog(this);
-        DialogBookSlotsBinding dialogBinding = DialogBookSlotsBinding.inflate(getLayoutInflater());
-        dialog.setContentView(dialogBinding.getRoot());
-
-        selectedSlot = null;
-        guestCount = 1; // Reset to default minimum
-
-        dialog.setOnShowListener(dialogInterface -> {
-            BottomSheetDialog d = (BottomSheetDialog) dialogInterface;
-            FrameLayout bottomSheet = d.findViewById(com.google.android.material.R.id.design_bottom_sheet);
-            if (bottomSheet != null) {
-                BottomSheetBehavior<FrameLayout> behavior = BottomSheetBehavior.from(bottomSheet);
-                behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
-                behavior.setSkipCollapsed(true);
-            }
-        });
-
-        List<Calendar> dates = new ArrayList<>();
-        Calendar cal = Calendar.getInstance();
-        for (int i = 0; i < 7; i++) {
-            Calendar c = (Calendar) cal.clone();
-            c.add(Calendar.DAY_OF_YEAR, i);
-            dates.add(c);
-        }
-
-        SimpleDateFormat monthFormat = new SimpleDateFormat("MMMM yyyy", Locale.ENGLISH);
-        dialogBinding.tvMonthYear.setText(monthFormat.format(selectedDate.getTime()));
-
-        DateAdapter dateAdapter = new DateAdapter(dates, date -> {
-            selectedDate = date;
-            selectedSlot = null;
-            dialogBinding.tvMonthYear.setText(monthFormat.format(date.getTime()));
-            fetchSlotsForDialog(dialogBinding);
-            updateFooter(dialogBinding);
-        });
-        dialogBinding.rvDates.setAdapter(dateAdapter);
-
-        dialogBinding.tvGuestCount.setText(String.valueOf(guestCount));
-        dialogBinding.btnMinus.setOnClickListener(v -> {
-            if (guestCount > 1) {
-                guestCount--;
-                dialogBinding.tvGuestCount.setText(String.valueOf(guestCount));
-                updateFooter(dialogBinding);
-            }
-        });
-        dialogBinding.btnPlus.setOnClickListener(v -> {
-            if (guestCount < 10) {
-                guestCount++;
-                dialogBinding.tvGuestCount.setText(String.valueOf(guestCount));
-                updateFooter(dialogBinding);
-            } else {
-                Toast.makeText(this, "Maximum 10 guests allowed", Toast.LENGTH_SHORT).show();
-            }
-        });
-
-        displaySlotsInDialog(allSlots, dialogBinding);
-        updateFooter(dialogBinding);
-
-        dialogBinding.btnContinuePayment.setText("Add to Cart");
-        dialogBinding.btnContinuePayment.setOnClickListener(v -> {
-            if (selectedSlot == null) {
-                Toast.makeText(this, "Please select a time slot", Toast.LENGTH_SHORT).show();
-                return;
-            }
-            addToCart(selectedSlot);
-            dialog.dismiss();
-        });
-
-        dialog.show();
     }
 
     private void addToCart(SlotDto slot) {
@@ -471,7 +418,7 @@ public class PoolDetailActivity extends AppCompatActivity {
                         .subscribe(response -> {
                             if (response.isSuccess()) {
                                 Toast.makeText(this, "Added to cart!", Toast.LENGTH_SHORT).show();
-                                updateCartBadge(); // Cập nhật số lượng ngay lập tức
+                                updateCartBadge();
                             } else {
                                 Toast.makeText(this, response.getMessage(), Toast.LENGTH_LONG).show();
                             }
@@ -553,8 +500,6 @@ public class PoolDetailActivity extends AppCompatActivity {
         }
     }
 
-    // ── MapView lifecycle ──────────────────────────────────────────────────────
-
     @Override
     protected void onStart() {
         super.onStart();
@@ -566,7 +511,7 @@ public class PoolDetailActivity extends AppCompatActivity {
         super.onResume();
         if (mapView != null) mapView.onResume();
         dismissRedirectingDialog();
-        updateCartBadge(); // Cập nhật lại mỗi khi quay lại trang này
+        updateCartBadge();
     }
 
     @Override
