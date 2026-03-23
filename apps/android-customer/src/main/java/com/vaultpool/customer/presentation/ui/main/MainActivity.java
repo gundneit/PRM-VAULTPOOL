@@ -18,6 +18,7 @@ import com.vaultpool.customer.data.remote.api.BookingApi;
 import com.vaultpool.customer.databinding.ActivityMainBinding;
 import com.vaultpool.customer.presentation.ui.login.LoginActivity;
 import com.vaultpool.customer.presentation.ui.main.bookings.BookingsFragment;
+import com.vaultpool.customer.presentation.ui.payment.ZaloPaymentActivity;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
@@ -49,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
         // Setup Navigation Component
         NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.nav_host_fragment);
-        
+
         if (navHostFragment != null) {
             NavController navController = navHostFragment.getNavController();
             // Link BottomNavigationView with NavController
@@ -73,14 +74,22 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void handleNavigationIntent(Intent intent) {
-        if (intent == null) return;
+        if (intent == null)
+            return;
         String navigateTo = intent.getStringExtra("navigate_to");
-        if (!"bookings".equals(navigateTo)) return;
-        if (binding.bottomNavigation == null) return;
+        if (!"bookings".equals(navigateTo))
+            return;
+        if (binding.bottomNavigation == null)
+            return;
 
         String tabStatus = intent.getStringExtra("tab_status");
         if (tabStatus != null) {
             BookingsFragment.pendingTabStatus = tabStatus;
+        }
+
+        long paidBookingId = intent.getLongExtra(ZaloPaymentActivity.EXTRA_PAID_BOOKING_ID, -1L);
+        if (paidBookingId > 0) {
+            BookingsFragment.pendingPaidBookingId = paidBookingId;
         }
 
         int currentSelected = binding.bottomNavigation.getSelectedItemId();
@@ -100,10 +109,13 @@ public class MainActivity extends AppCompatActivity {
             });
         } else {
             // Set pending TRƯỚC khi switch tab
-            binding.getRoot().post(() ->
-                    binding.bottomNavigation.setSelectedItemId(R.id.nav_bookings)
-            );
+            binding.getRoot().post(() -> binding.bottomNavigation.setSelectedItemId(R.id.nav_bookings));
         }
+
+        // Consume one-time navigation extras để tránh xử lý lặp
+        intent.removeExtra("navigate_to");
+        intent.removeExtra("tab_status");
+        intent.removeExtra(ZaloPaymentActivity.EXTRA_PAID_BOOKING_ID);
     }
 
     @Override
@@ -130,8 +142,7 @@ public class MainActivity extends AppCompatActivity {
                             }
                         }, error -> {
                             // Silent fail - don't show error toast for badge updates
-                        })
-        );
+                        }));
     }
 
     private void showCartBadge(int count) {
@@ -146,22 +157,24 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setupProfileDisplay() {
-        if (binding.tvWelcome == null) return; // Not in the simple layout mode
+        if (binding.tvWelcome == null)
+            return; // Not in the simple layout mode
 
         boolean isStaff = preferencesManager.isStaff();
-        
+
         // Show user dashboard button if user is not staff
         binding.btnUserDashboard.setVisibility(!isStaff ? android.view.View.VISIBLE : android.view.View.GONE);
-        
+
         // Hide staff button if user is not staff
         binding.btnStaff.setVisibility(isStaff ? android.view.View.VISIBLE : android.view.View.GONE);
-        
+
         bindProfile();
     }
 
     private void bindProfile() {
-        if (binding.tvWelcome == null) return;
-        
+        if (binding.tvWelcome == null)
+            return;
+
         String email = preferencesManager.getUserEmail();
         binding.tvWelcome.setText(getString(R.string.welcome_title));
         binding.tvEmailValue.setText(email != null ? email : getString(R.string.guest_user));
@@ -185,7 +198,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void refreshProfile() {
-        if (binding.tvStatusValue == null) return;
+        if (binding.tvStatusValue == null)
+            return;
 
         binding.tvStatusValue.setText(getString(R.string.status_refreshing));
         setLoading(true);
@@ -204,8 +218,7 @@ public class MainActivity extends AppCompatActivity {
                         }, throwable -> {
                             setLoading(false);
                             handleRefreshFailure(throwable.getMessage());
-                        })
-        );
+                        }));
     }
 
     private void handleRefreshFailure(String message) {

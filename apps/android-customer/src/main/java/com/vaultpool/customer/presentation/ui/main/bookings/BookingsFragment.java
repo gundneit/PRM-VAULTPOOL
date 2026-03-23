@@ -37,10 +37,19 @@ public class BookingsFragment extends Fragment {
     private BookingItemAdapter adapter;
     private final CompositeDisposable disposables = new CompositeDisposable();
 
-    // Đặt tất cả fields ở đầu class, rõ ràng
     private String currentFilter = null;
     private boolean isFirstLoad = true;
     public static String pendingTabStatus = null;
+    public static Long pendingPaidBookingId = null;
+    private Long recentlyPaidBookingId = null;
+    private long recentlyPaidUntilMs = 0L;
+
+    // Polling config — chờ webhook BE xác nhận sau thanh toán thành công
+    private static final int POLL_INTERVAL_MS = 2000;
+    private static final int POLL_MAX_COUNT = 30;
+    private static final long RECENTLY_PAID_GUARD_MS = 120000L;
+    private int pollCount = 0;
+    private boolean isPolling = false;
 
     // =========================================================================
     // Lifecycle
@@ -49,8 +58,8 @@ public class BookingsFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
-                             @Nullable ViewGroup container,
-                             @Nullable Bundle savedInstanceState) {
+            @Nullable ViewGroup container,
+            @Nullable Bundle savedInstanceState) {
         binding = FragmentBookingsBinding.inflate(inflater, container, false);
         return binding.getRoot();
     }
@@ -65,14 +74,19 @@ public class BookingsFragment extends Fragment {
         setupRecyclerView();
         setupFilterChips();
 
-        // Ưu tiên pendingTabStatus nếu navigate về từ ZaloPay (MainActivity recreate)
-        // Lúc này onViewCreated chạy trước onResume → xử lý ở đây là đúng
         if (pendingTabStatus != null) {
             String status = pendingTabStatus;
             pendingTabStatus = null;
             currentFilter = status;
             setChipChecked(status);
-            fetchBookings(status);
+            consumePendingPaidBooking();
+
+            if ("CONFIRMED".equals(status)) {
+                // Polling để chờ webhook BE xác nhận booking sau thanh toán ZaloPay
+                pollForConfirmed();
+            } else {
+                fetchBookings(status);
+            }
         } else {
             currentFilter = "CONFIRMED";
             binding.chipConfirmed.setChecked(true);
@@ -86,12 +100,13 @@ public class BookingsFragment extends Fragment {
 
         if (pendingTabStatus != null) {
             // Fallback: fragment cũ còn tồn tại, onViewCreated không chạy lại
-            // → xử lý ở đây
             String status = pendingTabStatus;
             pendingTabStatus = null;
+            consumePendingPaidBooking();
             selectTab(status);
-        } else if (!isFirstLoad) {
-            // Refresh khi user quay lại tab Bookings từ tab khác (không phải từ ZaloPay)
+        } else if (!isFirstLoad && !isPolling) {
+            // Refresh khi user quay lại tab từ tab khác
+            // Guard !isPolling để không interrupt polling sau ZaloPay
             fetchBookings(currentFilter);
         }
 
@@ -101,18 +116,33 @@ public class BookingsFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        isPolling = false;
         disposables.clear();
         binding = null;
     }
 
     // =========================================================================
-    // Public API — dùng bởi MainActivity.handleNavigationIntent khi fragment cũ còn sống
+    // Public API — dùng bởi MainActivity.handleNavigationIntent
     // =========================================================================
 
     public void selectTab(String status) {
         currentFilter = status;
         setChipChecked(status);
-        fetchBookings(status);
+        consumePendingPaidBooking();
+
+        if ("CONFIRMED".equals(status)) {
+            pollForConfirmed();
+        } else {
+            fetchBookings(status);
+        }
+    }
+
+    private void consumePendingPaidBooking() {
+        if (pendingPaidBookingId != null && pendingPaidBookingId > 0) {
+            recentlyPaidBookingId = pendingPaidBookingId;
+            recentlyPaidUntilMs = System.currentTimeMillis() + RECENTLY_PAID_GUARD_MS;
+            pendingPaidBookingId = null;
+        }
     }
 
     // =========================================================================
@@ -152,27 +182,99 @@ public class BookingsFragment extends Fragment {
     // UI helpers
     // =========================================================================
 
-    /**
-     * Set chip đúng theo status — dùng setChecked() programmatically,
-     * KHÔNG trigger onClick listener nên không gây double-fetch.
-     */
     private void setChipChecked(String status) {
         if (status == null) {
             binding.chipAll.setChecked(true);
             return;
         }
         switch (status) {
-            case "CONFIRMED":       binding.chipConfirmed.setChecked(true); break;
-            case "PENDING_PAYMENT": binding.chipPending.setChecked(true);   break;
-            case "CHECKED_IN":      binding.chipCheckedIn.setChecked(true); break;
-            case "EXPIRED":         binding.chipExpired.setChecked(true);   break;
-            default:                binding.chipAll.setChecked(true);       break;
+            case "CONFIRMED":
+                binding.chipConfirmed.setChecked(true);
+                break;
+            case "PENDING_PAYMENT":
+                binding.chipPending.setChecked(true);
+                break;
+            case "CHECKED_IN":
+                binding.chipCheckedIn.setChecked(true);
+                break;
+            case "EXPIRED":
+                binding.chipExpired.setChecked(true);
+                break;
+            default:
+                binding.chipAll.setChecked(true);
+                break;
         }
     }
 
     private void setLoading(boolean loading) {
-        if (binding == null) return;
+        if (binding == null)
+            return;
         binding.progressBar.setVisibility(loading ? View.VISIBLE : View.GONE);
+    }
+
+    // =========================================================================
+    // Polling — chờ webhook BE xác nhận sau ZaloPay thành công
+    // Poll mỗi 2s, tối đa 30 lần (60s). Nếu hết lượt → fallback fetchBookings.
+    // =========================================================================
+
+    private void pollForConfirmed() {
+        if (isPolling)
+            return;
+        isPolling = true;
+        pollCount = 0;
+        setLoading(true);
+        schedulePoll();
+    }
+
+    private void schedulePoll() {
+        if (binding == null)
+            return;
+        binding.getRoot().postDelayed(() -> {
+            if (binding == null || !isPolling)
+                return;
+
+            String token = preferencesManager.getFirebaseToken();
+            if (token == null) {
+                isPolling = false;
+                setLoading(false);
+                return;
+            }
+            String bearer = token.startsWith("Bearer ") ? token : "Bearer " + token;
+
+            disposables.add(
+                    bookingApi.getMyBookings(bearer, "CONFIRMED")
+                            .subscribeOn(Schedulers.io())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribe(response -> {
+                                if (binding == null)
+                                    return;
+
+                                boolean hasConfirmed = response.isSuccess()
+                                        && response.getData() != null
+                                        && hasConfirmedBooking(response.getData());
+
+                                if (hasConfirmed) {
+                                    // Webhook đã xác nhận → hiển thị, dừng poll
+                                    isPolling = false;
+                                    setLoading(false);
+                                    List<BookingResponseDto> list = response.getData();
+                                    adapter.updateItems(list);
+                                    binding.tvEmpty.setVisibility(View.GONE);
+                                    binding.rvBookings.setVisibility(View.VISIBLE);
+                                } else if (pollCount < POLL_MAX_COUNT) {
+                                    // Chưa có CONFIRMED → thử lại
+                                    pollCount++;
+                                    schedulePoll();
+                                } else {
+                                    // Hết lượt poll → fetch bình thường, dừng loading
+                                    isPolling = false;
+                                    fetchBookings("CONFIRMED");
+                                }
+                            }, error -> {
+                                isPolling = false;
+                                fetchBookings("CONFIRMED");
+                            }));
+        }, POLL_INTERVAL_MS);
     }
 
     // =========================================================================
@@ -181,7 +283,8 @@ public class BookingsFragment extends Fragment {
 
     private void fetchBookings(String status) {
         String token = preferencesManager.getFirebaseToken();
-        if (token == null) return;
+        if (token == null)
+            return;
         String bearer = token.startsWith("Bearer ") ? token : "Bearer " + token;
 
         setLoading(true);
@@ -192,7 +295,8 @@ public class BookingsFragment extends Fragment {
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(response -> {
                             setLoading(false);
-                            if (binding == null) return; // guard nếu view đã bị destroy
+                            if (binding == null)
+                                return;
                             if (response.isSuccess() && response.getData() != null) {
                                 List<BookingResponseDto> list = response.getData();
                                 adapter.updateItems(list);
@@ -204,8 +308,7 @@ public class BookingsFragment extends Fragment {
                             if (getContext() != null) {
                                 Toast.makeText(getContext(), error.getMessage(), Toast.LENGTH_SHORT).show();
                             }
-                        })
-        );
+                        }));
     }
 
     // =========================================================================
@@ -214,8 +317,50 @@ public class BookingsFragment extends Fragment {
 
     private void onBookingItemClick(BookingResponseDto booking) {
         if ("PENDING_PAYMENT".equals(booking.getStatus())) {
+            if (isRecentlyPaidBooking(booking)) {
+                new MaterialAlertDialogBuilder(requireContext())
+                        .setTitle("Đang xử lý")
+                        .setMessage(
+                                "Đơn này vừa thanh toán thành công, hệ thống đang chờ webhook xác nhận. Vui lòng đợi thêm một lúc rồi tải lại.")
+                        .setPositiveButton("OK", null)
+                        .show();
+                return;
+            }
+
+            // Guard: paymentStatus SUCCESS = đang chờ webhook, không cho resume
+            if ("SUCCESS".equals(booking.getPaymentStatus())) {
+                new MaterialAlertDialogBuilder(requireContext())
+                        .setTitle("Đang xử lý")
+                        .setMessage(
+                                "Thanh toán đã được ghi nhận, đang chờ xác nhận từ hệ thống. Vui lòng thử lại sau ít phút.")
+                        .setPositiveButton("OK", null)
+                        .show();
+                return;
+            }
             showResumePaymentDialog(booking);
         }
+    }
+
+    private boolean isRecentlyPaidBooking(BookingResponseDto booking) {
+        if (booking == null || booking.getId() == null || recentlyPaidBookingId == null)
+            return false;
+        if (System.currentTimeMillis() > recentlyPaidUntilMs)
+            return false;
+        return recentlyPaidBookingId.equals(booking.getId());
+    }
+
+    private boolean hasConfirmedBooking(List<BookingResponseDto> list) {
+        if (list == null || list.isEmpty())
+            return false;
+        if (recentlyPaidBookingId == null)
+            return true;
+
+        for (BookingResponseDto item : list) {
+            if (item != null && recentlyPaidBookingId.equals(item.getId())) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private void showResumePaymentDialog(BookingResponseDto booking) {
@@ -230,17 +375,21 @@ public class BookingsFragment extends Fragment {
 
     private void resumePayment(BookingResponseDto booking) {
         String token = preferencesManager.getFirebaseToken();
-        if (token == null) return;
+        if (token == null)
+            return;
         String bearer = token.startsWith("Bearer ") ? token : "Bearer " + token;
 
         PaymentApi paymentApi = ServiceLocator.getInstance().getPaymentApi();
 
+        setLoading(true);
+
         disposables.add(
                 paymentApi.createPayment(bearer,
-                                new CreatePaymentRequestDto(booking.getId(), "ZALOPAY"))
+                        new CreatePaymentRequestDto(booking.getId(), "ZALOPAY"))
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(response -> {
+                            setLoading(false);
                             if (response.isSuccess() && response.getData() != null) {
                                 Intent intent = new Intent(requireContext(), ZaloPaymentActivity.class);
                                 intent.putExtra(ZaloPaymentActivity.EXTRA_ZP_TRANS_TOKEN,
@@ -250,12 +399,14 @@ public class BookingsFragment extends Fragment {
                                 startActivity(intent);
                             } else {
                                 Toast.makeText(getContext(), response.getMessage(), Toast.LENGTH_LONG).show();
+                                fetchBookings(currentFilter);
                             }
                         }, error -> {
+                            setLoading(false);
                             if (getContext() != null) {
                                 Toast.makeText(getContext(), error.getMessage(), Toast.LENGTH_LONG).show();
+                                fetchBookings(currentFilter);
                             }
-                        })
-        );
+                        }));
     }
 }

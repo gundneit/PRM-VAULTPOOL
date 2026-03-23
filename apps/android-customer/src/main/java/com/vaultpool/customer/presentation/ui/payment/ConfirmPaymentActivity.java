@@ -14,11 +14,13 @@ import com.vaultpool.customer.ServiceLocator;
 import com.vaultpool.customer.data.local.prefs.PreferencesManager;
 import com.vaultpool.customer.data.remote.api.BookingApi;
 import com.vaultpool.customer.data.remote.api.PaymentApi;
+import com.vaultpool.customer.data.remote.dto.ApiResponse;
 import com.vaultpool.customer.data.remote.dto.BookingResponseDto;
 import com.vaultpool.customer.data.remote.dto.CreatePaymentRequestDto;
 import com.vaultpool.customer.databinding.ActivityConfirmPaymentBinding;
 
 import java.text.NumberFormat;
+import java.util.List;
 import java.util.Locale;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
@@ -36,7 +38,6 @@ public class ConfirmPaymentActivity extends AppCompatActivity {
     private final CompositeDisposable disposables = new CompositeDisposable();
     private BookingResponseDto currentBooking;
     private AlertDialog loadingDialog;
-    private boolean hasLaunchedPayment = false;
     private Long targetBookingId = -1L;
 
     @Override
@@ -60,9 +61,6 @@ public class ConfirmPaymentActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        if (hasLaunchedPayment) {
-            finish();
-        }
         dismissRedirectingDialog();
     }
 
@@ -72,7 +70,10 @@ public class ConfirmPaymentActivity extends AppCompatActivity {
 
     private void fetchPendingBooking() {
         String token = getToken();
-        if (token == null) return;
+        if (token == null) {
+            showToastAndFinish("Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.", true);
+            return;
+        }
 
         setLoading(true);
 
@@ -82,33 +83,45 @@ public class ConfirmPaymentActivity extends AppCompatActivity {
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(response -> {
                             setLoading(false);
-                            if (response.isSuccess() && response.getData() != null && !response.getData().isEmpty()) {
-                                if (targetBookingId != -1L) {
-                                    // Tìm đúng booking theo ID được truyền sang
-                                    for (BookingResponseDto b : response.getData()) {
-                                        if (b.getId().equals(targetBookingId)) {
-                                            currentBooking = b;
-                                            break;
-                                        }
-                                    }
-                                }
-                                
-                                // Nếu không tìm thấy theo ID hoặc không truyền ID, lấy cái mới nhất (đầu tiên)
-                                if (currentBooking == null) {
-                                    currentBooking = response.getData().get(0);
-                                }
-                                
-                                displayBooking(currentBooking);
-                            } else {
-                                Toast.makeText(this, "Không tìm thấy booking đang chờ thanh toán.", Toast.LENGTH_SHORT).show();
-                                finish();
-                            }
+                            handlePendingBookingResponse(response);
                         }, error -> {
                             setLoading(false);
-                            Toast.makeText(this, "Lỗi tải dữ liệu: " + error.getMessage(), Toast.LENGTH_LONG).show();
-                            finish();
-                        })
-        );
+                            showToastAndFinish("Lỗi tải dữ liệu: " + error.getMessage(), true);
+                        }));
+    }
+
+    private void handlePendingBookingResponse(ApiResponse<List<BookingResponseDto>> response) {
+        if (response == null || !response.isSuccess() || response.getData() == null || response.getData().isEmpty()) {
+            showToastAndFinish("Không tìm thấy booking đang chờ thanh toán.", false);
+            return;
+        }
+
+        BookingResponseDto selected = selectTargetBooking(response.getData());
+        if (selected == null) {
+            showToastAndFinish("Booking này đã được xử lý hoặc không còn chờ thanh toán.", false);
+            return;
+        }
+
+        currentBooking = selected;
+        displayBooking(currentBooking);
+    }
+
+    private BookingResponseDto selectTargetBooking(List<BookingResponseDto> bookings) {
+        if (bookings == null || bookings.isEmpty()) {
+            return null;
+        }
+
+        if (targetBookingId == null || targetBookingId <= 0) {
+            return bookings.get(0);
+        }
+
+        for (BookingResponseDto booking : bookings) {
+            if (booking != null && booking.getId() != null && booking.getId().equals(targetBookingId)) {
+                return booking;
+            }
+        }
+
+        return null;
     }
 
     private void displayBooking(BookingResponseDto booking) {
@@ -138,59 +151,73 @@ public class ConfirmPaymentActivity extends AppCompatActivity {
 
     private void setupActions() {
         binding.btnConfirmPayment.setOnClickListener(v -> {
-            if (currentBooking == null) return;
+            if (currentBooking == null)
+                return;
             showRedirectingDialog();
             createPayment(currentBooking.getId());
         });
 
-        binding.btnCancel.setOnClickListener(v ->
-                new MaterialAlertDialogBuilder(this)
-                        .setTitle("Hủy đặt chỗ?")
-                        .setMessage("Booking này sẽ bị treo nếu bạn không thanh toán ngay.")
-                        .setPositiveButton("Rời đi", (d, w) -> finish())
-                        .setNegativeButton("Ở lại", null)
-                        .show()
-        );
+        binding.btnCancel.setOnClickListener(v -> new MaterialAlertDialogBuilder(this)
+                .setTitle("Hủy đặt chỗ?")
+                .setMessage("Booking này sẽ bị treo nếu bạn không thanh toán ngay.")
+                .setPositiveButton("Rời đi", (d, w) -> finish())
+                .setNegativeButton("Ở lại", null)
+                .show());
     }
 
     private void createPayment(Long bookingId) {
         String token = getToken();
-        if (token == null) return;
+        if (token == null) {
+            dismissRedirectingDialog();
+            showToastAndFinish("Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.", true);
+            return;
+        }
 
         disposables.add(
                 paymentApi.createPayment(token,
-                                new CreatePaymentRequestDto(bookingId, "ZALOPAY"))
+                        new CreatePaymentRequestDto(bookingId, "ZALOPAY"))
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(response -> {
                             dismissRedirectingDialog();
                             if (response.isSuccess() && response.getData() != null) {
-                                hasLaunchedPayment = true;
-                                Intent intent = new Intent(this, ZaloPaymentActivity.class);
-                                intent.putExtra(ZaloPaymentActivity.EXTRA_ZP_TRANS_TOKEN,
-                                        response.getData().getRedirectUrl());
-                                intent.putExtra(ZaloPaymentActivity.EXTRA_BOOKING_ID,
+                                launchZaloPayment(response.getData().getRedirectUrl(),
                                         response.getData().getBookingId());
-                                startActivity(intent);
-                                finish();
                             } else {
                                 Toast.makeText(this, response.getMessage(), Toast.LENGTH_LONG).show();
                             }
                         }, error -> {
                             dismissRedirectingDialog();
                             Toast.makeText(this, "Lỗi tạo thanh toán: " + error.getMessage(), Toast.LENGTH_LONG).show();
-                        })
-        );
+                        }));
+    }
+
+    private void launchZaloPayment(String redirectToken, Long bookingId) {
+        if (redirectToken == null || redirectToken.trim().isEmpty() || bookingId == null || bookingId <= 0) {
+            Toast.makeText(this, "Dữ liệu thanh toán không hợp lệ. Vui lòng thử lại.", Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        Intent intent = new Intent(this, ZaloPaymentActivity.class);
+        intent.putExtra(ZaloPaymentActivity.EXTRA_ZP_TRANS_TOKEN, redirectToken);
+        intent.putExtra(ZaloPaymentActivity.EXTRA_BOOKING_ID, bookingId);
+        try {
+            startActivity(intent);
+        } catch (Throwable throwable) {
+            Toast.makeText(this, "Không thể mở ZaloPay. Vui lòng thử lại.", Toast.LENGTH_LONG).show();
+        }
     }
 
     private String getToken() {
         String token = preferencesManager.getFirebaseToken();
-        if (token == null) return null;
+        if (token == null)
+            return null;
         return token.startsWith("Bearer ") ? token : "Bearer " + token;
     }
 
     private String formatTime(String iso) {
-        if (iso == null || iso.length() < 16) return iso != null ? iso : "-";
+        if (iso == null || iso.length() < 16)
+            return iso != null ? iso : "-";
         String time = iso.substring(11, 16);
         String date = iso.substring(8, 10) + "/" + iso.substring(5, 7);
         return time + " · " + date;
@@ -213,6 +240,11 @@ public class ConfirmPaymentActivity extends AppCompatActivity {
         if (loadingDialog != null && loadingDialog.isShowing()) {
             loadingDialog.dismiss();
         }
+    }
+
+    private void showToastAndFinish(String message, boolean longDuration) {
+        Toast.makeText(this, message, longDuration ? Toast.LENGTH_LONG : Toast.LENGTH_SHORT).show();
+        finish();
     }
 
     @Override

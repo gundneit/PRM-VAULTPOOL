@@ -54,6 +54,6 @@ app:
       create-url: ${ZALOPAY_SANDBOX_CREATE_URL:https://sb-openapi.zalopay.vn/v2/create}
       # URL để ZaloPay server-to-server callback về backend (endpoint ở PaymentController)
       #callback-url: ${ZALOPAY_SANDBOX_CALLBACK_URL:http://localhost:8080/webhooks/payment/ZALOPAY}
-      callback-url: ${ZALOPAY_SANDBOX_CALLBACK_URL:https://dinah-cavernous-unbiliously.ngrok-free.dev/webhooks/payment/ZALOPAY}
+      callback-url: ${ZALOPAY_SANDBOX_CALLBACK_URL:https://inheritably-expansible-angeline.ngrok-free.dev/webhooks/payment/ZALOPAY}
       
       bank-code: ${ZALOPAY_SANDBOX_BANK_CODE:zalopayapp}
