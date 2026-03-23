@@ -46,8 +46,8 @@ public class BookingResponseDto {
     @SerializedName("createdAt")
     private String createdAt;
 
-    // Local UI state
-    private boolean isSelected = true;
+    // Local UI state - default to false as requested
+    private boolean isSelected = false;
 
     public Long getId() {
         return id;

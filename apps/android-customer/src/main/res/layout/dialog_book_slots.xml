@@ -82,29 +82,42 @@
                         android:layout_height="48dp"
                         android:background="@drawable/bg_subtle_circle"
                         android:padding="12dp"
-                        android:src="@android:drawable/ic_menu_search"
+                        android:src="@drawable/ic_guests"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:tint="#0077B6" />
+                        app:layout_constraintTop_toTopOf="parent" />
 
-                    <TextView
-                        android:id="@+id/tvGuestLabel"
+                    <LinearLayout
+                        android:id="@+id/llGuestLabels"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="16dp"
-                        android:text="Guests"
-                        android:textColor="#212121"
-                        android:textSize="16sp"
-                        android:textStyle="bold"
+                        android:orientation="vertical"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toEndOf="@id/ivGuestIcon"
-                        app:layout_constraintTop_toTopOf="parent" />
+                        app:layout_constraintTop_toTopOf="parent">
+
+                        <TextView
+                            android:id="@+id/tvGuestLabel"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Guests"
+                            android:textColor="#212121"
+                            android:textSize="18sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Maximum 10 people"
+                            android:textColor="#757575"
+                            android:textSize="14sp" />
+                    </LinearLayout>
 
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:background="@android:color/white"
+                        android:background="@drawable/bg_guest_selector"
                         android:gravity="center"
                         android:orientation="horizontal"
                         android:padding="4dp"
@@ -114,11 +127,11 @@
 
                         <ImageButton
                             android:id="@+id/btnMinus"
-                            android:layout_width="32dp"
-                            android:layout_height="32dp"
-                            android:background="?attr/selectableItemBackgroundBorderless"
-                            android:src="@android:drawable/button_onoff_indicator_off"
-                            app:tint="#0077B6" />
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:background="@drawable/bg_guest_minus_selector"
+                            android:padding="8dp"
+                            android:src="@drawable/ic_minus_blue" />
 
                         <TextView
                             android:id="@+id/tvGuestCount"
@@ -132,11 +145,11 @@
 
                         <ImageButton
                             android:id="@+id/btnPlus"
-                            android:layout_width="32dp"
-                            android:layout_height="32dp"
-                            android:background="?attr/selectableItemBackgroundBorderless"
-                            android:src="@android:drawable/button_onoff_indicator_on"
-                            app:tint="#0077B6" />
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:background="@drawable/bg_guest_minus_selector"
+                            android:padding="8dp"
+                            android:src="@drawable/ic_plus_blue" />
                     </LinearLayout>
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </com.google.android.material.card.MaterialCardView>
