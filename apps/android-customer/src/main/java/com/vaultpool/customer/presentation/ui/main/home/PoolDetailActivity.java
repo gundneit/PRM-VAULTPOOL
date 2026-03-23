@@ -12,8 +12,10 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import com.bumptech.glide.Glide;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.gson.Gson;
 import com.vaultpool.customer.ServiceLocator;
 import com.vaultpool.customer.BuildConfig;
+import com.vaultpool.customer.data.remote.dto.ApiResponse;
 import com.vaultpool.customer.data.remote.dto.PoolDto;
 import com.vaultpool.customer.data.remote.dto.SlotDto;
 import com.vaultpool.customer.databinding.ActivityPoolDetailBinding;
@@ -21,20 +23,19 @@ import com.vaultpool.customer.databinding.DialogBookSlotsBinding;
 import com.vaultpool.customer.data.local.prefs.PreferencesManager;
 import com.vaultpool.customer.data.remote.api.BookingApi;
 import com.vaultpool.customer.data.remote.api.PaymentApi;
-import com.vaultpool.customer.data.remote.dto.BookingResponseDto;
 import com.vaultpool.customer.data.remote.dto.CreateBookingRequestDto;
 import com.vaultpool.customer.data.remote.dto.CreatePaymentRequestDto;
-import com.vaultpool.customer.data.remote.dto.PaymentResponseDto;
 import com.vaultpool.customer.domain.repository.PoolRepository;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
 import io.reactivex.rxjava3.core.Single;
 import io.reactivex.rxjava3.schedulers.Schedulers;
-import okhttp3.OkHttpClient;
-import okhttp3.logging.HttpLoggingInterceptor;
+import retrofit2.HttpException;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava3.RxJava3CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
+import okhttp3.OkHttpClient;
+import okhttp3.logging.HttpLoggingInterceptor;
 import com.vaultpool.customer.presentation.ui.payment.ZaloPaymentActivity;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
@@ -58,7 +59,6 @@ public class PoolDetailActivity extends AppCompatActivity {
     private int guestCount = 1;
     private SlotDto selectedSlot = null;
     
-    // Lưu trữ adapter để có thể xóa selection chéo nhau
     private TimeSlotAdapter morningAdapter;
     private TimeSlotAdapter afternoonAdapter;
 
@@ -76,22 +76,32 @@ public class PoolDetailActivity extends AppCompatActivity {
 
         poolRepository = ServiceLocator.getInstance().getPoolRepository();
         preferencesManager = ServiceLocator.getInstance().getPreferencesManager();
-
-        // Trong PoolDetailActivity.onCreate(), thay đoạn tạo Retrofit thành:
+        bookingApi = ServiceLocator.getInstance().getBookingApi();
+        
+        // Initialize payment api with authenticated client
         HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
         logging.setLevel(HttpLoggingInterceptor.Level.BODY);
 
         OkHttpClient client = new OkHttpClient.Builder()
                 .addInterceptor(logging)
+                .addInterceptor(chain -> {
+                    String token = preferencesManager.getFirebaseToken();
+                    okhttp3.Request original = chain.request();
+                    if (token != null && !token.isEmpty()) {
+                        return chain.proceed(original.newBuilder()
+                                .header("Authorization", "Bearer " + token)
+                                .build());
+                    }
+                    return chain.proceed(original);
+                })
                 .build();
 
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(BuildConfig.BACKEND_BASE_URL)
-                .client(client)  // ← thêm dòng này
+                .client(client)
                 .addConverterFactory(GsonConverterFactory.create())
                 .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
                 .build();
-        bookingApi = retrofit.create(BookingApi.class);
         paymentApi = retrofit.create(PaymentApi.class);
         
         setupToolbar();
@@ -106,11 +116,12 @@ public class PoolDetailActivity extends AppCompatActivity {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowTitleEnabled(false);
         }
-        binding.toolbar.setNavigationOnClickListener(v -> onBackPressed());
+        binding.toolbar.setNavigationOnClickListener(v -> finish());
     }
 
     private void setupClickListeners() {
         binding.btnMainBook.setOnClickListener(v -> showBookingDialog());
+        binding.btnAddToCart.setOnClickListener(v -> showAddToCartDialog());
     }
 
     private void fetchPoolDetail() {
@@ -123,7 +134,7 @@ public class PoolDetailActivity extends AppCompatActivity {
                                 displayPoolDetail(response.getData());
                             }
                         }, throwable -> {
-                            Toast.makeText(this, "Error: " + throwable.getMessage(), Toast.LENGTH_SHORT).show();
+                            handleError(throwable, "Error fetching pool detail");
                         })
         );
     }
@@ -164,15 +175,13 @@ public class PoolDetailActivity extends AppCompatActivity {
                                 setupSlotsRecyclerView(response.getData());
                             }
                         }, throwable -> {
-                            Toast.makeText(this, "Error loading slots: " + throwable.getMessage(), Toast.LENGTH_SHORT).show();
+                            handleError(throwable, "Error loading slots");
                         })
         );
     }
 
     private void setupSlotsRecyclerView(List<SlotDto> slots) {
-        SlotAdapter adapter = new SlotAdapter(slots, slot -> {
-            showBookingDialog();
-        });
+        SlotAdapter adapter = new SlotAdapter(slots, slot -> showBookingDialog());
         binding.rvSlots.setLayoutManager(new LinearLayoutManager(this));
         binding.rvSlots.setAdapter(adapter);
     }
@@ -182,7 +191,6 @@ public class PoolDetailActivity extends AppCompatActivity {
         DialogBookSlotsBinding dialogBinding = DialogBookSlotsBinding.inflate(getLayoutInflater());
         dialog.setContentView(dialogBinding.getRoot());
 
-        // Reset selection when opening dialog
         selectedSlot = null;
 
         dialog.setOnShowListener(dialogInterface -> {
@@ -195,7 +203,6 @@ public class PoolDetailActivity extends AppCompatActivity {
             }
         });
 
-        // 1. Setup Date Selection
         List<Calendar> dates = new ArrayList<>();
         Calendar cal = Calendar.getInstance();
         for (int i = 0; i < 7; i++) {
@@ -209,14 +216,13 @@ public class PoolDetailActivity extends AppCompatActivity {
 
         DateAdapter dateAdapter = new DateAdapter(dates, date -> {
             selectedDate = date;
-            selectedSlot = null; // Bỏ chọn slot khi đổi ngày
+            selectedSlot = null;
             dialogBinding.tvMonthYear.setText(monthFormat.format(date.getTime()));
             fetchSlotsForDialog(dialogBinding);
             updateFooter(dialogBinding);
         });
         dialogBinding.rvDates.setAdapter(dateAdapter);
 
-        // 2. Setup Guest Selection
         dialogBinding.tvGuestCount.setText(String.valueOf(guestCount));
         dialogBinding.btnMinus.setOnClickListener(v -> {
             if (guestCount > 1) {
@@ -231,12 +237,10 @@ public class PoolDetailActivity extends AppCompatActivity {
             updateFooter(dialogBinding);
         });
 
-        // 3. Initial load
         displaySlotsInDialog(allSlots, dialogBinding);
         updateFooter(dialogBinding);
 
         dialogBinding.btnContinuePayment.setOnClickListener(v -> {
-            Log.d("BOOKING_DEBUG", "Continue clicked, selectedSlot=" + selectedSlot);
             if (selectedSlot == null) {
                 Toast.makeText(this, "Please select a time slot", Toast.LENGTH_SHORT).show();
                 return;
@@ -275,21 +279,19 @@ public class PoolDetailActivity extends AppCompatActivity {
             else afternoonSlots.add(slot);
         }
 
-        dialogBinding.rvMorningSlots.setLayoutManager(
-                new GridLayoutManager(this, 3));
-        dialogBinding.rvAfternoonSlots.setLayoutManager(
-                new GridLayoutManager(this, 3));
+        dialogBinding.rvMorningSlots.setLayoutManager(new GridLayoutManager(this, 3));
+        dialogBinding.rvAfternoonSlots.setLayoutManager(new GridLayoutManager(this, 3));
 
         morningAdapter = new TimeSlotAdapter(morningSlots, (slot, adapter) -> {
             selectedSlot = slot;
-            afternoonAdapter.clearSelection(); // Bỏ chọn bên Afternoon
+            afternoonAdapter.clearSelection();
             updateFooter(dialogBinding);
         });
         dialogBinding.rvMorningSlots.setAdapter(morningAdapter);
 
         afternoonAdapter = new TimeSlotAdapter(afternoonSlots, (slot, adapter) -> {
             selectedSlot = slot;
-            morningAdapter.clearSelection(); // Bỏ chọn bên Morning
+            morningAdapter.clearSelection();
             updateFooter(dialogBinding);
         });
         dialogBinding.rvAfternoonSlots.setAdapter(afternoonAdapter);
@@ -311,67 +313,149 @@ public class PoolDetailActivity extends AppCompatActivity {
         }
     }
 
-    private void handleBooking(SlotDto slot) {
-        Log.d("BOOKING_DEBUG", "handleBooking called, slotId=" + slot.getId());
+    private void showAddToCartDialog() {
+        BottomSheetDialog dialog = new BottomSheetDialog(this);
+        DialogBookSlotsBinding dialogBinding = DialogBookSlotsBinding.inflate(getLayoutInflater());
+        dialog.setContentView(dialogBinding.getRoot());
 
-        if (preferencesManager == null || preferencesManager.getFirebaseToken() == null) {
-            Toast.makeText(this, "Bạn cần đăng nhập để đặt booking.", Toast.LENGTH_LONG).show();
-            return;
+        selectedSlot = null;
+
+        dialog.setOnShowListener(dialogInterface -> {
+            BottomSheetDialog d = (BottomSheetDialog) dialogInterface;
+            FrameLayout bottomSheet = d.findViewById(com.google.android.material.R.id.design_bottom_sheet);
+            if (bottomSheet != null) {
+                BottomSheetBehavior<FrameLayout> behavior = BottomSheetBehavior.from(bottomSheet);
+                behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+                behavior.setSkipCollapsed(true);
+            }
+        });
+
+        List<Calendar> dates = new ArrayList<>();
+        Calendar cal = Calendar.getInstance();
+        for (int i = 0; i < 7; i++) {
+            Calendar c = (Calendar) cal.clone();
+            c.add(Calendar.DAY_OF_YEAR, i);
+            dates.add(c);
         }
+        
+        SimpleDateFormat monthFormat = new SimpleDateFormat("MMMM yyyy", Locale.ENGLISH);
+        dialogBinding.tvMonthYear.setText(monthFormat.format(selectedDate.getTime()));
 
-        Long slotId = slot.getId();
-        if (slotId == null) {
-            Toast.makeText(this, "Slot không hợp lệ.", Toast.LENGTH_LONG).show();
+        DateAdapter dateAdapter = new DateAdapter(dates, date -> {
+            selectedDate = date;
+            selectedSlot = null;
+            dialogBinding.tvMonthYear.setText(monthFormat.format(date.getTime()));
+            fetchSlotsForDialog(dialogBinding);
+            updateFooter(dialogBinding);
+        });
+        dialogBinding.rvDates.setAdapter(dateAdapter);
+
+        dialogBinding.tvGuestCount.setText(String.valueOf(guestCount));
+        dialogBinding.btnMinus.setOnClickListener(v -> {
+            if (guestCount > 1) {
+                guestCount--;
+                dialogBinding.tvGuestCount.setText(String.valueOf(guestCount));
+                updateFooter(dialogBinding);
+            }
+        });
+        dialogBinding.btnPlus.setOnClickListener(v -> {
+            guestCount++;
+            dialogBinding.tvGuestCount.setText(String.valueOf(guestCount));
+            updateFooter(dialogBinding);
+        });
+
+        displaySlotsInDialog(allSlots, dialogBinding);
+        updateFooter(dialogBinding);
+
+        dialogBinding.btnContinuePayment.setText("Add to Cart");
+        dialogBinding.btnContinuePayment.setOnClickListener(v -> {
+            if (selectedSlot == null) {
+                Toast.makeText(this, "Please select a time slot", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            addToCart(selectedSlot);
+            dialog.dismiss();
+        });
+
+        dialog.show();
+    }
+
+    private void addToCart(SlotDto slot) {
+        if (preferencesManager.getFirebaseToken() == null) {
+            Toast.makeText(this, "Please login to add to cart", Toast.LENGTH_SHORT).show();
             return;
         }
 
         String token = formatToken(preferencesManager.getFirebaseToken());
-        CreateBookingRequestDto bookingRequest = new CreateBookingRequestDto(slotId, guestCount);
+        CreateBookingRequestDto request = new CreateBookingRequestDto(slot.getId(), guestCount, "IN_CART");
 
-        Toast.makeText(this, "Đang tạo booking...", Toast.LENGTH_SHORT).show();
+        disposables.add(
+                bookingApi.createBooking(token, request)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(response -> {
+                            if (response.isSuccess()) {
+                                Toast.makeText(this, "Added to cart!", Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(this, response.getMessage(), Toast.LENGTH_LONG).show();
+                            }
+                        }, throwable -> handleError(throwable, "Failed to add to cart"))
+        );
+    }
+
+    private void handleBooking(SlotDto slot) {
+        if (preferencesManager.getFirebaseToken() == null) {
+            Toast.makeText(this, "Please login to book", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        String token = formatToken(preferencesManager.getFirebaseToken());
+        CreateBookingRequestDto bookingRequest = new CreateBookingRequestDto(slot.getId(), guestCount);
 
         disposables.add(
                 bookingApi.createBooking(token, bookingRequest)
                         .subscribeOn(Schedulers.io())
                         .flatMap(bookingResp -> {
-                            if (bookingResp == null || !bookingResp.isSuccess() || bookingResp.getData() == null) {
-                                String msg = bookingResp != null ? bookingResp.getMessage() : "Booking failed";
-                                return Single.error(new Exception(msg));
+                            if (!bookingResp.isSuccess()) {
+                                return Single.error(new Exception(bookingResp.getMessage()));
                             }
-                            BookingResponseDto bookingData = bookingResp.getData();
-                            Long bookingId = bookingData.getId();
-                            if (bookingId == null) {
-                                return Single.error(new Exception("bookingId missing"));
-                            }
-
-                            CreatePaymentRequestDto paymentRequest =
-                                    new CreatePaymentRequestDto(bookingId, "ZALOPAY");
+                            CreatePaymentRequestDto paymentRequest = new CreatePaymentRequestDto(bookingResp.getData().getId(), "ZALOPAY");
                             return paymentApi.createPayment(token, paymentRequest);
                         })
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(paymentResp -> {
-                            if (paymentResp == null || !paymentResp.isSuccess() || paymentResp.getData() == null) {
-                                String msg = paymentResp != null ? paymentResp.getMessage() : "Payment failed";
-                                Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
-                                return;
+                            if (paymentResp.isSuccess() && paymentResp.getData() != null) {
+                                Intent intent = new Intent(this, ZaloPaymentActivity.class);
+                                intent.putExtra(ZaloPaymentActivity.EXTRA_ZP_TRANS_TOKEN, paymentResp.getData().getRedirectUrl());
+                                intent.putExtra(ZaloPaymentActivity.EXTRA_BOOKING_ID, paymentResp.getData().getBookingId());
+                                startActivity(intent);
+                            } else {
+                                Toast.makeText(this, paymentResp.getMessage(), Toast.LENGTH_LONG).show();
                             }
-
-                            PaymentResponseDto paymentData = paymentResp.getData();
-                            if (paymentData.getRedirectUrl() == null || paymentData.getRedirectUrl().isBlank()) {
-                                Toast.makeText(this, "Thiếu zp_trans_token từ response.", Toast.LENGTH_LONG).show();
-                                return;
-                            }
-
-                            Intent intent = new Intent(this, ZaloPaymentActivity.class);
-                            intent.putExtra(ZaloPaymentActivity.EXTRA_ZP_TRANS_TOKEN, paymentData.getRedirectUrl());
-                            intent.putExtra(ZaloPaymentActivity.EXTRA_BOOKING_ID, paymentData.getBookingId());
-                            startActivity(intent);
-                        }, throwable -> {
-                            Toast.makeText(this,
-                                    throwable != null && throwable.getMessage() != null ? throwable.getMessage() : "Lỗi tạo booking/payment",
-                                    Toast.LENGTH_LONG).show();
-                        })
+                        }, throwable -> handleError(throwable, "Booking failed"))
         );
+    }
+
+    private void handleError(Throwable throwable, String defaultMsg) {
+        String errorMsg = defaultMsg;
+        if (throwable instanceof HttpException) {
+            try {
+                okhttp3.ResponseBody responseBody = ((HttpException) throwable).response().errorBody();
+                if (responseBody != null) {
+                    String errorBody = responseBody.string();
+                    ApiResponse<?> response = new Gson().fromJson(errorBody, ApiResponse.class);
+                    if (response != null && response.getMessage() != null) {
+                        errorMsg = response.getMessage();
+                    }
+                }
+            } catch (Exception e) {
+                errorMsg = throwable.getMessage();
+            }
+        } else if (throwable != null) {
+            errorMsg = throwable.getMessage();
+        }
+        Toast.makeText(this, errorMsg, Toast.LENGTH_LONG).show();
+        Log.e("PoolDetailActivity", "Error: " + errorMsg, throwable);
     }
 
     private String formatToken(String token) {
