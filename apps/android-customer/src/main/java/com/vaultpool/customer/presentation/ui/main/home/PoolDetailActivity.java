@@ -7,11 +7,18 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
+
 import com.bumptech.glide.Glide;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapView;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
@@ -30,17 +37,20 @@ import com.vaultpool.customer.data.remote.api.PaymentApi;
 import com.vaultpool.customer.data.remote.dto.CreateBookingRequestDto;
 import com.vaultpool.customer.data.remote.dto.CreatePaymentRequestDto;
 import com.vaultpool.customer.domain.repository.PoolRepository;
+import com.vaultpool.customer.presentation.ui.payment.ZaloPaymentActivity;
+
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
 import io.reactivex.rxjava3.core.Single;
 import io.reactivex.rxjava3.schedulers.Schedulers;
+
 import retrofit2.HttpException;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava3.RxJava3CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
-import com.vaultpool.customer.presentation.ui.payment.ZaloPaymentActivity;
+
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -62,16 +72,27 @@ public class PoolDetailActivity extends AppCompatActivity {
     private Calendar selectedDate = Calendar.getInstance();
     private int guestCount = 1;
     private SlotDto selectedSlot = null;
-    
+
     private TimeSlotAdapter morningAdapter;
     private TimeSlotAdapter afternoonAdapter;
     private AlertDialog loadingDialog;
+
+    private MapView mapView;
+    private GoogleMap googleMap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityPoolDetailBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
+        mapView = binding.mapView;
+        mapView.onCreate(savedInstanceState);
+        mapView.getMapAsync(map -> {
+            googleMap = map;
+            googleMap.getUiSettings().setAllGesturesEnabled(false);
+            googleMap.getUiSettings().setZoomControlsEnabled(false);
+        });
 
         poolId = getIntent().getLongExtra(EXTRA_POOL_ID, -1);
         if (poolId == -1) {
@@ -82,8 +103,7 @@ public class PoolDetailActivity extends AppCompatActivity {
         poolRepository = ServiceLocator.getInstance().getPoolRepository();
         preferencesManager = ServiceLocator.getInstance().getPreferencesManager();
         bookingApi = ServiceLocator.getInstance().getBookingApi();
-        
-        // Initialize payment api with authenticated client
+
         HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
         logging.setLevel(HttpLoggingInterceptor.Level.BODY);
 
@@ -108,7 +128,7 @@ public class PoolDetailActivity extends AppCompatActivity {
                 .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
                 .build();
         paymentApi = retrofit.create(PaymentApi.class);
-        
+
         setupToolbar();
         setupClickListeners();
         fetchPoolDetail();
@@ -138,9 +158,7 @@ public class PoolDetailActivity extends AppCompatActivity {
                             if (response.isSuccess() && response.getData() != null) {
                                 displayPoolDetail(response.getData());
                             }
-                        }, throwable -> {
-                            handleError(throwable, "Error fetching pool detail");
-                        })
+                        }, throwable -> handleError(throwable, "Error fetching pool detail"))
         );
     }
 
@@ -148,15 +166,26 @@ public class PoolDetailActivity extends AppCompatActivity {
         binding.tvDetailName.setText(pool.getName());
         binding.tvDetailAddress.setText(pool.getAddress());
         binding.tvDetailDescription.setText(pool.getDescription());
-        
+
         if (pool.getOpenHours() != null) {
             binding.tvDetailOpenHours.setText("Open: " + pool.getOpenHours());
             binding.tvDetailOpenHours.setVisibility(View.VISIBLE);
         }
 
         if (pool.getGeoLat() != null && pool.getGeoLng() != null) {
-            binding.tvDetailCoords.setText(String.format(Locale.getDefault(), "Coords: %.4f, %.4f", pool.getGeoLat(), pool.getGeoLng()));
-            binding.tvDetailCoords.setVisibility(View.VISIBLE);
+            binding.mapView.setVisibility(View.VISIBLE);
+            if (googleMap != null) {
+                showPoolOnMap(pool.getGeoLat(), pool.getGeoLng(), pool.getName());
+            } else {
+                mapView.getMapAsync(map -> {
+                    googleMap = map;
+                    googleMap.getUiSettings().setAllGesturesEnabled(false);
+                    googleMap.getUiSettings().setZoomControlsEnabled(false);
+                    showPoolOnMap(pool.getGeoLat(), pool.getGeoLng(), pool.getName());
+                });
+            }
+        } else {
+            binding.mapView.setVisibility(View.GONE);
         }
 
         if (pool.getImages() != null && !pool.getImages().isEmpty()) {
@@ -166,10 +195,20 @@ public class PoolDetailActivity extends AppCompatActivity {
         }
     }
 
+    private void showPoolOnMap(Double lat, Double lng, String poolName) {
+        if (lat == null || lng == null || googleMap == null) return;
+        LatLng position = new LatLng(lat, lng);
+        googleMap.clear();
+        googleMap.addMarker(new MarkerOptions()
+                .position(position)
+                .title(poolName));
+        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(position, 15f));
+    }
+
     private void fetchSlots(Calendar date) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
         String dateStr = sdf.format(date.getTime());
-        
+
         disposables.add(
                 poolRepository.getSlotsByPoolAndDate(poolId, dateStr)
                         .subscribeOn(Schedulers.io())
@@ -179,9 +218,7 @@ public class PoolDetailActivity extends AppCompatActivity {
                                 this.allSlots = response.getData();
                                 setupSlotsRecyclerView(response.getData());
                             }
-                        }, throwable -> {
-                            handleError(throwable, "Error loading slots");
-                        })
+                        }, throwable -> handleError(throwable, "Error loading slots"))
         );
     }
 
@@ -215,7 +252,7 @@ public class PoolDetailActivity extends AppCompatActivity {
             c.add(Calendar.DAY_OF_YEAR, i);
             dates.add(c);
         }
-        
+
         SimpleDateFormat monthFormat = new SimpleDateFormat("MMMM yyyy", Locale.ENGLISH);
         dialogBinding.tvMonthYear.setText(monthFormat.format(selectedDate.getTime()));
 
@@ -260,7 +297,7 @@ public class PoolDetailActivity extends AppCompatActivity {
     private void fetchSlotsForDialog(DialogBookSlotsBinding dialogBinding) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
         String dateStr = sdf.format(selectedDate.getTime());
-        
+
         disposables.add(
                 poolRepository.getSlotsByPoolAndDate(poolId, dateStr)
                         .subscribeOn(Schedulers.io())
@@ -308,7 +345,7 @@ public class PoolDetailActivity extends AppCompatActivity {
             String datePart = sdf.format(selectedDate.getTime());
             String timePart = selectedSlot.getStartTime().substring(11, 16);
             dialogBinding.tvFooterSelection.setText(datePart + " • " + timePart);
-            
+
             double totalPrice = selectedSlot.getPrice() * guestCount;
             NumberFormat formatter = NumberFormat.getCurrencyInstance(new Locale("vi", "VN"));
             dialogBinding.tvFooterPrice.setText(formatter.format(totalPrice));
@@ -342,7 +379,7 @@ public class PoolDetailActivity extends AppCompatActivity {
             c.add(Calendar.DAY_OF_YEAR, i);
             dates.add(c);
         }
-        
+
         SimpleDateFormat monthFormat = new SimpleDateFormat("MMMM yyyy", Locale.ENGLISH);
         dialogBinding.tvMonthYear.setText(monthFormat.format(selectedDate.getTime()));
 
@@ -415,7 +452,8 @@ public class PoolDetailActivity extends AppCompatActivity {
         }
 
         String token = formatToken(preferencesManager.getFirebaseToken());
-        CreateBookingRequestDto bookingRequest = new CreateBookingRequestDto(slot.getId(), guestCount, "PENDING_PAYMENT");
+        CreateBookingRequestDto bookingRequest = new CreateBookingRequestDto(
+                slot.getId(), guestCount, "PENDING_PAYMENT");
 
         showRedirectingDialog();
 
@@ -426,20 +464,27 @@ public class PoolDetailActivity extends AppCompatActivity {
                             if (!bookingResp.isSuccess()) {
                                 return Single.error(new Exception(bookingResp.getMessage()));
                             }
-                            CreatePaymentRequestDto paymentRequest = new CreatePaymentRequestDto(bookingResp.getData().getId(), "ZALOPAY");
+                            CreatePaymentRequestDto paymentRequest = new CreatePaymentRequestDto(
+                                    bookingResp.getData().getId(), "ZALOPAY");
                             return paymentApi.createPayment(token, paymentRequest);
                         })
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(paymentResp -> {
+                            dismissRedirectingDialog();
                             if (paymentResp.isSuccess() && paymentResp.getData() != null) {
                                 Intent intent = new Intent(this, ZaloPaymentActivity.class);
-                                intent.putExtra(ZaloPaymentActivity.EXTRA_ZP_TRANS_TOKEN, paymentResp.getData().getRedirectUrl());
-                                intent.putExtra(ZaloPaymentActivity.EXTRA_BOOKING_ID, paymentResp.getData().getBookingId());
+                                intent.putExtra(ZaloPaymentActivity.EXTRA_ZP_TRANS_TOKEN,
+                                        paymentResp.getData().getRedirectUrl());
+                                intent.putExtra(ZaloPaymentActivity.EXTRA_BOOKING_ID,
+                                        paymentResp.getData().getBookingId());
                                 startActivity(intent);
                             } else {
                                 Toast.makeText(this, paymentResp.getMessage(), Toast.LENGTH_LONG).show();
                             }
-                        }, throwable -> handleError(throwable, "Booking failed"))
+                        }, throwable -> {
+                            dismissRedirectingDialog();
+                            handleError(throwable, "Booking failed");
+                        })
         );
     }
 
@@ -470,13 +515,6 @@ public class PoolDetailActivity extends AppCompatActivity {
         return token.startsWith("Bearer ") ? token : "Bearer " + token;
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        disposables.clear();
-        binding = null;
-    }
-
     private void showRedirectingDialog() {
         loadingDialog = new MaterialAlertDialogBuilder(this)
                 .setView(R.layout.dialog_redirecting)
@@ -491,9 +529,50 @@ public class PoolDetailActivity extends AppCompatActivity {
         }
     }
 
+    // ── MapView lifecycle ──────────────────────────────────────────────────────
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (mapView != null) mapView.onStart();
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
+        if (mapView != null) mapView.onResume();
         dismissRedirectingDialog();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (mapView != null) mapView.onPause();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (mapView != null) mapView.onStop();
+    }
+
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        if (mapView != null) mapView.onSaveInstanceState(outState);
+    }
+
+    @Override
+    public void onLowMemory() {
+        super.onLowMemory();
+        if (mapView != null) mapView.onLowMemory();
+    }
+
+    @Override
+    protected void onDestroy() {
+        if (mapView != null) mapView.onDestroy();
+        disposables.clear();
+        super.onDestroy();
+        binding = null;
     }
 }

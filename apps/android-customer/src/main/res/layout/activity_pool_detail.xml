@@ -90,18 +90,21 @@
                 app:drawableTint="@color/primary"
                 tools:text="06:30 - 20:30" />
 
-            <TextView
-                android:id="@+id/tvDetailCoords"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:drawablePadding="8dp"
-                android:gravity="center_vertical"
-                android:textColor="@color/on_surface_variant"
-                android:textSize="14sp"
-                app:drawableStartCompat="@android:drawable/ic_dialog_map"
-                app:drawableTint="@color/primary"
-                tools:text="12.2388, 109.1967" />
+            <!-- Xóa tvDetailCoords cũ, thêm vào chỗ đó -->
+            <com.google.android.material.card.MaterialCardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    app:cardCornerRadius="12dp"
+                    app:cardElevation="2dp"
+                    app:strokeWidth="0dp">
+
+                <com.google.android.gms.maps.MapView
+                        android:id="@+id/mapView"
+                        android:layout_width="match_parent"
+                        android:layout_height="160dp" />
+
+            </com.google.android.material.card.MaterialCardView>
 
             <View
                 android:layout_width="match_parent"

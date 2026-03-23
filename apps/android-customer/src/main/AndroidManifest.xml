@@ -23,6 +23,10 @@
         android:theme="@style/Theme.VaultPool"
         android:usesCleartextTraffic="true">
 
+        <meta-data
+                android:name="com.google.android.geo.API_KEY"
+                android:value="AIzaSyA6MO07VHHhFhTWpVLRZ8kT5GijcXISUOU" />
+
         <activity
             android:name=".presentation.ui.splash.SplashActivity"
             android:exported="true"

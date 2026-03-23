@@ -105,4 +105,7 @@ dependencies {
 
     // ZaloPay ZPDK — dùng flatDir (settings.gradle) để AGP luôn đưa AAR vào compile classpath
     implementation(name: "zpdk-release-v3.1", ext: "aar")
+
+    // Google Maps
+    implementation "com.google.android.gms:play-services-maps:18.2.0"
 }
