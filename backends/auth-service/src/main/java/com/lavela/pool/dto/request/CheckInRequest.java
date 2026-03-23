@@ -6,6 +6,6 @@ import lombok.Data;
 @Data
 public class CheckInRequest {
 
-    @NotBlank(message = "hash is required")
-    private String hash;
+    @NotBlank(message = "bookingCode is required")
+    private String bookingCode;
 }

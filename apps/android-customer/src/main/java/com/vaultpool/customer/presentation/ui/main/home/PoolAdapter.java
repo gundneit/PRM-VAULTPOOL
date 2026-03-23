@@ -8,13 +8,19 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.vaultpool.customer.databinding.ItemPoolBinding;
 import com.vaultpool.customer.data.remote.dto.PoolDto;
+import java.util.ArrayList;
 import java.util.List;
 
 public class PoolAdapter extends RecyclerView.Adapter<PoolAdapter.ViewHolder> {
-    private final List<PoolDto> pools;
+    private List<PoolDto> pools;
 
     public PoolAdapter(List<PoolDto> pools) {
-        this.pools = pools;
+        this.pools = new ArrayList<>(pools);
+    }
+
+    public void updateData(List<PoolDto> newPools) {
+        this.pools = new ArrayList<>(newPools);
+        notifyDataSetChanged();
     }
 
     @NonNull

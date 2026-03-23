@@ -1,7 +1,8 @@
 <resources>
-    <string name="app_name">The Aquatic Editorial</string>
+    <string name="app_name">La Vela Hotel Pool</string>
     <string name="welcome_title">Welcome to\nVaultPool</string>
     <string name="label_email">Email Address</string>
+    <string name="label_phone">Phone Number</string>
     <string name="label_user_id">User ID</string>
     <string name="label_status">Account Status</string>
     <string name="logout">Log Out</string>
@@ -43,6 +44,15 @@
     <string name="status_missing">Session data missing</string>
     <string name="status_refreshing">Refreshing profile from backend...</string>
     <string name="session_expired">Your session expired. Please sign in again.</string>
+    <string name="profile_english_wish">May your day be smooth, joyful, and full of wins!</string>
+    <string name="profile_daily_title">HOW ARE YOU TODAY?</string>
+    <string name="mood_sad">😞</string>
+    <string name="mood_neutral">😐</string>
+    <string name="mood_happy">😄</string>
+    <string name="mood_prompt">Tap one emoji to share how you feel today.</string>
+    <string name="mood_feedback_sad">It is okay to have a hard day. Take a short break, breathe slowly, and be kind to yourself.</string>
+    <string name="mood_feedback_neutral">A normal day is still a good day. Pick one small goal and finish it strong.</string>
+    <string name="mood_feedback_happy">Love this energy. Keep the momentum and spread the good vibe around you.</string>
 
     <string name="email">Email</string>
     <string name="password">Password</string>
@@ -55,6 +65,7 @@
 
     <!-- Navigation -->
     <string name="nav_home">Home</string>
+    <string name="nav_cart">Cart</string>
     <string name="nav_tickets">Tickets</string>
     <string name="nav_bookings">Bookings</string>
     <string name="nav_profile">Profile</string>
@@ -74,6 +85,13 @@
     <string name="filter_weekend">Weekend</string>
     <string name="label_vip">VIP</string>
     <string name="btn_book">Book</string>
+
+    <!-- Cart -->
+    <string name="cart_title">Shopping Cart</string>
+    <string name="cart_empty">Your cart is empty</string>
+    <string name="total">Total:</string>
+    <string name="btn_checkout">Proceed to Checkout</string>
+    <string name="btn_add_to_cart">Add to Cart</string>
 
     <!-- App Messages -->
     <string name="login_success">Đăng nhập thành công</string>

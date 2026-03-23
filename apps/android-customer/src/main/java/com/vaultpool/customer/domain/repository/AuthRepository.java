@@ -25,9 +25,10 @@ public interface AuthRepository {
      * @param email User's email
      * @param password User's password
      * @param fullName User's full name
+     * @param phone User's phone number
      * @return Single emitting Result with FirebaseUser
      */
-    Single<Result<User>> registerWithEmail(String email, String password, String fullName);
+    Single<Result<User>> registerWithEmail(String email, String password, String fullName, String phone);
 
     /**
      * Get currently logged in user

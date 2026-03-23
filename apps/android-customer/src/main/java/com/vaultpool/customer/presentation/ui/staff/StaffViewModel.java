@@ -11,6 +11,7 @@ import com.vaultpool.customer.domain.model.Result;
 import com.vaultpool.customer.domain.repository.AuthRepository;
 import com.vaultpool.customer.domain.repository.StaffRepository;
 
+import java.io.File;
 import java.util.List;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
@@ -25,6 +26,7 @@ public class StaffViewModel extends ViewModel {
     private final MutableLiveData<Result<List<BookingStaffDto>>> bookings = new MutableLiveData<>();
     private final MutableLiveData<Result<List<PoolStaffDto>>> pools = new MutableLiveData<>();
     private final MutableLiveData<Result<List<SlotStaffDto>>> slots = new MutableLiveData<>();
+    private final MutableLiveData<Result<BookingStaffDto>> checkInUpdate = new MutableLiveData<>();
     private final MutableLiveData<Result<PoolStaffDto>> poolActionUpdate = new MutableLiveData<>();
     private final MutableLiveData<Result<SlotStaffDto>> slotActionUpdate = new MutableLiveData<>();
     private final MutableLiveData<Boolean> loading = new MutableLiveData<>(false);
@@ -35,6 +37,7 @@ public class StaffViewModel extends ViewModel {
     }
 
     public LiveData<Result<List<BookingStaffDto>>> getBookings() { return bookings; }
+    public LiveData<Result<BookingStaffDto>> getCheckInUpdate() { return checkInUpdate; }
     public LiveData<Result<List<PoolStaffDto>>> getPools() { return pools; }
     public LiveData<Result<List<SlotStaffDto>>> getSlots() { return slots; }
     public LiveData<Result<PoolStaffDto>> getPoolActionUpdate() { return poolActionUpdate; }
@@ -53,6 +56,24 @@ public class StaffViewModel extends ViewModel {
                 }, throwable -> {
                     loading.setValue(false);
                     bookings.setValue(Result.failure(throwable.getMessage()));
+                }));
+    }
+
+    public void checkInBooking(String bookingCode) {
+        loading.setValue(true);
+        disposables.add(authRepository.getIdToken()
+                .flatMap(token -> staffRepository.checkInByQr(token, bookingCode))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(result -> {
+                    loading.setValue(false);
+                    checkInUpdate.setValue(result);
+                    if (result.isSuccess()) {
+                        fetchBookings();
+                    }
+                }, throwable -> {
+                    loading.setValue(false);
+                    checkInUpdate.setValue(Result.failure(throwable.getMessage()));
                 }));
     }
 
@@ -100,10 +121,10 @@ public class StaffViewModel extends ViewModel {
                 }));
     }
 
-    public void createPool(PoolStaffDto pool) {
+    public void createPool(PoolStaffDto pool, File imageFile) {
         loading.setValue(true);
         disposables.add(authRepository.getIdToken()
-                .flatMap(token -> staffRepository.createPool(token, pool))
+                .flatMap(token -> staffRepository.createPool(token, pool, imageFile))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(result -> {
@@ -116,10 +137,10 @@ public class StaffViewModel extends ViewModel {
                 }));
     }
 
-    public void updatePool(Long id, PoolStaffDto pool) {
+    public void updatePool(Long id, PoolStaffDto pool, File imageFile) {
         loading.setValue(true);
         disposables.add(authRepository.getIdToken()
-                .flatMap(token -> staffRepository.updatePool(token, id, pool))
+                .flatMap(token -> staffRepository.updatePool(token, id, pool, imageFile))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(result -> {

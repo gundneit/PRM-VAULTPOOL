@@ -1,9 +1,13 @@
 package com.vaultpool.customer;
 
+import com.vaultpool.customer.data.remote.api.PaymentApi;
 import com.vaultpool.customer.data.remote.api.PoolApi;
+import com.vaultpool.customer.data.remote.api.BookingApi;
 import com.vaultpool.customer.data.repository.PoolRepositoryImpl;
 import com.vaultpool.customer.domain.repository.PoolRepository;
 
+import okhttp3.OkHttpClient;
+import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava3.RxJava3CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -15,8 +19,10 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class ServiceLocator {
 
     private static ServiceLocator instance;
+    private PaymentApi paymentApi;
 
     private com.vaultpool.customer.domain.repository.AuthRepository authRepository;
+    private com.vaultpool.customer.data.remote.api.AuthApi authApi;
     private com.vaultpool.customer.domain.usecase.LoginUseCase loginUseCase;
     private com.vaultpool.customer.data.local.prefs.PreferencesManager preferencesManager;
     private com.vaultpool.customer.data.auth.AuthFlowManager authFlowManager;
@@ -28,6 +34,9 @@ public class ServiceLocator {
     // Pool Dependencies
     private PoolApi poolApi;
     private PoolRepository poolRepository;
+    
+    // Booking Dependencies
+    private BookingApi bookingApi;
 
     private ServiceLocator() {
     }
@@ -43,16 +52,24 @@ public class ServiceLocator {
         // Initialize common dependencies
         preferencesManager = new com.vaultpool.customer.data.local.prefs.PreferencesManager(context);
         
+        // Setup Logging Interceptor
+        HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
+        logging.setLevel(HttpLoggingInterceptor.Level.BODY);
+
+        OkHttpClient client = new OkHttpClient.Builder()
+                .addInterceptor(logging)
+                .build();
+
         // Setup Retrofit
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(BuildConfig.BACKEND_BASE_URL)
+                .client(client)
                 .addConverterFactory(GsonConverterFactory.create())
                 .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
                 .build();
         
         // Initialize Auth dependencies
-        com.vaultpool.customer.data.remote.api.AuthApi authApi = 
-                retrofit.create(com.vaultpool.customer.data.remote.api.AuthApi.class);
+        authApi = retrofit.create(com.vaultpool.customer.data.remote.api.AuthApi.class);
         authRepository = new com.vaultpool.customer.data.repository.FirebaseAuthRepository(authApi);
         loginUseCase = new com.vaultpool.customer.domain.usecase.LoginUseCase(authRepository);
         authFlowManager = new com.vaultpool.customer.data.auth.AuthFlowManager(
@@ -67,10 +84,19 @@ public class ServiceLocator {
         // Initialize Pool dependencies
         poolApi = retrofit.create(PoolApi.class);
         poolRepository = new PoolRepositoryImpl(poolApi);
+        
+        // Initialize Booking dependencies
+        bookingApi = retrofit.create(BookingApi.class);
+
+        paymentApi = retrofit.create(PaymentApi.class);
     }
 
     public com.vaultpool.customer.domain.repository.AuthRepository getAuthRepository() {
         return authRepository;
+    }
+
+    public com.vaultpool.customer.data.remote.api.AuthApi getAuthApi() {
+        return authApi;
     }
 
     public com.vaultpool.customer.domain.usecase.LoginUseCase getLoginUseCase() {
@@ -91,5 +117,13 @@ public class ServiceLocator {
 
     public PoolRepository getPoolRepository() {
         return poolRepository;
+    }
+    
+    public BookingApi getBookingApi() {
+        return bookingApi;
+    }
+
+    public PaymentApi getPaymentApi() {
+        return paymentApi;
     }
 }

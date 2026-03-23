@@ -1,13 +1,17 @@
 package com.vaultpool.customer.presentation.ui.staff;
 
-import android.app.AlertDialog;
+import android.content.ContentResolver;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.OpenableColumns;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.Toast;
+import android.webkit.MimeTypeMap;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -19,7 +23,11 @@ import com.vaultpool.customer.data.remote.dto.staff.ImageStaffDto;
 import com.vaultpool.customer.data.remote.dto.staff.PoolStaffDto;
 import com.vaultpool.customer.databinding.FragmentEditPoolBinding;
 
-import java.util.ArrayList;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Collections;
 
 public class StaffEditPoolFragment extends Fragment {
 
@@ -27,6 +35,9 @@ public class StaffEditPoolFragment extends Fragment {
     private StaffViewModel viewModel;
     private PoolStaffDto pool;
     private StaffPoolImageAdapter imageAdapter;
+    private boolean pendingSaveAction = false;
+    private ActivityResultLauncher<String> pickImageLauncher;
+    private File selectedImageFile;
 
     public static StaffEditPoolFragment newInstance(PoolStaffDto pool) {
         StaffEditPoolFragment fragment = new StaffEditPoolFragment();
@@ -48,11 +59,15 @@ public class StaffEditPoolFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        pool = (PoolStaffDto) getArguments().getSerializable("pool");
+        if (getArguments() != null) {
+            pool = (PoolStaffDto) getArguments().getSerializable("pool");
+        }
         if (pool == null) {
             pool = new PoolStaffDto();
             pool.setStatus("ACTIVE");
         }
+
+        setupImagePicker();
         
         setupViewModel();
         bindData();
@@ -67,8 +82,16 @@ public class StaffEditPoolFragment extends Fragment {
         viewModel = new ViewModelProvider(requireActivity(), factory).get(StaffViewModel.class);
         
         viewModel.getPoolActionUpdate().observe(getViewLifecycleOwner(), result -> {
+            if (!pendingSaveAction || result == null) {
+                return;
+            }
+
             if (result.isSuccess()) {
+                pendingSaveAction = false;
                 requireActivity().getSupportFragmentManager().popBackStack();
+            } else if (result.isFailure()) {
+                pendingSaveAction = false;
+                Toast.makeText(getContext(), result.getErrorMessage(), Toast.LENGTH_LONG).show();
             }
         });
         
@@ -93,6 +116,7 @@ public class StaffEditPoolFragment extends Fragment {
         imageAdapter.setOnImageRemoveListener(position -> {
             imageAdapter.getImages().remove(position);
             imageAdapter.notifyItemRemoved(position);
+            selectedImageFile = null;
         });
     }
 
@@ -101,7 +125,7 @@ public class StaffEditPoolFragment extends Fragment {
             requireActivity().getSupportFragmentManager().popBackStack();
         });
 
-        binding.btnAddImage.setOnClickListener(v -> showAddImageDialog());
+        binding.btnAddImage.setOnClickListener(v -> pickImageLauncher.launch("image/*"));
 
         binding.btnSave.setOnClickListener(v -> {
             pool.setName(binding.etName.getText().toString());
@@ -114,40 +138,83 @@ public class StaffEditPoolFragment extends Fragment {
             if (pool.getGeoLat() == null) pool.setGeoLat(10.762622);
             if (pool.getGeoLng() == null) pool.setGeoLng(106.660172);
 
+            pendingSaveAction = true;
+
             if (pool.getId() == null) {
-                viewModel.createPool(pool);
+                viewModel.createPool(pool, selectedImageFile);
             } else {
-                viewModel.updatePool(pool.getId(), pool);
+                viewModel.updatePool(pool.getId(), pool, selectedImageFile);
             }
         });
     }
 
-    private void showAddImageDialog() {
-        EditText etUrl = new EditText(requireContext());
-        etUrl.setHint("https://example.com/pool.jpg");
-        int padding = (int) (16 * getResources().getDisplayMetrics().density);
-        
-        new AlertDialog.Builder(requireContext())
-                .setTitle("Add Image URL")
-                .setView(etUrl)
-                .setPositiveButton("Add", (dialog, which) -> {
-                    String url = etUrl.getText().toString().trim();
-                    if (!url.isEmpty()) {
-                        ImageStaffDto img = new ImageStaffDto();
-                        img.setImageUrl(url);
-                        img.setSortOrder(imageAdapter.getItemCount() + 1);
-                        imageAdapter.addImage(img);
-                    }
-                })
-                .setNegativeButton("Cancel", null)
-                .show();
-        
-        // Apply padding to the EditText in the dialog
-        ViewGroup.LayoutParams lp = etUrl.getLayoutParams();
-        if (lp instanceof ViewGroup.MarginLayoutParams) {
-            ((ViewGroup.MarginLayoutParams) lp).setMargins(padding, padding, padding, padding);
+    private void setupImagePicker() {
+        pickImageLauncher = registerForActivityResult(new ActivityResultContracts.GetContent(), uri -> {
+            if (uri == null) {
+                return;
+            }
+
+            File cachedFile = copyUriToCache(uri);
+            if (cachedFile == null) {
+                Toast.makeText(getContext(), "Cannot read selected image", Toast.LENGTH_LONG).show();
+                return;
+            }
+
+            selectedImageFile = cachedFile;
+
+            ImageStaffDto image = new ImageStaffDto();
+            image.setImageUrl(uri.toString());
+            image.setSortOrder(1);
+            imageAdapter.setImages(Collections.singletonList(image));
+        });
+    }
+
+    private File copyUriToCache(Uri uri) {
+        ContentResolver resolver = requireContext().getContentResolver();
+        String extension = resolver.getType(uri) != null
+                ? MimeTypeMap.getSingleton().getExtensionFromMimeType(resolver.getType(uri))
+                : null;
+        if (extension == null || extension.trim().isEmpty()) {
+            extension = "jpg";
         }
-        etUrl.setPadding(padding, padding, padding, padding);
+
+        String name = queryDisplayName(uri);
+        if (name == null || name.trim().isEmpty()) {
+            name = "pool_upload_" + System.currentTimeMillis() + "." + extension;
+        }
+
+        File target = new File(requireContext().getCacheDir(), name);
+        try (InputStream in = resolver.openInputStream(uri);
+             FileOutputStream out = new FileOutputStream(target, false)) {
+            if (in == null) {
+                return null;
+            }
+            byte[] buffer = new byte[8192];
+            int read;
+            while ((read = in.read(buffer)) != -1) {
+                out.write(buffer, 0, read);
+            }
+            out.flush();
+            return target;
+        } catch (IOException e) {
+            return null;
+        }
+    }
+
+    private String queryDisplayName(Uri uri) {
+        String[] projection = new String[]{OpenableColumns.DISPLAY_NAME};
+        try (android.database.Cursor cursor = requireContext()
+                .getContentResolver()
+                .query(uri, projection, null, null, null)) {
+            if (cursor == null || !cursor.moveToFirst()) {
+                return null;
+            }
+            int nameIndex = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
+            if (nameIndex < 0) {
+                return null;
+            }
+            return cursor.getString(nameIndex);
+        }
     }
 
     @Override

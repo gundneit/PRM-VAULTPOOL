@@ -9,10 +9,12 @@ public class CreatePaymentRequestDto {
 
     @SerializedName("method")
     private String method;
+    private String status;
 
     public CreatePaymentRequestDto(Long bookingId, String method) {
         this.bookingId = bookingId;
         this.method = method;
+
     }
 
     public Long getBookingId() {

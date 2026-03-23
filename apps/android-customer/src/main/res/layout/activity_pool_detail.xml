@@ -16,7 +16,7 @@
             android:id="@+id/collapsingToolbar"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:contentScrim="?attr/colorPrimary"
+            app:contentScrim="@color/navy"
             app:layout_scrollFlags="scroll|exitUntilCollapsed"
             app:titleEnabled="false">
 
@@ -45,7 +45,7 @@
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:paddingBottom="80dp"
+        android:paddingBottom="100dp"
         android:clipToPadding="false"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
@@ -90,23 +90,25 @@
                 app:drawableTint="@color/primary"
                 tools:text="06:30 - 20:30" />
 
-            <TextView
-                android:id="@+id/tvDetailCoords"
+            <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:drawablePadding="8dp"
-                android:gravity="center_vertical"
-                android:textColor="@color/on_surface_variant"
-                android:textSize="14sp"
-                app:drawableStartCompat="@android:drawable/ic_dialog_map"
-                app:drawableTint="@color/primary"
-                tools:text="12.2388, 109.1967" />
+                android:layout_marginTop="16dp"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="2dp"
+                app:strokeWidth="0dp">
+
+                <com.google.android.gms.maps.MapView
+                    android:id="@+id/mapView"
+                    android:layout_width="match_parent"
+                    android:layout_height="180dp" />
+
+            </com.google.android.material.card.MaterialCardView>
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="24dp"
                 android:background="@color/divider" />
 
             <TextView
@@ -115,20 +117,20 @@
                 android:layout_marginTop="20dp"
                 android:text="About this pool"
                 android:textColor="@color/on_surface"
-                android:textSize="18sp"
+                android:textSize="20sp"
                 android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/tvDetailDescription"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:lineSpacingExtra="4dp"
+                android:layout_marginTop="12dp"
+                android:lineSpacingExtra="6dp"
                 android:textColor="@color/on_surface_variant"
                 android:textSize="15sp"
                 tools:text="Description goes here..." />
 
-            <!-- Chúng ta có thể giữ phần này hoặc ẩn đi nếu muốn dùng hoàn toàn bằng Pop-up -->
+            <!-- Phần slots cũ được ẩn đi theo yêu cầu -->
             <TextView
                 android:id="@+id/tvLabelSlots"
                 android:layout_width="wrap_content"
@@ -137,40 +139,75 @@
                 android:text="Available Slots"
                 android:textColor="@color/on_surface"
                 android:textSize="18sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                android:visibility="gone" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rvSlots"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
-                android:nestedScrollingEnabled="false" />
+                android:nestedScrollingEnabled="false"
+                android:visibility="gone" />
 
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 
+    <!-- Bottom Actions Container -->
     <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-        app:cardElevation="8dp"
+        app:cardElevation="16dp"
         app:cardCornerRadius="0dp"
         app:strokeWidth="0dp">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:orientation="horizontal"
             android:padding="16dp"
-            android:background="@color/surface">
+            android:weightSum="2">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnAddToCart"
+                style="@style/Widget.Material3.Button.OutlinedButton"
+                android:layout_width="0dp"
+                android:layout_height="56dp"
+                android:layout_marginEnd="8dp"
+                android:layout_weight="1"
+                android:text="Add to Cart"
+                android:textAllCaps="false"
+                android:textColor="@color/navy"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                app:cornerRadius="16dp"
+                app:icon="@drawable/ic_shopping_cart"
+                app:iconGravity="textStart"
+                app:iconPadding="8dp"
+                app:iconTint="@color/navy"
+                app:strokeColor="@color/navy"
+                app:strokeWidth="1.5dp" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnMainBook"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="56dp"
+                android:layout_marginStart="8dp"
+                android:layout_weight="1"
+                android:backgroundTint="@color/navy"
                 android:text="Book Now"
-                android:textSize="16sp"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                android:textSize="15sp"
                 android:textStyle="bold"
-                app:cornerRadius="12dp" />
+                app:cornerRadius="16dp"
+                app:icon="@android:drawable/ic_menu_edit"
+                app:iconGravity="textStart"
+                app:iconPadding="8dp"
+                app:iconTint="@color/white" />
+
         </LinearLayout>
     </com.google.android.material.card.MaterialCardView>
 
