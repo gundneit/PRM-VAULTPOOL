@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
@@ -18,7 +19,6 @@ import com.vaultpool.customer.data.remote.dto.CreatePaymentRequestDto;
 import com.vaultpool.customer.databinding.ActivityConfirmPaymentBinding;
 
 import java.text.NumberFormat;
-import java.util.List;
 import java.util.Locale;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
@@ -35,7 +35,8 @@ public class ConfirmPaymentActivity extends AppCompatActivity {
     private PreferencesManager preferencesManager;
     private final CompositeDisposable disposables = new CompositeDisposable();
     private BookingResponseDto currentBooking;
-    private android.app.AlertDialog loadingDialog;
+    private AlertDialog loadingDialog;
+    private boolean hasLaunchedPayment = false; // ← guard
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +51,16 @@ public class ConfirmPaymentActivity extends AppCompatActivity {
         setupToolbar();
         fetchLatestPendingBooking();
         setupActions();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // Nếu đã launch ZaloPay rồi quay lại đây (do back) → finish luôn
+        if (hasLaunchedPayment) {
+            finish();
+        }
+        dismissRedirectingDialog();
     }
 
     private void setupToolbar() {
@@ -71,7 +82,6 @@ public class ConfirmPaymentActivity extends AppCompatActivity {
                             if (response.isSuccess()
                                     && response.getData() != null
                                     && !response.getData().isEmpty()) {
-                                // Lấy booking mới nhất (index 0 vì BE sort desc)
                                 currentBooking = response.getData().get(0);
                                 displayBooking(currentBooking);
                             } else {
@@ -92,19 +102,17 @@ public class ConfirmPaymentActivity extends AppCompatActivity {
         binding.tvBookingCode.setText(booking.getBookingCode());
         binding.tvQty.setText(booking.getQty() + " vé");
 
-        // Format time
         String start = formatTime(booking.getStartTime());
         String end = formatTime(booking.getEndTime());
         binding.tvTime.setText(start + " – " + end);
 
-        // Format amount
         NumberFormat formatter = NumberFormat.getCurrencyInstance(new Locale("vi", "VN"));
         long amount = booking.getAmount() != null ? booking.getAmount() : 0;
         binding.tvAmount.setText(formatter.format(amount));
 
-        // Expires at
         if (booking.getExpiresAt() != null && booking.getExpiresAt().length() >= 16) {
-            binding.tvExpiresAt.setText("Hết hạn lúc: " + booking.getExpiresAt().substring(11, 16)
+            binding.tvExpiresAt.setText("Hết hạn lúc: "
+                    + booking.getExpiresAt().substring(11, 16)
                     + " ngày " + booking.getExpiresAt().substring(8, 10)
                     + "/" + booking.getExpiresAt().substring(5, 7));
             binding.tvExpiresAt.setVisibility(View.VISIBLE);
@@ -142,13 +150,14 @@ public class ConfirmPaymentActivity extends AppCompatActivity {
                         .subscribe(response -> {
                             dismissRedirectingDialog();
                             if (response.isSuccess() && response.getData() != null) {
+                                hasLaunchedPayment = true; // ← đánh dấu trước khi start
                                 Intent intent = new Intent(this, ZaloPaymentActivity.class);
                                 intent.putExtra(ZaloPaymentActivity.EXTRA_ZP_TRANS_TOKEN,
                                         response.getData().getRedirectUrl());
                                 intent.putExtra(ZaloPaymentActivity.EXTRA_BOOKING_ID,
                                         response.getData().getBookingId());
                                 startActivity(intent);
-                                finish();
+                                finish(); // ← finish ConfirmPaymentActivity ngay
                             } else {
                                 Toast.makeText(this, response.getMessage(), Toast.LENGTH_LONG).show();
                             }

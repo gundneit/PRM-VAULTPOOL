@@ -12,23 +12,16 @@ import vn.zalopay.sdk.Environment;
 import vn.zalopay.sdk.ZaloPaySDK;
 import vn.zalopay.sdk.ZaloPayError;
 
-/**
- * ZaloPay App-to-App payment launcher.
- *
- * Backend returns `redirectUrl = zp_trans_token` for this activity to call:
- * ZaloPaySDK.getInstance().payOrder(..., zp_trans_token, "demozpdk://app", listener)
- */
 public class ZaloPaymentActivity extends AppCompatActivity {
 
     public static final String EXTRA_ZP_TRANS_TOKEN = "extra_zp_trans_token";
     public static final String EXTRA_BOOKING_ID = "extra_booking_id";
 
-    // From lab: AppInfo.APP_ID = 2554
-    // If you use production, update this value (ideally via BuildConfig/remote config).
     private static final int ZALOPAY_APP_ID_SANDBOX = 2554;
     private static final String URI_SCHEME = "demozpdk://app";
 
     private ActivityZaloPaymentBinding binding;
+    private boolean hasNavigated = false; // ← guard chống loop
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,11 +36,9 @@ public class ZaloPaymentActivity extends AppCompatActivity {
             return;
         }
 
-        // Initialize SDK (SANDBOX for lab)
         ZaloPaySDK.init(ZALOPAY_APP_ID_SANDBOX, Environment.SANDBOX);
         binding.tvStatus.setText("Đang mở ZaloPay...");
 
-        // Launch payment flow
         ZaloPaySDK.getInstance().payOrder(
                 this,
                 zpTransToken,
@@ -71,28 +62,30 @@ public class ZaloPaymentActivity extends AppCompatActivity {
 
                     @Override
                     public void onPaymentError(ZaloPayError zaloPayError, String zpTransTokenParam, String message) {
-                        runOnUiThread(() -> {
-                            navigateToBookings("PENDING_PAYMENT");
-                        });
-                    }
-
-                    private void navigateToBookings(String tabStatus) {
-                        Intent intent = new Intent(ZaloPaymentActivity.this, MainActivity.class);
-                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                        intent.putExtra("navigate_to", "bookings");
-                        intent.putExtra("tab_status", tabStatus);
-                        startActivity(intent);
-                        finish();
+                        runOnUiThread(() -> navigateToBookings("PENDING_PAYMENT"));
                     }
                 }
         );
     }
 
+    private void navigateToBookings(String tabStatus) {
+        if (hasNavigated) return; // ← chặn gọi nhiều lần
+        hasNavigated = true;
+
+        Intent intent = new Intent(ZaloPaymentActivity.this, MainActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        intent.putExtra("navigate_to", "bookings");
+        intent.putExtra("tab_status", tabStatus);
+        startActivity(intent);
+        finish();
+    }
+
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-        // Let ZaloPaySDK handle deep link results
-        ZaloPaySDK.getInstance().onResult(intent);
+        if (!hasNavigated) { // ← chỉ xử lý nếu chưa navigate
+            ZaloPaySDK.getInstance().onResult(intent);
+        }
     }
 
     @Override
@@ -101,4 +94,3 @@ public class ZaloPaymentActivity extends AppCompatActivity {
         binding = null;
     }
 }
-

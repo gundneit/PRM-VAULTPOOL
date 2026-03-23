@@ -37,6 +37,7 @@ import com.vaultpool.customer.data.remote.api.PaymentApi;
 import com.vaultpool.customer.data.remote.dto.CreateBookingRequestDto;
 import com.vaultpool.customer.data.remote.dto.CreatePaymentRequestDto;
 import com.vaultpool.customer.domain.repository.PoolRepository;
+import com.vaultpool.customer.presentation.ui.payment.ConfirmPaymentActivity;
 import com.vaultpool.customer.presentation.ui.payment.ZaloPaymentActivity;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
@@ -460,26 +461,16 @@ public class PoolDetailActivity extends AppCompatActivity {
         disposables.add(
                 bookingApi.createBooking(token, bookingRequest)
                         .subscribeOn(Schedulers.io())
-                        .flatMap(bookingResp -> {
-                            if (!bookingResp.isSuccess()) {
-                                return Single.error(new Exception(bookingResp.getMessage()));
-                            }
-                            CreatePaymentRequestDto paymentRequest = new CreatePaymentRequestDto(
-                                    bookingResp.getData().getId(), "ZALOPAY");
-                            return paymentApi.createPayment(token, paymentRequest);
-                        })
                         .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(paymentResp -> {
+                        .subscribe(bookingResp -> {
                             dismissRedirectingDialog();
-                            if (paymentResp.isSuccess() && paymentResp.getData() != null) {
-                                Intent intent = new Intent(this, ZaloPaymentActivity.class);
-                                intent.putExtra(ZaloPaymentActivity.EXTRA_ZP_TRANS_TOKEN,
-                                        paymentResp.getData().getRedirectUrl());
-                                intent.putExtra(ZaloPaymentActivity.EXTRA_BOOKING_ID,
-                                        paymentResp.getData().getBookingId());
+                            if (bookingResp.isSuccess() && bookingResp.getData() != null) {
+                                Intent intent = new Intent(this, ConfirmPaymentActivity.class);
+                                intent.putExtra(ConfirmPaymentActivity.EXTRA_BOOKING_ID,
+                                        bookingResp.getData().getId());
                                 startActivity(intent);
                             } else {
-                                Toast.makeText(this, paymentResp.getMessage(), Toast.LENGTH_LONG).show();
+                                Toast.makeText(this, bookingResp.getMessage(), Toast.LENGTH_LONG).show();
                             }
                         }, throwable -> {
                             dismissRedirectingDialog();

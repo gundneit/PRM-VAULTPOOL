@@ -36,8 +36,15 @@ public class BookingsFragment extends Fragment {
     private PreferencesManager preferencesManager;
     private BookingItemAdapter adapter;
     private final CompositeDisposable disposables = new CompositeDisposable();
+
+    // Đặt tất cả fields ở đầu class, rõ ràng
     private String currentFilter = null;
+    private boolean isFirstLoad = true;
     public static String pendingTabStatus = null;
+
+    // =========================================================================
+    // Lifecycle
+    // =========================================================================
 
     @Nullable
     @Override
@@ -58,25 +65,102 @@ public class BookingsFragment extends Fragment {
         setupRecyclerView();
         setupFilterChips();
 
-        currentFilter = "CONFIRMED";
-        binding.chipConfirmed.setChecked(true);
-        fetchBookings("CONFIRMED");
+        // Ưu tiên pendingTabStatus nếu navigate về từ ZaloPay (MainActivity recreate)
+        // Lúc này onViewCreated chạy trước onResume → xử lý ở đây là đúng
+        if (pendingTabStatus != null) {
+            String status = pendingTabStatus;
+            pendingTabStatus = null;
+            currentFilter = status;
+            setChipChecked(status);
+            fetchBookings(status);
+        } else {
+            currentFilter = "CONFIRMED";
+            binding.chipConfirmed.setChecked(true);
+            fetchBookings("CONFIRMED");
+        }
     }
 
     @Override
     public void onResume() {
         super.onResume();
+
         if (pendingTabStatus != null) {
+            // Fallback: fragment cũ còn tồn tại, onViewCreated không chạy lại
+            // → xử lý ở đây
             String status = pendingTabStatus;
-            pendingTabStatus = null; // clear TRƯỚC khi selectTab tránh loop
+            pendingTabStatus = null;
             selectTab(status);
-        } else {
+        } else if (!isFirstLoad) {
+            // Refresh khi user quay lại tab Bookings từ tab khác (không phải từ ZaloPay)
             fetchBookings(currentFilter);
         }
+
+        isFirstLoad = false;
     }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        disposables.clear();
+        binding = null;
+    }
+
+    // =========================================================================
+    // Public API — dùng bởi MainActivity.handleNavigationIntent khi fragment cũ còn sống
+    // =========================================================================
 
     public void selectTab(String status) {
         currentFilter = status;
+        setChipChecked(status);
+        fetchBookings(status);
+    }
+
+    // =========================================================================
+    // Setup
+    // =========================================================================
+
+    private void setupRecyclerView() {
+        adapter = new BookingItemAdapter(new ArrayList<>(), this::onBookingItemClick);
+        binding.rvBookings.setLayoutManager(new LinearLayoutManager(getContext()));
+        binding.rvBookings.setAdapter(adapter);
+    }
+
+    private void setupFilterChips() {
+        binding.chipAll.setOnClickListener(v -> {
+            currentFilter = null;
+            fetchBookings(null);
+        });
+        binding.chipConfirmed.setOnClickListener(v -> {
+            currentFilter = "CONFIRMED";
+            fetchBookings("CONFIRMED");
+        });
+        binding.chipCheckedIn.setOnClickListener(v -> {
+            currentFilter = "CHECKED_IN";
+            fetchBookings("CHECKED_IN");
+        });
+        binding.chipPending.setOnClickListener(v -> {
+            currentFilter = "PENDING_PAYMENT";
+            fetchBookings("PENDING_PAYMENT");
+        });
+        binding.chipExpired.setOnClickListener(v -> {
+            currentFilter = "EXPIRED";
+            fetchBookings("EXPIRED");
+        });
+    }
+
+    // =========================================================================
+    // UI helpers
+    // =========================================================================
+
+    /**
+     * Set chip đúng theo status — dùng setChecked() programmatically,
+     * KHÔNG trigger onClick listener nên không gây double-fetch.
+     */
+    private void setChipChecked(String status) {
+        if (status == null) {
+            binding.chipAll.setChecked(true);
+            return;
+        }
         switch (status) {
             case "CONFIRMED":       binding.chipConfirmed.setChecked(true); break;
             case "PENDING_PAYMENT": binding.chipPending.setChecked(true);   break;
@@ -84,14 +168,49 @@ public class BookingsFragment extends Fragment {
             case "EXPIRED":         binding.chipExpired.setChecked(true);   break;
             default:                binding.chipAll.setChecked(true);       break;
         }
-        fetchBookings(status);
     }
 
-    private void setupRecyclerView() {
-        adapter = new BookingItemAdapter(new ArrayList<>(), this::onBookingItemClick);
-        binding.rvBookings.setLayoutManager(new LinearLayoutManager(getContext()));
-        binding.rvBookings.setAdapter(adapter);
+    private void setLoading(boolean loading) {
+        if (binding == null) return;
+        binding.progressBar.setVisibility(loading ? View.VISIBLE : View.GONE);
     }
+
+    // =========================================================================
+    // Data
+    // =========================================================================
+
+    private void fetchBookings(String status) {
+        String token = preferencesManager.getFirebaseToken();
+        if (token == null) return;
+        String bearer = token.startsWith("Bearer ") ? token : "Bearer " + token;
+
+        setLoading(true);
+
+        disposables.add(
+                bookingApi.getMyBookings(bearer, status)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(response -> {
+                            setLoading(false);
+                            if (binding == null) return; // guard nếu view đã bị destroy
+                            if (response.isSuccess() && response.getData() != null) {
+                                List<BookingResponseDto> list = response.getData();
+                                adapter.updateItems(list);
+                                binding.tvEmpty.setVisibility(list.isEmpty() ? View.VISIBLE : View.GONE);
+                                binding.rvBookings.setVisibility(list.isEmpty() ? View.GONE : View.VISIBLE);
+                            }
+                        }, error -> {
+                            setLoading(false);
+                            if (getContext() != null) {
+                                Toast.makeText(getContext(), error.getMessage(), Toast.LENGTH_SHORT).show();
+                            }
+                        })
+        );
+    }
+
+    // =========================================================================
+    // Item interactions
+    // =========================================================================
 
     private void onBookingItemClick(BookingResponseDto booking) {
         if ("PENDING_PAYMENT".equals(booking.getStatus())) {
@@ -102,7 +221,8 @@ public class BookingsFragment extends Fragment {
     private void showResumePaymentDialog(BookingResponseDto booking) {
         new MaterialAlertDialogBuilder(requireContext())
                 .setTitle("Tiếp tục thanh toán?")
-                .setMessage("Booking " + booking.getBookingCode() + " chưa được thanh toán.\nBạn có muốn tiếp tục không?")
+                .setMessage("Booking " + booking.getBookingCode()
+                        + " chưa được thanh toán.\nBạn có muốn tiếp tục không?")
                 .setPositiveButton("Tiếp tục", (dialog, which) -> resumePayment(booking))
                 .setNegativeButton("Hủy", null)
                 .show();
@@ -132,68 +252,10 @@ public class BookingsFragment extends Fragment {
                                 Toast.makeText(getContext(), response.getMessage(), Toast.LENGTH_LONG).show();
                             }
                         }, error -> {
-                            Toast.makeText(getContext(), error.getMessage(), Toast.LENGTH_LONG).show();
-                        })
-        );
-    }
-
-    private void setupFilterChips() {
-        binding.chipAll.setOnClickListener(v -> {
-            currentFilter = null;
-            fetchBookings(null);
-        });
-        binding.chipConfirmed.setOnClickListener(v -> {
-            currentFilter = "CONFIRMED";
-            fetchBookings("CONFIRMED");
-        });
-        binding.chipCheckedIn.setOnClickListener(v -> {
-            currentFilter = "CHECKED_IN";
-            fetchBookings("CHECKED_IN");
-        });
-        binding.chipPending.setOnClickListener(v -> {
-            currentFilter = "PENDING_PAYMENT";
-            fetchBookings("PENDING_PAYMENT");
-        });
-        binding.chipExpired.setOnClickListener(v -> {
-            currentFilter = "EXPIRED";
-            fetchBookings("EXPIRED");
-        });
-    }
-
-    private void fetchBookings(String status) {
-        String token = preferencesManager.getFirebaseToken();
-        if (token == null) return;
-        String bearer = token.startsWith("Bearer ") ? token : "Bearer " + token;
-
-        setLoading(true);
-
-        disposables.add(
-                bookingApi.getMyBookings(bearer, status)
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(response -> {
-                            setLoading(false);
-                            if (response.isSuccess() && response.getData() != null) {
-                                List<BookingResponseDto> list = response.getData();
-                                adapter.updateItems(list);
-                                binding.tvEmpty.setVisibility(list.isEmpty() ? View.VISIBLE : View.GONE);
-                                binding.rvBookings.setVisibility(list.isEmpty() ? View.GONE : View.VISIBLE);
+                            if (getContext() != null) {
+                                Toast.makeText(getContext(), error.getMessage(), Toast.LENGTH_LONG).show();
                             }
-                        }, error -> {
-                            setLoading(false);
-                            Toast.makeText(getContext(), error.getMessage(), Toast.LENGTH_SHORT).show();
                         })
         );
-    }
-
-    private void setLoading(boolean loading) {
-        binding.progressBar.setVisibility(loading ? View.VISIBLE : View.GONE);
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        disposables.clear();
-        binding = null;
     }
 }
