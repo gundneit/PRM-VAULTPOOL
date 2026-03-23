@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.NavigationUI;
@@ -16,6 +17,8 @@ import com.vaultpool.customer.data.local.prefs.PreferencesManager;
 import com.vaultpool.customer.data.remote.api.BookingApi;
 import com.vaultpool.customer.databinding.ActivityMainBinding;
 import com.vaultpool.customer.presentation.ui.login.LoginActivity;
+import com.vaultpool.customer.presentation.ui.main.bookings.BookingsFragment;
+
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
@@ -59,6 +62,48 @@ public class MainActivity extends AppCompatActivity {
         setupActions();
         refreshProfile();
         updateCartBadge();
+        handleNavigationIntent(getIntent());
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        setIntent(intent);
+        handleNavigationIntent(intent);
+    }
+
+    private void handleNavigationIntent(Intent intent) {
+        if (intent == null) return;
+        String navigateTo = intent.getStringExtra("navigate_to");
+        if (!"bookings".equals(navigateTo)) return;
+        if (binding.bottomNavigation == null) return;
+
+        String tabStatus = intent.getStringExtra("tab_status");
+        if (tabStatus != null) {
+            BookingsFragment.pendingTabStatus = tabStatus;
+        }
+
+        int currentSelected = binding.bottomNavigation.getSelectedItemId();
+        if (currentSelected == R.id.nav_bookings) {
+            // Fragment đang active, dùng post để đảm bảo fragment đã resume
+            binding.getRoot().post(() -> {
+                NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager()
+                        .findFragmentById(R.id.nav_host_fragment);
+                if (navHostFragment != null) {
+                    Fragment current = navHostFragment.getChildFragmentManager()
+                            .getPrimaryNavigationFragment();
+                    if (current instanceof BookingsFragment && tabStatus != null) {
+                        ((BookingsFragment) current).selectTab(tabStatus);
+                        BookingsFragment.pendingTabStatus = null;
+                    }
+                }
+            });
+        } else {
+            // Set pending TRƯỚC khi switch tab
+            binding.getRoot().post(() ->
+                    binding.bottomNavigation.setSelectedItemId(R.id.nav_bookings)
+            );
+        }
     }
 
     @Override

@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import com.vaultpool.customer.databinding.ActivityZaloPaymentBinding;
+import com.vaultpool.customer.presentation.ui.main.MainActivity;
+
 import vn.zalopay.sdk.listeners.PayOrderListener;
 import vn.zalopay.sdk.Environment;
 import vn.zalopay.sdk.ZaloPaySDK;
@@ -52,49 +54,35 @@ public class ZaloPaymentActivity extends AppCompatActivity {
                 URI_SCHEME,
                 new PayOrderListener() {
                     @Override
-                    public void onPaymentSucceeded(
-                            String transactionId, String transToken, String appTransId) {
+                    public void onPaymentSucceeded(String transactionId, String transToken, String appTransId) {
                         runOnUiThread(() -> {
-                            binding.tvStatus.setText(
-                                    "Thanh toán thành công. Đang chờ xác nhận booking...");
-                            Toast.makeText(
-                                            ZaloPaymentActivity.this,
-                                            "ZaloPay success",
-                                            Toast.LENGTH_SHORT)
-                                    .show();
-                            finish();
+                            binding.tvStatus.setText("Thanh toán thành công...");
+                            navigateToBookings("CONFIRMED");
                         });
                     }
 
                     @Override
                     public void onPaymentCanceled(String zpTransTokenParam, String message) {
                         runOnUiThread(() -> {
-                            binding.tvStatus.setText("Bạn đã hủy thanh toán trên ZaloPay.");
-                            Toast.makeText(
-                                            ZaloPaymentActivity.this,
-                                            "ZaloPay canceled",
-                                            Toast.LENGTH_SHORT)
-                                    .show();
-                            finish();
+                            binding.tvStatus.setText("Bạn đã hủy thanh toán.");
+                            navigateToBookings("PENDING_PAYMENT");
                         });
                     }
 
                     @Override
-                    public void onPaymentError(
-                            ZaloPayError zaloPayError,
-                            String zpTransTokenParam,
-                            String message) {
+                    public void onPaymentError(ZaloPayError zaloPayError, String zpTransTokenParam, String message) {
                         runOnUiThread(() -> {
-                            String msg =
-                                    zaloPayError != null ? zaloPayError.toString() : "unknown";
-                            binding.tvStatus.setText("Thanh toán lỗi: " + msg);
-                            Toast.makeText(
-                                            ZaloPaymentActivity.this,
-                                            "ZaloPay error: " + msg,
-                                            Toast.LENGTH_SHORT)
-                                    .show();
-                            finish();
+                            navigateToBookings("PENDING_PAYMENT");
                         });
+                    }
+
+                    private void navigateToBookings(String tabStatus) {
+                        Intent intent = new Intent(ZaloPaymentActivity.this, MainActivity.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                        intent.putExtra("navigate_to", "bookings");
+                        intent.putExtra("tab_status", tabStatus);
+                        startActivity(intent);
+                        finish();
                     }
                 }
         );

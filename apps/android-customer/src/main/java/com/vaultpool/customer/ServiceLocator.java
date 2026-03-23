@@ -1,5 +1,6 @@
 package com.vaultpool.customer;
 
+import com.vaultpool.customer.data.remote.api.PaymentApi;
 import com.vaultpool.customer.data.remote.api.PoolApi;
 import com.vaultpool.customer.data.remote.api.BookingApi;
 import com.vaultpool.customer.data.repository.PoolRepositoryImpl;
@@ -18,6 +19,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class ServiceLocator {
 
     private static ServiceLocator instance;
+    private PaymentApi paymentApi;
 
     private com.vaultpool.customer.domain.repository.AuthRepository authRepository;
     private com.vaultpool.customer.data.remote.api.AuthApi authApi;
@@ -85,6 +87,8 @@ public class ServiceLocator {
         
         // Initialize Booking dependencies
         bookingApi = retrofit.create(BookingApi.class);
+
+        paymentApi = retrofit.create(PaymentApi.class);
     }
 
     public com.vaultpool.customer.domain.repository.AuthRepository getAuthRepository() {
@@ -117,5 +121,9 @@ public class ServiceLocator {
     
     public BookingApi getBookingApi() {
         return bookingApi;
+    }
+
+    public PaymentApi getPaymentApi() {
+        return paymentApi;
     }
 }

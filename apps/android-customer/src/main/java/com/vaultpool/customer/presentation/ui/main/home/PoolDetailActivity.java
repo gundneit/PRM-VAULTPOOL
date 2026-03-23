@@ -6,13 +6,17 @@ import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import com.bumptech.glide.Glide;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.gson.Gson;
+import com.vaultpool.customer.R;
 import com.vaultpool.customer.ServiceLocator;
 import com.vaultpool.customer.BuildConfig;
 import com.vaultpool.customer.data.remote.dto.ApiResponse;
@@ -61,6 +65,7 @@ public class PoolDetailActivity extends AppCompatActivity {
     
     private TimeSlotAdapter morningAdapter;
     private TimeSlotAdapter afternoonAdapter;
+    private AlertDialog loadingDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -410,7 +415,9 @@ public class PoolDetailActivity extends AppCompatActivity {
         }
 
         String token = formatToken(preferencesManager.getFirebaseToken());
-        CreateBookingRequestDto bookingRequest = new CreateBookingRequestDto(slot.getId(), guestCount);
+        CreateBookingRequestDto bookingRequest = new CreateBookingRequestDto(slot.getId(), guestCount, "PENDING_PAYMENT");
+
+        showRedirectingDialog();
 
         disposables.add(
                 bookingApi.createBooking(token, bookingRequest)
@@ -468,5 +475,25 @@ public class PoolDetailActivity extends AppCompatActivity {
         super.onDestroy();
         disposables.clear();
         binding = null;
+    }
+
+    private void showRedirectingDialog() {
+        loadingDialog = new MaterialAlertDialogBuilder(this)
+                .setView(R.layout.dialog_redirecting)
+                .setCancelable(false)
+                .create();
+        loadingDialog.show();
+    }
+
+    private void dismissRedirectingDialog() {
+        if (loadingDialog != null && loadingDialog.isShowing()) {
+            loadingDialog.dismiss();
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        dismissRedirectingDialog();
     }
 }
