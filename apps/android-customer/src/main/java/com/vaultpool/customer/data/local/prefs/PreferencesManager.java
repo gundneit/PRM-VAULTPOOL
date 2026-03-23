@@ -21,6 +21,7 @@ public class PreferencesManager {
     private static final String KEY_USER_ID = "user_id";
     private static final String KEY_USER_EMAIL = "user_email";
     private static final String KEY_USER_NAME = "user_name";
+    private static final String KEY_USER_PHONE = "user_phone";
     private static final String KEY_USER_ROLES = "user_roles";
     private static final String KEY_IS_LOGGED_IN = "is_logged_in";
 
@@ -84,6 +85,15 @@ public class PreferencesManager {
 
     public String getUserName() {
         return encryptedPrefs.getString(KEY_USER_NAME, null);
+    }
+
+    // User Phone
+    public void saveUserPhone(String phone) {
+        encryptedPrefs.edit().putString(KEY_USER_PHONE, phone).apply();
+    }
+
+    public String getUserPhone() {
+        return encryptedPrefs.getString(KEY_USER_PHONE, null);
     }
 
     // User Roles

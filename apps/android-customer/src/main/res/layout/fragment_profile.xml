@@ -55,6 +55,28 @@
         app:layout_constraintTop_toBottomOf="@id/tvEmailLabel" />
 
     <TextView
+        android:id="@+id/tvPhoneLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="@string/label_phone"
+        android:textColor="@color/text_secondary"
+        android:textSize="16sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvEmailValue" />
+
+    <TextView
+        android:id="@+id/tvPhoneValue"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
+        android:textColor="@color/text_primary"
+        android:textSize="24sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvPhoneLabel" />
+
+    <TextView
         android:id="@+id/tvUserIdLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -114,7 +136,7 @@
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tvEmailValue" />
+        app:layout_constraintTop_toBottomOf="@id/tvPhoneValue" />
 
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/cardDailyQuote"

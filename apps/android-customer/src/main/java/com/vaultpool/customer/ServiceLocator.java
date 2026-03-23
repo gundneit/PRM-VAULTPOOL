@@ -19,6 +19,7 @@ public class ServiceLocator {
     private static ServiceLocator instance;
 
     private com.vaultpool.customer.domain.repository.AuthRepository authRepository;
+    private com.vaultpool.customer.data.remote.api.AuthApi authApi;
     private com.vaultpool.customer.domain.usecase.LoginUseCase loginUseCase;
     private com.vaultpool.customer.data.local.prefs.PreferencesManager preferencesManager;
     private com.vaultpool.customer.data.auth.AuthFlowManager authFlowManager;
@@ -62,8 +63,7 @@ public class ServiceLocator {
                 .build();
         
         // Initialize Auth dependencies
-        com.vaultpool.customer.data.remote.api.AuthApi authApi = 
-                retrofit.create(com.vaultpool.customer.data.remote.api.AuthApi.class);
+        authApi = retrofit.create(com.vaultpool.customer.data.remote.api.AuthApi.class);
         authRepository = new com.vaultpool.customer.data.repository.FirebaseAuthRepository(authApi);
         loginUseCase = new com.vaultpool.customer.domain.usecase.LoginUseCase(authRepository);
         authFlowManager = new com.vaultpool.customer.data.auth.AuthFlowManager(
@@ -82,6 +82,10 @@ public class ServiceLocator {
 
     public com.vaultpool.customer.domain.repository.AuthRepository getAuthRepository() {
         return authRepository;
+    }
+
+    public com.vaultpool.customer.data.remote.api.AuthApi getAuthApi() {
+        return authApi;
     }
 
     public com.vaultpool.customer.domain.usecase.LoginUseCase getLoginUseCase() {

@@ -52,6 +52,7 @@ public class ProfileFragment extends Fragment {
 
         String userName = preferencesManager.getUserName();
         String userEmail = preferencesManager.getUserEmail();
+        String userPhone = preferencesManager.getUserPhone();
         boolean isStaff = preferencesManager.isStaff();
 
         binding.tvWelcome.setText("WELCOME");
@@ -59,6 +60,7 @@ public class ProfileFragment extends Fragment {
                 ? userName
                 : getString(com.vaultpool.customer.R.string.guest_user));
         binding.tvEmailValue.setText(userEmail != null && !userEmail.isEmpty() ? userEmail : "-");
+        binding.tvPhoneValue.setText(userPhone != null && !userPhone.isEmpty() ? userPhone : "-");
         binding.tvMoodFeedback.setText(getString(com.vaultpool.customer.R.string.mood_prompt));
         
         binding.btnStaff.setVisibility(isStaff ? View.VISIBLE : View.GONE);

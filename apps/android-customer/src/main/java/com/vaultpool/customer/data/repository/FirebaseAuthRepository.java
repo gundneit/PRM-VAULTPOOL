@@ -49,7 +49,7 @@ public class FirebaseAuthRepository implements AuthRepository {
     }
 
     @Override
-    public Single<Result<User>> registerWithEmail(String email, String password, String fullName) {
+    public Single<Result<User>> registerWithEmail(String email, String password, String fullName, String phone) {
         return Single.create(emitter -> {
             auth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(task -> {
@@ -70,6 +70,8 @@ public class FirebaseAuthRepository implements AuthRepository {
                             firebaseUser.sendEmailVerification()
                                 .addOnCompleteListener(emailTask -> {
                                     User user = mapFirebaseUserToUser(firebaseUser);
+                                    // Manually set phone as Firebase doesn't allow setting it here
+                                    user.setPhone(phone);
                                     emitter.onSuccess(Result.success(user));
                                 });
                         });

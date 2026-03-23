@@ -1,6 +1,8 @@
 package com.vaultpool.customer.data.auth;
 
+import com.vaultpool.customer.data.auth.AuthFlowManager.SessionState;
 import com.vaultpool.customer.data.local.prefs.PreferencesManager;
+import com.vaultpool.customer.data.remote.api.AuthApi;
 import com.vaultpool.customer.domain.model.Result;
 import com.vaultpool.customer.domain.model.User;
 import com.vaultpool.customer.domain.repository.AuthRepository;
@@ -31,12 +33,14 @@ public class AuthFlowManager {
             String userId = preferencesManager.getUserId();
             String email = preferencesManager.getUserEmail();
             String name = preferencesManager.getUserName();
+            String phone = preferencesManager.getUserPhone();
             Set<String> roles = preferencesManager.getUserRoles();
             
             User user = User.builder()
                     .id(userId != null ? Long.parseLong(userId) : null)
                     .email(email)
                     .fullName(name)
+                    .phone(phone)
                     .roles(roles)
                     .build();
             
@@ -95,14 +99,52 @@ public class AuthFlowManager {
 
     public Single<Result<User>> register(String email, String password, String fullName, String phone) {
         sessionSubject.onNext(SessionState.loading());
-        return authRepository.registerWithEmail(email, password, fullName)
+        return authRepository.registerWithEmail(email, password, fullName, phone)
+                .flatMap(result -> {
+                    if (result.isSuccess()) {
+                        User firebaseUser = result.getData();
+                        return authRepository.getIdToken()
+                                .flatMap(token -> {
+                                    if (token == null) return Single.just(Result.success(firebaseUser));
+                                    
+                                    AuthApi.RegisterRequest request = new AuthApi.RegisterRequest(
+                                            token, email, fullName, phone
+                                    );
+                                    
+                                    // ServiceLocator can be used here or we can inject AuthApi to AuthFlowManager
+                                    // For now, let's assume we want to sync with backend
+                                    return com.vaultpool.customer.ServiceLocator.getInstance().getAuthApi().register(request)
+                                            .map(apiResponse -> {
+                                                if (apiResponse.isSuccess()) {
+                                                    User backendUser = mapDtoToUser(apiResponse.getData());
+                                                    return Result.success(backendUser);
+                                                }
+                                                return Result.success(firebaseUser); // Fallback to firebase user
+                                            })
+                                            .onErrorReturn(throwable -> Result.success(firebaseUser));
+                                });
+                    }
+                    return Single.just(result);
+                })
                 .doOnSuccess(result -> {
                     sessionSubject.onNext(SessionState.unauthenticated());
                 })
                 .doOnError(throwable -> {
                     sessionSubject.onNext(SessionState.unauthenticated());
                 })
-                .onErrorReturn(throwable -> Result.<User>failure(throwable));
+                .subscribeOn(Schedulers.io());
+    }
+
+    private User mapDtoToUser(com.vaultpool.customer.data.remote.dto.UserDto dto) {
+        User user = new User();
+        user.setId(dto.getId());
+        user.setFirebaseUid(dto.getFirebaseUid());
+        user.setFullName(dto.getFullName());
+        user.setEmail(dto.getEmail());
+        user.setPhone(dto.getPhone());
+        user.setStatus(dto.getStatus());
+        user.setRoles(dto.getRoles());
+        return user;
     }
 
     public Single<Result<Void>> logout() {
@@ -177,6 +219,7 @@ public class AuthFlowManager {
         if (user != null) {
             preferencesManager.saveUserEmail(user.getEmail());
             preferencesManager.saveUserName(user.getFullName());
+            preferencesManager.saveUserPhone(user.getPhone());
             if (user.getRoles() != null) {
                 preferencesManager.saveUserRoles(user.getRoles());
             }
