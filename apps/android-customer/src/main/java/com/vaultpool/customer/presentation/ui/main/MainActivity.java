@@ -7,10 +7,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.NavigationUI;
+import com.google.android.material.badge.BadgeDrawable;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.vaultpool.customer.R;
 import com.vaultpool.customer.ServiceLocator;
 import com.vaultpool.customer.data.auth.AuthFlowManager;
 import com.vaultpool.customer.data.local.prefs.PreferencesManager;
+import com.vaultpool.customer.data.remote.api.BookingApi;
 import com.vaultpool.customer.databinding.ActivityMainBinding;
 import com.vaultpool.customer.presentation.ui.login.LoginActivity;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
@@ -27,6 +30,7 @@ public class MainActivity extends AppCompatActivity {
     private ActivityMainBinding binding;
     private AuthFlowManager authFlowManager;
     private PreferencesManager preferencesManager;
+    private BookingApi bookingApi;
     private final CompositeDisposable disposables = new CompositeDisposable();
 
     @Override
@@ -37,6 +41,7 @@ public class MainActivity extends AppCompatActivity {
 
         authFlowManager = ServiceLocator.getInstance().getAuthFlowManager();
         preferencesManager = ServiceLocator.getInstance().getPreferencesManager();
+        bookingApi = ServiceLocator.getInstance().getBookingApi();
 
         // Setup Navigation Component
         NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager()
@@ -53,6 +58,46 @@ public class MainActivity extends AppCompatActivity {
         setupProfileDisplay();
         setupActions();
         refreshProfile();
+        updateCartBadge();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        updateCartBadge();
+    }
+
+    private void updateCartBadge() {
+        String firebaseToken = preferencesManager.getFirebaseToken();
+        if (firebaseToken == null) {
+            return;
+        }
+        String token = firebaseToken.startsWith("Bearer ") ? firebaseToken : "Bearer " + firebaseToken;
+
+        disposables.add(
+                bookingApi.getCartCount(token)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(response -> {
+                            if (response != null && response.isSuccess() && response.getData() != null) {
+                                int cartCount = response.getData().getCount();
+                                showCartBadge(cartCount);
+                            }
+                        }, error -> {
+                            // Silent fail - don't show error toast for badge updates
+                        })
+        );
+    }
+
+    private void showCartBadge(int count) {
+        BadgeDrawable badge = binding.bottomNavigation.getOrCreateBadge(R.id.nav_tickets);
+        if (count > 0) {
+            badge.setVisible(true);
+            badge.setNumber(count);
+            badge.setMaxCharacterCount(3);
+        } else {
+            badge.setVisible(false);
+        }
     }
 
     private void setupProfileDisplay() {
