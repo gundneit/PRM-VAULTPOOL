@@ -67,19 +67,25 @@
         <activity android:name=".presentation.ui.main.home.PoolDetailActivity" />
 
         <!-- Receive ZaloPay deep link results -->
+        <!-- Đổi từ singleTask sang standard -->
         <activity
-            android:name=".presentation.ui.payment.ZaloPaymentActivity"
-            android:exported="true"
-            android:launchMode="singleTask">
+                android:name=".presentation.ui.payment.ZaloPaymentActivity"
+                android:exported="true"
+                android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
                 <data
-                    android:host="app"
-                    android:scheme="demozpdk" />
+                        android:host="app"
+                        android:scheme="demozpdk" />
             </intent-filter>
         </activity>
+
+        <activity
+                android:name=".presentation.ui.payment.ConfirmPaymentActivity"
+                android:exported="false"
+                android:windowSoftInputMode="adjustResize" />
 
 
     </application>
