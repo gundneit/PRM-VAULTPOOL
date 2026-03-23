@@ -23,10 +23,8 @@ import com.vaultpool.customer.presentation.ui.payment.ConfirmPaymentActivity;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
-import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 import retrofit2.HttpException;
@@ -119,20 +117,17 @@ public class CartFragment extends Fragment implements CartItemAdapter.OnItemSele
     }
 
     private void updateTotalAmount() {
-        List<BookingResponseDto> items = adapter.getItems();
+        BookingResponseDto selectedItem = adapter.getSelectedItem();
         long total = 0;
-        int selectedCount = 0;
-        if (items != null) {
-            for (BookingResponseDto item : items) {
-                if (item.isSelected()) {
-                    total += item.getAmount() != null ? item.getAmount() : 0;
-                    selectedCount++;
-                }
-            }
+        if (selectedItem != null) {
+            total = selectedItem.getAmount() != null ? selectedItem.getAmount() : 0;
+            binding.btnCheckout.setEnabled(true);
+            binding.btnCheckout.setText("Checkout (1)");
+        } else {
+            binding.btnCheckout.setEnabled(false);
+            binding.btnCheckout.setText("Checkout");
         }
         binding.tvTotalAmount.setText(String.format("₫ %,d", total));
-        binding.btnCheckout.setEnabled(selectedCount > 0);
-        binding.btnCheckout.setText(selectedCount > 0 ? "Checkout (" + selectedCount + ")" : "Checkout");
     }
 
     private void setupCheckoutButton() {
@@ -142,18 +137,9 @@ public class CartFragment extends Fragment implements CartItemAdapter.OnItemSele
     }
 
     private void performCheckout() {
-        List<BookingResponseDto> allItems = adapter.getItems();
-        if (allItems == null || allItems.isEmpty()) {
-            showMessage("Cart is empty");
-            return;
-        }
-
-        List<BookingResponseDto> selectedItems = allItems.stream()
-                .filter(BookingResponseDto::isSelected)
-                .collect(Collectors.toList());
-
-        if (selectedItems.isEmpty()) {
-            showMessage("Please select at least one item");
+        BookingResponseDto selectedItem = adapter.getSelectedItem();
+        if (selectedItem == null) {
+            showMessage("Please select an item to checkout");
             return;
         }
 
@@ -163,23 +149,18 @@ public class CartFragment extends Fragment implements CartItemAdapter.OnItemSele
 
         setLoading(true);
         disposables.add(
-                Observable.fromIterable(selectedItems)
-                        .concatMapSingle(item -> bookingApi.checkoutBooking(token, item.getId()))
-                        .toList()
+                bookingApi.checkoutBooking(token, selectedItem.getId())
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(results -> {
+                        .subscribe(response -> {
                             setLoading(false);
-                            if (!results.isEmpty()) {
-                                // Lấy ID của booking đầu tiên vừa checkout thành công
-                                Long firstBookingId = results.get(0).getData().getId();
-                                
-                                // Chuyển sang màn hình xác nhận thanh toán (Reuse luồng Book Now)
+                            if (response.isSuccess() && response.getData() != null) {
+                                // Truyền đúng bookingId của item được tick vào ConfirmPaymentActivity
                                 Intent intent = new Intent(getContext(), ConfirmPaymentActivity.class);
-                                intent.putExtra(ConfirmPaymentActivity.EXTRA_BOOKING_ID, firstBookingId);
+                                intent.putExtra(ConfirmPaymentActivity.EXTRA_BOOKING_ID, response.getData().getId());
                                 startActivity(intent);
                             } else {
-                                fetchCart();
+                                showMessage(response.getMessage());
                             }
                         }, error -> {
                             setLoading(false);

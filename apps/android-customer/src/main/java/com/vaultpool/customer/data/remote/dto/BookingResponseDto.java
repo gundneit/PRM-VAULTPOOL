@@ -45,6 +45,9 @@ public class BookingResponseDto {
 
     @SerializedName("createdAt")
     private String createdAt;
+    
+    @SerializedName("capacityAvailable")
+    private Integer capacityAvailable;
 
     // Local UI state - default to false as requested
     private boolean isSelected = false;
@@ -103,6 +106,10 @@ public class BookingResponseDto {
 
     public String getCreatedAt() {
         return createdAt;
+    }
+    
+    public Integer getCapacityAvailable() {
+        return capacityAvailable;
     }
 
     public boolean isSelected() {

@@ -1,7 +1,6 @@
 package com.lavela.pool.repository;
 
 import com.lavela.pool.domain.entity.Payment;
-import com.lavela.pool.domain.enums.PaymentStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

@@ -2,6 +2,7 @@ package com.vaultpool.customer.presentation.ui.main.home;
 
 import android.graphics.Color;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -36,9 +37,12 @@ public class TimeSlotAdapter extends RecyclerView.Adapter<TimeSlotAdapter.ViewHo
         SlotDto slot = slots.get(position);
         holder.binding.tvTime.setText(formatTime(slot.getStartTime()));
 
+        Integer available = slot.getCapacityAvailable();
+        if (available == null) available = 0;
+
         // Logic check expired or unavailable
         boolean isExpiredByStatus = "EXPIRED".equalsIgnoreCase(slot.getStatus());
-        boolean isFull = slot.getCapacityAvailable() != null && slot.getCapacityAvailable() <= 0;
+        boolean isFull = available <= 0;
         
         boolean isExpiredByTime = false;
         try {
@@ -50,22 +54,29 @@ public class TimeSlotAdapter extends RecyclerView.Adapter<TimeSlotAdapter.ViewHo
             }
         } catch (Exception ignored) {}
 
-        // Nếu bất kỳ điều kiện nào thỏa mãn thì đều Disable
         final boolean isDisabled = isExpiredByStatus || isExpiredByTime || isFull;
+
+        if (isFull) {
+            holder.binding.tvCapacity.setText("Hết chỗ");
+            holder.binding.tvCapacity.setTextColor(Color.parseColor("#9E9E9E"));
+        } else {
+            holder.binding.tvCapacity.setText("Còn " + available + " chỗ");
+            if (available <= 2) {
+                holder.binding.tvCapacity.setTextColor(Color.parseColor("#FF9800")); // Orange
+            } else {
+                holder.binding.tvCapacity.setTextColor(Color.parseColor("#4CAF50")); // Green
+            }
+        }
 
         if (isDisabled) {
             holder.binding.cardTime.setCardBackgroundColor(Color.parseColor("#F5F5F5"));
             holder.binding.tvTime.setTextColor(Color.parseColor("#BDBDBD"));
             holder.binding.cardTime.setStrokeWidth(0);
-            holder.binding.cardTime.setAlpha(0.5f);
-            
-            // Nếu slot bị disable mà lỡ đang được chọn (do logic cũ), thì bỏ chọn nó
-            if (selectedPosition == position) {
-                selectedPosition = -1;
-            }
+            holder.binding.cardTime.setAlpha(0.6f);
         } else if (position == selectedPosition) {
             holder.binding.cardTime.setCardBackgroundColor(Color.parseColor("#0077B6"));
             holder.binding.tvTime.setTextColor(Color.WHITE);
+            holder.binding.tvCapacity.setTextColor(Color.WHITE);
             holder.binding.cardTime.setStrokeWidth(0);
             holder.binding.cardTime.setAlpha(1.0f);
         } else {
@@ -76,7 +87,7 @@ public class TimeSlotAdapter extends RecyclerView.Adapter<TimeSlotAdapter.ViewHo
         }
 
         holder.itemView.setOnClickListener(v -> {
-            if (isDisabled) return; // Tuyệt đối không cho click nếu disable
+            if (isDisabled) return;
             
             if (selectedPosition == holder.getAdapterPosition()) return;
             
