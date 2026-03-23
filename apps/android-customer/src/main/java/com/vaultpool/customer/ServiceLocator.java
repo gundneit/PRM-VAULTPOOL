@@ -1,6 +1,7 @@
 package com.vaultpool.customer;
 
 import com.vaultpool.customer.data.remote.api.PoolApi;
+import com.vaultpool.customer.data.remote.api.BookingApi;
 import com.vaultpool.customer.data.repository.PoolRepositoryImpl;
 import com.vaultpool.customer.domain.repository.PoolRepository;
 
@@ -30,6 +31,9 @@ public class ServiceLocator {
     // Pool Dependencies
     private PoolApi poolApi;
     private PoolRepository poolRepository;
+    
+    // Booking Dependencies
+    private BookingApi bookingApi;
 
     private ServiceLocator() {
     }
@@ -78,6 +82,9 @@ public class ServiceLocator {
         // Initialize Pool dependencies
         poolApi = retrofit.create(PoolApi.class);
         poolRepository = new PoolRepositoryImpl(poolApi);
+        
+        // Initialize Booking dependencies
+        bookingApi = retrofit.create(BookingApi.class);
     }
 
     public com.vaultpool.customer.domain.repository.AuthRepository getAuthRepository() {
@@ -102,5 +109,9 @@ public class ServiceLocator {
 
     public PoolRepository getPoolRepository() {
         return poolRepository;
+    }
+    
+    public BookingApi getBookingApi() {
+        return bookingApi;
     }
 }

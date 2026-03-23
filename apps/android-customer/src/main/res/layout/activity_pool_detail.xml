@@ -161,14 +161,32 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="16dp"
-            android:background="@color/surface">
+            android:background="@color/surface"
+            android:orientation="horizontal"
+            android:spacing="12dp">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnAddToCart"
+                android:layout_width="0dp"
+                android:layout_height="56dp"
+                android:layout_weight="1"
+                android:text="@string/btn_add_to_cart"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:backgroundTint="@color/outline"
+                android:textColor="@color/primary"
+                app:cornerRadius="12dp"
+                app:strokeColor="@color/primary"
+                app:strokeWidth="2dp"
+                style="@style/Widget.Material3.Button.OutlinedButton" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnMainBook"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="56dp"
+                android:layout_weight="1"
                 android:text="Book Now"
-                android:textSize="16sp"
+                android:textSize="14sp"
                 android:textStyle="bold"
                 app:cornerRadius="12dp" />
         </LinearLayout>

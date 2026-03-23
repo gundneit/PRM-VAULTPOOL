@@ -64,6 +64,7 @@
 
     <!-- Navigation -->
     <string name="nav_home">Home</string>
+    <string name="nav_cart">Cart</string>
     <string name="nav_tickets">Tickets</string>
     <string name="nav_bookings">Bookings</string>
     <string name="nav_profile">Profile</string>
@@ -83,6 +84,13 @@
     <string name="filter_weekend">Weekend</string>
     <string name="label_vip">VIP</string>
     <string name="btn_book">Book</string>
+
+    <!-- Cart -->
+    <string name="cart_title">Shopping Cart</string>
+    <string name="cart_empty">Your cart is empty</string>
+    <string name="total">Total:</string>
+    <string name="btn_checkout">Proceed to Checkout</string>
+    <string name="btn_add_to_cart">Add to Cart</string>
 
     <!-- App Messages -->
     <string name="login_success">Đăng nhập thành công</string>
