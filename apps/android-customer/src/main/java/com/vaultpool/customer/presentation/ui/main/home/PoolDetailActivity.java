@@ -69,7 +69,6 @@ public class PoolDetailActivity extends AppCompatActivity {
     private PoolRepository poolRepository;
     private PreferencesManager preferencesManager;
     private BookingApi bookingApi;
-    private PaymentApi paymentApi;
     private final CompositeDisposable disposables = new CompositeDisposable();
     private Long poolId;
     private List<SlotDto> allSlots = new ArrayList<>();
@@ -108,31 +107,6 @@ public class PoolDetailActivity extends AppCompatActivity {
         poolRepository = ServiceLocator.getInstance().getPoolRepository();
         preferencesManager = ServiceLocator.getInstance().getPreferencesManager();
         bookingApi = ServiceLocator.getInstance().getBookingApi();
-
-        HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
-        logging.setLevel(HttpLoggingInterceptor.Level.BODY);
-
-        OkHttpClient client = new OkHttpClient.Builder()
-                .addInterceptor(logging)
-                .addInterceptor(chain -> {
-                    String token = preferencesManager.getFirebaseToken();
-                    okhttp3.Request original = chain.request();
-                    if (token != null && !token.isEmpty()) {
-                        return chain.proceed(original.newBuilder()
-                                .header("Authorization", "Bearer " + token)
-                                .build());
-                    }
-                    return chain.proceed(original);
-                })
-                .build();
-
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(BuildConfig.BACKEND_BASE_URL)
-                .client(client)
-                .addConverterFactory(GsonConverterFactory.create())
-                .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
-                .build();
-        paymentApi = retrofit.create(PaymentApi.class);
 
         setupToolbar();
         setupClickListeners();
@@ -283,6 +257,7 @@ public class PoolDetailActivity extends AppCompatActivity {
         dialog.setContentView(dialogBinding.getRoot());
 
         selectedSlot = null;
+        guestCount = 1; // Reset to default minimum
 
         dialog.setOnShowListener(dialogInterface -> {
             BottomSheetDialog d = (BottomSheetDialog) dialogInterface;
@@ -323,9 +298,13 @@ public class PoolDetailActivity extends AppCompatActivity {
             }
         });
         dialogBinding.btnPlus.setOnClickListener(v -> {
-            guestCount++;
-            dialogBinding.tvGuestCount.setText(String.valueOf(guestCount));
-            updateFooter(dialogBinding);
+            if (guestCount < 10) {
+                guestCount++;
+                dialogBinding.tvGuestCount.setText(String.valueOf(guestCount));
+                updateFooter(dialogBinding);
+            } else {
+                Toast.makeText(this, "Maximum 10 guests allowed", Toast.LENGTH_SHORT).show();
+            }
         });
 
         displaySlotsInDialog(allSlots, dialogBinding);
@@ -410,6 +389,7 @@ public class PoolDetailActivity extends AppCompatActivity {
         dialog.setContentView(dialogBinding.getRoot());
 
         selectedSlot = null;
+        guestCount = 1; // Reset to default minimum
 
         dialog.setOnShowListener(dialogInterface -> {
             BottomSheetDialog d = (BottomSheetDialog) dialogInterface;
@@ -450,9 +430,13 @@ public class PoolDetailActivity extends AppCompatActivity {
             }
         });
         dialogBinding.btnPlus.setOnClickListener(v -> {
-            guestCount++;
-            dialogBinding.tvGuestCount.setText(String.valueOf(guestCount));
-            updateFooter(dialogBinding);
+            if (guestCount < 10) {
+                guestCount++;
+                dialogBinding.tvGuestCount.setText(String.valueOf(guestCount));
+                updateFooter(dialogBinding);
+            } else {
+                Toast.makeText(this, "Maximum 10 guests allowed", Toast.LENGTH_SHORT).show();
+            }
         });
 
         displaySlotsInDialog(allSlots, dialogBinding);
