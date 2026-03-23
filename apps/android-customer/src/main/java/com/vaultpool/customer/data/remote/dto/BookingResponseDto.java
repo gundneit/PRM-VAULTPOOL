@@ -46,6 +46,9 @@ public class BookingResponseDto {
     @SerializedName("createdAt")
     private String createdAt;
 
+    // Local UI state
+    private boolean isSelected = true;
+
     public Long getId() {
         return id;
     }
@@ -101,5 +104,12 @@ public class BookingResponseDto {
     public String getCreatedAt() {
         return createdAt;
     }
-}
 
+    public boolean isSelected() {
+        return isSelected;
+    }
+
+    public void setSelected(boolean selected) {
+        isSelected = selected;
+    }
+}

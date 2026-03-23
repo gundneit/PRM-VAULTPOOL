@@ -36,7 +36,8 @@ public class ConfirmPaymentActivity extends AppCompatActivity {
     private final CompositeDisposable disposables = new CompositeDisposable();
     private BookingResponseDto currentBooking;
     private AlertDialog loadingDialog;
-    private boolean hasLaunchedPayment = false; // ← guard
+    private boolean hasLaunchedPayment = false;
+    private Long targetBookingId = -1L;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,19 +45,21 @@ public class ConfirmPaymentActivity extends AppCompatActivity {
         binding = ActivityConfirmPaymentBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+        // Nhận ID từ intent nếu có
+        targetBookingId = getIntent().getLongExtra(EXTRA_BOOKING_ID, -1L);
+
         bookingApi = ServiceLocator.getInstance().getBookingApi();
         paymentApi = ServiceLocator.getInstance().getPaymentApi();
         preferencesManager = ServiceLocator.getInstance().getPreferencesManager();
 
         setupToolbar();
-        fetchLatestPendingBooking();
+        fetchPendingBooking();
         setupActions();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        // Nếu đã launch ZaloPay rồi quay lại đây (do back) → finish luôn
         if (hasLaunchedPayment) {
             finish();
         }
@@ -67,7 +70,7 @@ public class ConfirmPaymentActivity extends AppCompatActivity {
         binding.toolbar.setNavigationOnClickListener(v -> finish());
     }
 
-    private void fetchLatestPendingBooking() {
+    private void fetchPendingBooking() {
         String token = getToken();
         if (token == null) return;
 
@@ -79,18 +82,30 @@ public class ConfirmPaymentActivity extends AppCompatActivity {
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(response -> {
                             setLoading(false);
-                            if (response.isSuccess()
-                                    && response.getData() != null
-                                    && !response.getData().isEmpty()) {
-                                currentBooking = response.getData().get(0);
+                            if (response.isSuccess() && response.getData() != null && !response.getData().isEmpty()) {
+                                if (targetBookingId != -1L) {
+                                    // Tìm đúng booking theo ID được truyền sang
+                                    for (BookingResponseDto b : response.getData()) {
+                                        if (b.getId().equals(targetBookingId)) {
+                                            currentBooking = b;
+                                            break;
+                                        }
+                                    }
+                                }
+                                
+                                // Nếu không tìm thấy theo ID hoặc không truyền ID, lấy cái mới nhất (đầu tiên)
+                                if (currentBooking == null) {
+                                    currentBooking = response.getData().get(0);
+                                }
+                                
                                 displayBooking(currentBooking);
                             } else {
-                                Toast.makeText(this, "Không tìm thấy booking.", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(this, "Không tìm thấy booking đang chờ thanh toán.", Toast.LENGTH_SHORT).show();
                                 finish();
                             }
                         }, error -> {
                             setLoading(false);
-                            Toast.makeText(this, error.getMessage(), Toast.LENGTH_LONG).show();
+                            Toast.makeText(this, "Lỗi tải dữ liệu: " + error.getMessage(), Toast.LENGTH_LONG).show();
                             finish();
                         })
         );
@@ -131,7 +146,7 @@ public class ConfirmPaymentActivity extends AppCompatActivity {
         binding.btnCancel.setOnClickListener(v ->
                 new MaterialAlertDialogBuilder(this)
                         .setTitle("Hủy đặt chỗ?")
-                        .setMessage("Booking sẽ bị hủy nếu bạn không thanh toán.")
+                        .setMessage("Booking này sẽ bị treo nếu bạn không thanh toán ngay.")
                         .setPositiveButton("Rời đi", (d, w) -> finish())
                         .setNegativeButton("Ở lại", null)
                         .show()
@@ -150,20 +165,20 @@ public class ConfirmPaymentActivity extends AppCompatActivity {
                         .subscribe(response -> {
                             dismissRedirectingDialog();
                             if (response.isSuccess() && response.getData() != null) {
-                                hasLaunchedPayment = true; // ← đánh dấu trước khi start
+                                hasLaunchedPayment = true;
                                 Intent intent = new Intent(this, ZaloPaymentActivity.class);
                                 intent.putExtra(ZaloPaymentActivity.EXTRA_ZP_TRANS_TOKEN,
                                         response.getData().getRedirectUrl());
                                 intent.putExtra(ZaloPaymentActivity.EXTRA_BOOKING_ID,
                                         response.getData().getBookingId());
                                 startActivity(intent);
-                                finish(); // ← finish ConfirmPaymentActivity ngay
+                                finish();
                             } else {
                                 Toast.makeText(this, response.getMessage(), Toast.LENGTH_LONG).show();
                             }
                         }, error -> {
                             dismissRedirectingDialog();
-                            Toast.makeText(this, error.getMessage(), Toast.LENGTH_LONG).show();
+                            Toast.makeText(this, "Lỗi tạo thanh toán: " + error.getMessage(), Toast.LENGTH_LONG).show();
                         })
         );
     }

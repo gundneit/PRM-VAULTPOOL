@@ -3,8 +3,11 @@ package com.vaultpool.customer.presentation.ui.main.home;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -80,6 +83,7 @@ public class PoolDetailActivity extends AppCompatActivity {
 
     private MapView mapView;
     private GoogleMap googleMap;
+    private TextView tvCartBadge;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -134,6 +138,7 @@ public class PoolDetailActivity extends AppCompatActivity {
         setupClickListeners();
         fetchPoolDetail();
         fetchSlots(selectedDate);
+        updateCartBadge();
     }
 
     private void setupToolbar() {
@@ -143,6 +148,49 @@ public class PoolDetailActivity extends AppCompatActivity {
             getSupportActionBar().setDisplayShowTitleEnabled(false);
         }
         binding.toolbar.setNavigationOnClickListener(v -> finish());
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_pool_detail, menu);
+        MenuItem cartItem = menu.findItem(R.id.action_cart);
+        View actionView = cartItem.getActionView();
+        if (actionView != null) {
+            tvCartBadge = actionView.findViewById(R.id.tvCartBadge);
+            actionView.setOnClickListener(v -> {
+                // Navigate to Cart in MainActivity
+                Intent intent = new Intent(this, com.vaultpool.customer.presentation.ui.main.MainActivity.class);
+                intent.putExtra("navigate_to", "cart");
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                startActivity(intent);
+            });
+            updateCartBadge();
+        }
+        return true;
+    }
+
+    private void updateCartBadge() {
+        String firebaseToken = preferencesManager.getFirebaseToken();
+        if (firebaseToken == null || tvCartBadge == null) return;
+        
+        String token = firebaseToken.startsWith("Bearer ") ? firebaseToken : "Bearer " + firebaseToken;
+
+        disposables.add(
+                bookingApi.getCartCount(token)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(response -> {
+                            if (response.isSuccess() && response.getData() != null) {
+                                int count = response.getData().getCount();
+                                if (count > 0) {
+                                    tvCartBadge.setText(String.valueOf(count));
+                                    tvCartBadge.setVisibility(View.VISIBLE);
+                                } else {
+                                    tvCartBadge.setVisibility(View.GONE);
+                                }
+                            }
+                        }, throwable -> {})
+        );
     }
 
     private void setupClickListeners() {
@@ -439,6 +487,7 @@ public class PoolDetailActivity extends AppCompatActivity {
                         .subscribe(response -> {
                             if (response.isSuccess()) {
                                 Toast.makeText(this, "Added to cart!", Toast.LENGTH_SHORT).show();
+                                updateCartBadge(); // Cập nhật số lượng ngay lập tức
                             } else {
                                 Toast.makeText(this, response.getMessage(), Toast.LENGTH_LONG).show();
                             }
@@ -533,6 +582,7 @@ public class PoolDetailActivity extends AppCompatActivity {
         super.onResume();
         if (mapView != null) mapView.onResume();
         dismissRedirectingDialog();
+        updateCartBadge(); // Cập nhật lại mỗi khi quay lại trang này
     }
 
     @Override

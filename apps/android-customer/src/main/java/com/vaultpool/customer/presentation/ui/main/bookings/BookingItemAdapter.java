@@ -1,5 +1,6 @@
 package com.vaultpool.customer.presentation.ui.main.bookings;
 
+import android.graphics.Bitmap;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,6 +9,8 @@ import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.zxing.BarcodeFormat;
+import com.journeyapps.barcodescanner.BarcodeEncoder;
 import com.vaultpool.customer.R;
 import com.vaultpool.customer.data.remote.dto.BookingResponseDto;
 import com.vaultpool.customer.databinding.ItemBookingBinding;
@@ -61,7 +64,7 @@ public class BookingItemAdapter extends RecyclerView.Adapter<BookingItemAdapter.
         void bind(BookingResponseDto b, OnBookingClickListener listener) {
             binding.tvPoolName.setText(b.getPoolName());
             binding.tvPoolAddress.setText(b.getPoolAddress());
-            binding.tvBookingCode.setText(b.getBookingCode());
+            binding.tvBookingCode.setText("Code: " + b.getBookingCode());
             binding.tvQty.setText(b.getQty() + " ticket(s)");
             binding.tvAmount.setText(String.format("₫ %,d", b.getAmount() != null ? b.getAmount() : 0));
 
@@ -69,9 +72,11 @@ public class BookingItemAdapter extends RecyclerView.Adapter<BookingItemAdapter.
             String end = formatTime(b.getEndTime());
             binding.tvTime.setText(start + " – " + end);
 
-            binding.tvStatus.setText(b.getStatus());
+            String status = b.getStatus() != null ? b.getStatus() : "";
+            binding.tvStatus.setText(status);
+            
             int colorRes;
-            switch (b.getStatus() != null ? b.getStatus() : "") {
+            switch (status) {
                 case "CONFIRMED":       colorRes = R.color.success; break;
                 case "CHECKED_IN":      colorRes = R.color.info;    break;
                 case "PENDING_PAYMENT": colorRes = R.color.warning; break;
@@ -83,11 +88,28 @@ public class BookingItemAdapter extends RecyclerView.Adapter<BookingItemAdapter.
             binding.tvStatus.setBackgroundTintList(
                     ContextCompat.getColorStateList(binding.getRoot().getContext(), colorRes));
 
+            // QR Code Logic for CONFIRMED status
+            if ("CONFIRMED".equals(status)) {
+                binding.layoutQrCode.setVisibility(View.VISIBLE);
+                binding.tvBookingCode.setVisibility(View.GONE); // Hide small code when QR is shown
+                binding.tvBookingCodeLarge.setText(b.getBookingCode());
+                try {
+                    BarcodeEncoder barcodeEncoder = new BarcodeEncoder();
+                    Bitmap bitmap = barcodeEncoder.encodeBitmap(b.getBookingCode(), BarcodeFormat.QR_CODE, 400, 400);
+                    binding.ivQrCode.setImageBitmap(bitmap);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            } else {
+                binding.layoutQrCode.setVisibility(View.GONE);
+                binding.tvBookingCode.setVisibility(View.VISIBLE);
+            }
+
             binding.getRoot().setOnClickListener(v -> {
                 if (listener != null) listener.onClick(b);
             });
 
-            if ("PENDING_PAYMENT".equals(b.getStatus())) {
+            if ("PENDING_PAYMENT".equals(status)) {
                 binding.getRoot().setStrokeColor(
                         ContextCompat.getColor(binding.getRoot().getContext(), R.color.warning));
                 binding.getRoot().setStrokeWidth(2);
