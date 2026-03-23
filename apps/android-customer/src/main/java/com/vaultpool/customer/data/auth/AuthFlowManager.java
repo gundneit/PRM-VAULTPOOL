@@ -58,6 +58,13 @@ public class AuthFlowManager {
                 .flatMap(result -> {
                     if (result.isSuccess()) {
                         User firebaseUser = result.getData();
+                        
+                        // Check if email is verified (Status is "ACTIVE" if verified)
+                        if (!"ACTIVE".equals(firebaseUser.getStatus())) {
+                            return authRepository.logout()
+                                    .andThen(Single.just(Result.<User>failure("Please verify your email before logging in.")));
+                        }
+                        
                         return authRepository.getIdToken()
                                 .flatMap(token -> {
                                     if (token == null) return Single.just(Result.success(firebaseUser));
