@@ -5,7 +5,9 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.vaultpool.customer.data.remote.dto.staff.BookingStaffDto;
+import com.vaultpool.customer.data.remote.dto.staff.InventoryLogDto;
 import com.vaultpool.customer.data.remote.dto.staff.PoolStaffDto;
+import com.vaultpool.customer.data.remote.dto.staff.RevenueAnalyticsDto;
 import com.vaultpool.customer.data.remote.dto.staff.SlotStaffDto;
 import com.vaultpool.customer.domain.model.Result;
 import com.vaultpool.customer.domain.repository.AuthRepository;
@@ -26,6 +28,9 @@ public class StaffViewModel extends ViewModel {
     private final MutableLiveData<Result<List<BookingStaffDto>>> bookings = new MutableLiveData<>();
     private final MutableLiveData<Result<List<PoolStaffDto>>> pools = new MutableLiveData<>();
     private final MutableLiveData<Result<List<SlotStaffDto>>> slots = new MutableLiveData<>();
+    private final MutableLiveData<Result<List<RevenueAnalyticsDto>>> revenueByTime = new MutableLiveData<>();
+    private final MutableLiveData<Result<List<RevenueAnalyticsDto>>> revenueByPool = new MutableLiveData<>();
+    private final MutableLiveData<Result<List<InventoryLogDto>>> inventoryLogs = new MutableLiveData<>();
     private final MutableLiveData<Result<BookingStaffDto>> checkInUpdate = new MutableLiveData<>();
     private final MutableLiveData<Result<PoolStaffDto>> poolActionUpdate = new MutableLiveData<>();
     private final MutableLiveData<Result<SlotStaffDto>> slotActionUpdate = new MutableLiveData<>();
@@ -40,6 +45,9 @@ public class StaffViewModel extends ViewModel {
     public LiveData<Result<BookingStaffDto>> getCheckInUpdate() { return checkInUpdate; }
     public LiveData<Result<List<PoolStaffDto>>> getPools() { return pools; }
     public LiveData<Result<List<SlotStaffDto>>> getSlots() { return slots; }
+    public LiveData<Result<List<RevenueAnalyticsDto>>> getRevenueByTime() { return revenueByTime; }
+    public LiveData<Result<List<RevenueAnalyticsDto>>> getRevenueByPool() { return revenueByPool; }
+    public LiveData<Result<List<InventoryLogDto>>> getInventoryLogs() { return inventoryLogs; }
     public LiveData<Result<PoolStaffDto>> getPoolActionUpdate() { return poolActionUpdate; }
     public LiveData<Result<SlotStaffDto>> getSlotActionUpdate() { return slotActionUpdate; }
     public LiveData<Boolean> getLoading() { return loading; }
@@ -267,6 +275,81 @@ public class StaffViewModel extends ViewModel {
                         message = "This slot has expired and cannot be edited.";
                     }
                     slotActionUpdate.setValue(Result.failure(message));
+                }));
+    }
+
+    public void fetchRevenueByTime(String from, String to, String granularity) {
+        loading.setValue(true);
+        disposables.add(authRepository.getIdToken()
+            .flatMap(token -> staffRepository.getRevenueByTime(token, from, to, granularity))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(result -> {
+                    loading.setValue(false);
+                    revenueByTime.setValue(result);
+                }, throwable -> {
+                    loading.setValue(false);
+                    revenueByTime.setValue(Result.failure(throwable.getMessage()));
+                }));
+    }
+
+    public void fetchRevenueByPool(String from, String to) {
+        loading.setValue(true);
+        disposables.add(authRepository.getIdToken()
+            .flatMap(token -> staffRepository.getRevenueByPool(token, from, to))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(result -> {
+                    loading.setValue(false);
+                    revenueByPool.setValue(result);
+                }, throwable -> {
+                    loading.setValue(false);
+                    revenueByPool.setValue(Result.failure(throwable.getMessage()));
+                }));
+    }
+
+    public void fetchInventoryLogs(String from, String to) {
+        loading.setValue(true);
+        disposables.add(authRepository.getIdToken()
+            .flatMap(token -> staffRepository.getInventoryLogs(token, from, to))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(result -> {
+                    loading.setValue(false);
+                    inventoryLogs.setValue(result);
+                }, throwable -> {
+                    loading.setValue(false);
+                    inventoryLogs.setValue(Result.failure(throwable.getMessage()));
+                }));
+    }
+
+    public void fetchInventoryLogsBySlot(Long slotId) {
+        loading.setValue(true);
+        disposables.add(authRepository.getIdToken()
+            .flatMap(token -> staffRepository.getInventoryLogsBySlot(token, slotId))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(result -> {
+                    loading.setValue(false);
+                    inventoryLogs.setValue(result);
+                }, throwable -> {
+                    loading.setValue(false);
+                    inventoryLogs.setValue(Result.failure(throwable.getMessage()));
+                }));
+    }
+
+    public void fetchInventoryLogsByBooking(String bookingCode) {
+        loading.setValue(true);
+        disposables.add(authRepository.getIdToken()
+            .flatMap(token -> staffRepository.getInventoryLogsByBooking(token, bookingCode))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(result -> {
+                    loading.setValue(false);
+                    inventoryLogs.setValue(result);
+                }, throwable -> {
+                    loading.setValue(false);
+                    inventoryLogs.setValue(Result.failure(throwable.getMessage()));
                 }));
     }
 

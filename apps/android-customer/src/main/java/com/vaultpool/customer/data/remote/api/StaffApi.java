@@ -3,7 +3,9 @@ package com.vaultpool.customer.data.remote.api;
 import com.vaultpool.customer.data.remote.dto.ApiResponse;
 import com.vaultpool.customer.data.remote.dto.staff.BookingStaffDto;
 import com.vaultpool.customer.data.remote.dto.staff.CheckInRequest;
+import com.vaultpool.customer.data.remote.dto.staff.InventoryLogDto;
 import com.vaultpool.customer.data.remote.dto.staff.PoolStaffDto;
+import com.vaultpool.customer.data.remote.dto.staff.RevenueAnalyticsDto;
 import com.vaultpool.customer.data.remote.dto.staff.SlotStaffDto;
 
 import java.util.List;
@@ -19,6 +21,7 @@ import retrofit2.http.Part;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
 import retrofit2.http.Path;
+import retrofit2.http.Query;
 
 public interface StaffApi {
     // Staff Operations (Private)
@@ -85,4 +88,38 @@ public interface StaffApi {
 
     @GET("pools/{poolId}/slots")
     Single<ApiResponse<List<SlotStaffDto>>> getSlotsByDate(@Path("poolId") Long poolId, @retrofit2.http.Query("date") String date);
+
+    @GET("analytics/revenue")
+    Single<ApiResponse<List<RevenueAnalyticsDto>>> getRevenueByTime(
+            @Header("Authorization") String token,
+            @Query("from") String from,
+            @Query("to") String to,
+            @Query("granularity") String granularity
+    );
+
+    @GET("analytics/revenue/by-pool")
+    Single<ApiResponse<List<RevenueAnalyticsDto>>> getRevenueByPool(
+            @Header("Authorization") String token,
+            @Query("from") String from,
+            @Query("to") String to
+    );
+
+    @GET("inventory-logs")
+    Single<ApiResponse<List<InventoryLogDto>>> getInventoryLogs(
+            @Header("Authorization") String token,
+            @Query("from") String from,
+            @Query("to") String to
+    );
+
+    @GET("inventory-logs/slot/{slotId}")
+    Single<ApiResponse<List<InventoryLogDto>>> getInventoryLogsBySlot(
+            @Header("Authorization") String token,
+            @Path("slotId") Long slotId
+    );
+
+    @GET("inventory-logs/booking/{bookingCode}")
+    Single<ApiResponse<List<InventoryLogDto>>> getInventoryLogsByBooking(
+            @Header("Authorization") String token,
+            @Path("bookingCode") String bookingCode
+    );
 }

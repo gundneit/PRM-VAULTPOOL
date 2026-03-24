@@ -1,7 +1,9 @@
 package com.vaultpool.customer.domain.repository;
 
 import com.vaultpool.customer.data.remote.dto.staff.BookingStaffDto;
+import com.vaultpool.customer.data.remote.dto.staff.InventoryLogDto;
 import com.vaultpool.customer.data.remote.dto.staff.PoolStaffDto;
+import com.vaultpool.customer.data.remote.dto.staff.RevenueAnalyticsDto;
 import com.vaultpool.customer.data.remote.dto.staff.SlotStaffDto;
 import com.vaultpool.customer.domain.model.Result;
 
@@ -21,4 +23,9 @@ public interface StaffRepository {
     Single<Result<SlotStaffDto>> createSlot(String token, Long poolId, SlotStaffDto slot);
     Single<Result<SlotStaffDto>> updateSlot(String token, Long poolId, Long slotId, SlotStaffDto slot);
     Single<Result<SlotStaffDto>> updateSlotStatus(String token, Long poolId, Long slotId, String status);
+    Single<Result<List<RevenueAnalyticsDto>>> getRevenueByTime(String token, String from, String to, String granularity);
+    Single<Result<List<RevenueAnalyticsDto>>> getRevenueByPool(String token, String from, String to);
+    Single<Result<List<InventoryLogDto>>> getInventoryLogs(String token, String from, String to);
+    Single<Result<List<InventoryLogDto>>> getInventoryLogsBySlot(String token, Long slotId);
+    Single<Result<List<InventoryLogDto>>> getInventoryLogsByBooking(String token, String bookingCode);
 }

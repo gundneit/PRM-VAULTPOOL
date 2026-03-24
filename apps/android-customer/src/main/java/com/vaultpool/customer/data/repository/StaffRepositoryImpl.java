@@ -4,7 +4,9 @@ import com.vaultpool.customer.data.remote.api.StaffApi;
 import com.vaultpool.customer.data.remote.dto.ApiResponse;
 import com.vaultpool.customer.data.remote.dto.staff.BookingStaffDto;
 import com.vaultpool.customer.data.remote.dto.staff.CheckInRequest;
+import com.vaultpool.customer.data.remote.dto.staff.InventoryLogDto;
 import com.vaultpool.customer.data.remote.dto.staff.PoolStaffDto;
+import com.vaultpool.customer.data.remote.dto.staff.RevenueAnalyticsDto;
 import com.vaultpool.customer.data.remote.dto.staff.SlotStaffDto;
 import com.vaultpool.customer.domain.model.Result;
 import com.vaultpool.customer.domain.repository.StaffRepository;
@@ -126,6 +128,41 @@ public class StaffRepositoryImpl implements StaffRepository {
         java.util.Map<String, String> body = new java.util.HashMap<>();
         body.put("status", status);
         return staffApi.updateSlotStatus(formatToken(token), poolId, slotId, body)
+                .map(this::handleResponse)
+                .subscribeOn(Schedulers.io());
+    }
+
+    @Override
+    public Single<Result<List<RevenueAnalyticsDto>>> getRevenueByTime(String token, String from, String to, String granularity) {
+        return staffApi.getRevenueByTime(formatToken(token), from, to, granularity)
+                .map(this::handleResponse)
+                .subscribeOn(Schedulers.io());
+    }
+
+    @Override
+    public Single<Result<List<RevenueAnalyticsDto>>> getRevenueByPool(String token, String from, String to) {
+        return staffApi.getRevenueByPool(formatToken(token), from, to)
+                .map(this::handleResponse)
+                .subscribeOn(Schedulers.io());
+    }
+
+    @Override
+    public Single<Result<List<InventoryLogDto>>> getInventoryLogs(String token, String from, String to) {
+        return staffApi.getInventoryLogs(formatToken(token), from, to)
+                .map(this::handleResponse)
+                .subscribeOn(Schedulers.io());
+    }
+
+    @Override
+    public Single<Result<List<InventoryLogDto>>> getInventoryLogsBySlot(String token, Long slotId) {
+        return staffApi.getInventoryLogsBySlot(formatToken(token), slotId)
+                .map(this::handleResponse)
+                .subscribeOn(Schedulers.io());
+    }
+
+    @Override
+    public Single<Result<List<InventoryLogDto>>> getInventoryLogsByBooking(String token, String bookingCode) {
+        return staffApi.getInventoryLogsByBooking(formatToken(token), bookingCode)
                 .map(this::handleResponse)
                 .subscribeOn(Schedulers.io());
     }

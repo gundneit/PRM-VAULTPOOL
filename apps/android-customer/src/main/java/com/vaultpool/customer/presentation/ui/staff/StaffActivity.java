@@ -46,6 +46,9 @@ public class StaffActivity extends AppCompatActivity {
             } else if (itemId == com.vaultpool.customer.R.id.navigation_checkin) {
                 loadFragment(new StaffCheckInFragment());
                 return true;
+            } else if (itemId == com.vaultpool.customer.R.id.navigation_analytics) {
+                loadFragment(new StaffAnalyticsFragment());
+                return true;
             }
             return false;
         });
