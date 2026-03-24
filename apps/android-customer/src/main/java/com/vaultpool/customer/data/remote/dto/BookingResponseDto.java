@@ -10,6 +10,48 @@ public class BookingResponseDto {
     @SerializedName("bookingCode")
     private String bookingCode;
 
+    @SerializedName("slotId")
+    private Long slotId;
+
+    @SerializedName("poolId")
+    private Long poolId;
+
+    @SerializedName("poolName")
+    private String poolName;
+
+    @SerializedName("poolAddress")
+    private String poolAddress;
+
+    @SerializedName("startTime")
+    private String startTime;
+
+    @SerializedName("endTime")
+    private String endTime;
+
+    @SerializedName("qty")
+    private Integer qty;
+
+    @SerializedName("amount")
+    private Long amount;
+
+    @SerializedName("status")
+    private String status;
+
+    @SerializedName("paymentStatus")
+    private String paymentStatus;
+
+    @SerializedName("expiresAt")
+    private String expiresAt;
+
+    @SerializedName("createdAt")
+    private String createdAt;
+    
+    @SerializedName("capacityAvailable")
+    private Integer capacityAvailable;
+
+    // Local UI state - default to false as requested
+    private boolean isSelected = false;
+
     public Long getId() {
         return id;
     }
@@ -17,5 +59,64 @@ public class BookingResponseDto {
     public String getBookingCode() {
         return bookingCode;
     }
-}
 
+    public Long getSlotId() {
+        return slotId;
+    }
+
+    public Long getPoolId() {
+        return poolId;
+    }
+
+    public String getPoolName() {
+        return poolName;
+    }
+
+    public String getPoolAddress() {
+        return poolAddress;
+    }
+
+    public String getStartTime() {
+        return startTime;
+    }
+
+    public String getEndTime() {
+        return endTime;
+    }
+
+    public Integer getQty() {
+        return qty;
+    }
+
+    public Long getAmount() {
+        return amount;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public String getPaymentStatus() {
+        return paymentStatus;
+    }
+
+    public String getExpiresAt() {
+        return expiresAt;
+    }
+
+    public String getCreatedAt() {
+        return createdAt;
+    }
+    
+    public Integer getCapacityAvailable() {
+        return capacityAvailable;
+    }
+
+    public boolean isSelected() {
+        return isSelected;
+    }
+
+    public void setSelected(boolean selected) {
+        isSelected = selected;
+    }
+}

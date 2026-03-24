@@ -62,11 +62,11 @@ public class AuthViewModel extends ViewModel {
     /**
      * Register new user
      */
-    public void register(String email, String password, String fullName) {
+    public void register(String email, String password, String fullName, String phone) {
         uiState.setValue(AuthUiState.Loading.getInstance());
 
         disposables.add(
-                authRepository.registerWithEmail(email, password, fullName)
+                authRepository.registerWithEmail(email, password, fullName, phone)
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(result -> {

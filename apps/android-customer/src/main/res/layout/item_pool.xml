@@ -25,17 +25,6 @@
                 android:scaleType="centerCrop"
                 android:contentDescription="Pool Image"
                 android:src="@drawable/bg_onboarding_page_1" />
-
-            <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/btnFavorite"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_margin="12dp"
-                app:fabSize="mini"
-                app:backgroundTint="#33FFFFFF"
-                app:elevation="0dp"
-                android:src="@android:drawable/btn_star_big_off" />
         </RelativeLayout>
 
         <LinearLayout
@@ -80,25 +69,15 @@
                     android:textSize="18sp"
                     android:textStyle="bold" />
 
-                <LinearLayout
+                <TextView
+                    android:id="@+id/poolRating"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal">
-                    <ImageView
-                        android:layout_width="12dp"
-                        android:layout_height="12dp"
-                        android:src="@android:drawable/btn_star_big_on"
-                        app:tint="@color/tertiary" />
-                    <TextView
-                        android:id="@+id/poolRating"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="4dp"
-                        android:textColor="@color/on_surface"
-                        android:textSize="12sp"
-                        android:textStyle="bold" />
-                </LinearLayout>
+                    android:layout_marginTop="4dp"
+                    android:textColor="@color/on_surface"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>

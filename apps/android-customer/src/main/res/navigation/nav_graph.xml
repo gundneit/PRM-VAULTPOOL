@@ -13,14 +13,15 @@
 
     <fragment
         android:id="@+id/nav_tickets"
-        android:name="com.vaultpool.customer.presentation.ui.main.tickets.TicketsFragment"
-        android:label="@string/nav_tickets"
-        tools:layout="@layout/fragment_tickets" />
+        android:name="com.vaultpool.customer.presentation.ui.main.cart.CartFragment"
+        android:label="@string/nav_cart"
+        tools:layout="@layout/fragment_cart" />
 
     <fragment
-        android:id="@+id/nav_bookings"
-        android:name="com.vaultpool.customer.presentation.ui.main.bookings.BookingsFragment"
-        android:label="@string/nav_bookings" />
+            android:id="@+id/nav_bookings"
+            android:name="com.vaultpool.customer.presentation.ui.main.bookings.BookingsFragment"
+            android:label="@string/nav_bookings"
+            tools:layout="@layout/fragment_bookings" />
 
     <fragment
         android:id="@+id/nav_profile"

@@ -1,3 +1,11 @@
+# Workspace-wide generated artifacts
+/.gradle/
+
+# Android build outputs
+/apps/android-customer/build/
+
+# Generic build outputs
+**/build/
 .gradle/
 .idea/
 **/build/
@@ -9,3 +17,4 @@
 out/
 .DS_Store
 Thumbs.db
+**/docs/**

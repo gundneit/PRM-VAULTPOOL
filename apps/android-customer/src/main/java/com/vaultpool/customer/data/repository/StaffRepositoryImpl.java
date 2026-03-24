@@ -3,15 +3,19 @@ package com.vaultpool.customer.data.repository;
 import com.vaultpool.customer.data.remote.api.StaffApi;
 import com.vaultpool.customer.data.remote.dto.ApiResponse;
 import com.vaultpool.customer.data.remote.dto.staff.BookingStaffDto;
+import com.vaultpool.customer.data.remote.dto.staff.CheckInRequest;
 import com.vaultpool.customer.data.remote.dto.staff.PoolStaffDto;
 import com.vaultpool.customer.data.remote.dto.staff.SlotStaffDto;
 import com.vaultpool.customer.domain.model.Result;
 import com.vaultpool.customer.domain.repository.StaffRepository;
 
-import java.util.HashMap;
+import java.io.File;
 import java.util.List;
 import io.reactivex.rxjava3.core.Single;
 import io.reactivex.rxjava3.schedulers.Schedulers;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 
 public class StaffRepositoryImpl implements StaffRepository {
 
@@ -29,6 +33,13 @@ public class StaffRepositoryImpl implements StaffRepository {
     @Override
     public Single<Result<List<BookingStaffDto>>> getStaffBookings(String token) {
         return staffApi.getStaffBookings(formatToken(token))
+                .map(this::handleResponse)
+                .subscribeOn(Schedulers.io());
+    }
+
+    @Override
+    public Single<Result<BookingStaffDto>> checkInByQr(String token, String bookingCode) {
+        return staffApi.checkInByQr(formatToken(token), new CheckInRequest(bookingCode))
                 .map(this::handleResponse)
                 .subscribeOn(Schedulers.io());
     }
@@ -55,15 +66,34 @@ public class StaffRepositoryImpl implements StaffRepository {
     }
 
     @Override
-    public Single<Result<PoolStaffDto>> createPool(String token, PoolStaffDto pool) {
-        return staffApi.createPool(formatToken(token), pool)
+    public Single<Result<PoolStaffDto>> createPool(String token, PoolStaffDto pool, File imageFile) {
+        return staffApi.createPool(
+                        formatToken(token),
+                        requiredTextPart(pool.getName()),
+                        requiredTextPart(pool.getAddress()),
+                        nullableTextPart(toStringValue(pool.getGeoLat())),
+                        nullableTextPart(toStringValue(pool.getGeoLng())),
+                        nullableTextPart(pool.getDescription()),
+                        nullableTextPart(pool.getOpenHours()),
+                        createImagePart(imageFile)
+                )
                 .map(this::handleResponse)
                 .subscribeOn(Schedulers.io());
     }
 
     @Override
-    public Single<Result<PoolStaffDto>> updatePool(String token, Long id, PoolStaffDto pool) {
-        return staffApi.updatePool(formatToken(token), id, pool)
+    public Single<Result<PoolStaffDto>> updatePool(String token, Long id, PoolStaffDto pool, File imageFile) {
+        return staffApi.updatePool(
+                        formatToken(token),
+                        id,
+                        requiredTextPart(pool.getName()),
+                        requiredTextPart(pool.getAddress()),
+                        nullableTextPart(toStringValue(pool.getGeoLat())),
+                        nullableTextPart(toStringValue(pool.getGeoLng())),
+                        nullableTextPart(pool.getDescription()),
+                        nullableTextPart(pool.getOpenHours()),
+                        createImagePart(imageFile)
+                )
                 .map(this::handleResponse)
                 .subscribeOn(Schedulers.io());
     }
@@ -106,5 +136,29 @@ public class StaffRepositoryImpl implements StaffRepository {
         } else {
             return Result.failure(response.getMessage());
         }
+    }
+
+    private RequestBody requiredTextPart(String value) {
+        return RequestBody.create(value == null ? "" : value, MultipartBody.FORM);
+    }
+
+    private RequestBody nullableTextPart(String value) {
+        if (value == null || value.trim().isEmpty()) {
+            return null;
+        }
+        return RequestBody.create(value.trim(), MultipartBody.FORM);
+    }
+
+    private String toStringValue(Double value) {
+        return value == null ? null : String.valueOf(value);
+    }
+
+    private MultipartBody.Part createImagePart(File imageFile) {
+        if (imageFile == null || !imageFile.exists()) {
+            return null;
+        }
+
+        RequestBody requestFile = RequestBody.create(imageFile, MediaType.parse("image/*"));
+        return MultipartBody.Part.createFormData("image", imageFile.getName(), requestFile);
     }
 }

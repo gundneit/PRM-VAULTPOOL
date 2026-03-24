@@ -68,8 +68,10 @@ public class StaffSlotAdapter extends RecyclerView.Adapter<StaffSlotAdapter.View
             }
             
             binding.tvPrice.setText(String.format("%,d VND", slot.getPrice()));
-            binding.tvCapacity.setText(String.format("Capacity: %d/%d", 
-                    slot.getCapacityAvailable(), slot.getCapacityTotal()));
+                int total = slot.getCapacityTotal() != null ? slot.getCapacityTotal() : 0;
+                int available = slot.getCapacityAvailable() != null ? slot.getCapacityAvailable() : 0;
+                int used = Math.max(0, total - available);
+                binding.tvCapacity.setText(String.format("Capacity: %d/%d", used, total));
             
             binding.tvStatus.setText(slot.getStatus());
             

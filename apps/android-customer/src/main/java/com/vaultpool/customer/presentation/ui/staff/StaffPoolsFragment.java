@@ -1,6 +1,8 @@
 package com.vaultpool.customer.presentation.ui.staff;
 
 import android.app.AlertDialog;
+import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -22,11 +24,21 @@ import com.vaultpool.customer.databinding.DialogAddSlotBinding;
 import com.vaultpool.customer.databinding.DialogPoolOptionsBinding;
 import com.vaultpool.customer.databinding.FragmentStaffPoolsBinding;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+
 public class StaffPoolsFragment extends Fragment {
+
+    private static final DateTimeFormatter API_DATE_FORMATTER = DateTimeFormatter.ISO_LOCAL_DATE;
+    private static final DateTimeFormatter API_DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
+    private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm");
 
     private FragmentStaffPoolsBinding binding;
     private StaffViewModel viewModel;
     private StaffPoolAdapter adapter;
+    private boolean awaitingCreateSlotResult;
 
     @Nullable
     @Override
@@ -83,6 +95,19 @@ public class StaffPoolsFragment extends Fragment {
         viewModel.getPoolActionUpdate().observe(getViewLifecycleOwner(), result -> {
             if (result.isSuccess()) {
                 Toast.makeText(getContext(), "Pool Updated Successfully", Toast.LENGTH_SHORT).show();
+            } else if (result.isFailure()) {
+                Toast.makeText(getContext(), result.getErrorMessage(), Toast.LENGTH_LONG).show();
+            }
+        });
+
+        viewModel.getSlotActionUpdate().observe(getViewLifecycleOwner(), result -> {
+            if (!awaitingCreateSlotResult) {
+                return;
+            }
+
+            awaitingCreateSlotResult = false;
+            if (result.isSuccess()) {
+                Toast.makeText(getContext(), "Create slot successful", Toast.LENGTH_SHORT).show();
             } else if (result.isFailure()) {
                 Toast.makeText(getContext(), result.getErrorMessage(), Toast.LENGTH_LONG).show();
             }
@@ -162,34 +187,84 @@ public class StaffPoolsFragment extends Fragment {
             dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         }
 
-        // Set default values for easier testing
-        slotBinding.etStartTime.setText("2026-03-18T08:00:00");
-        slotBinding.etEndTime.setText("2026-03-18T10:00:00");
+        final LocalDate[] slotDate = new LocalDate[]{LocalDate.now()};
+        final LocalTime[] startTime = new LocalTime[]{LocalTime.of(8, 0)};
+        final LocalTime[] endTime = new LocalTime[]{LocalTime.of(10, 0)};
+
+        slotBinding.etSlotDate.setText(slotDate[0].format(API_DATE_FORMATTER));
+        slotBinding.etStartTime.setText(startTime[0].format(TIME_FORMATTER));
+        slotBinding.etEndTime.setText(endTime[0].format(TIME_FORMATTER));
         slotBinding.etPrice.setText("150000");
         slotBinding.etCapacity.setText("20");
+
+        slotBinding.etSlotDate.setOnClickListener(v -> showSlotDatePicker(slotDate, slotBinding));
+        slotBinding.etStartTime.setOnClickListener(v -> showSlotTimePicker(startTime, slotBinding.etStartTime));
+        slotBinding.etEndTime.setOnClickListener(v -> showSlotTimePicker(endTime, slotBinding.etEndTime));
 
         slotBinding.btnCancel.setOnClickListener(v -> dialog.dismiss());
 
         slotBinding.btnCreate.setOnClickListener(v -> {
             SlotStaffDto newSlot = new SlotStaffDto();
             newSlot.setPoolId(pool.getId());
-            newSlot.setStartTime(slotBinding.etStartTime.getText().toString());
-            newSlot.setEndTime(slotBinding.etEndTime.getText().toString());
-            
+
             try {
-                newSlot.setPrice(Long.parseLong(slotBinding.etPrice.getText().toString()));
-                newSlot.setCapacityTotal(Integer.parseInt(slotBinding.etCapacity.getText().toString()));
+                LocalDate selectedDate = LocalDate.parse(slotBinding.etSlotDate.getText().toString().trim(), API_DATE_FORMATTER);
+                LocalTime selectedStartTime = LocalTime.parse(slotBinding.etStartTime.getText().toString().trim(), TIME_FORMATTER);
+                LocalTime selectedEndTime = LocalTime.parse(slotBinding.etEndTime.getText().toString().trim(), TIME_FORMATTER);
+
+                LocalDateTime startDateTime = LocalDateTime.of(selectedDate, selectedStartTime);
+                LocalDateTime endDateTime = LocalDateTime.of(selectedDate, selectedEndTime);
+
+                if (!endDateTime.isAfter(startDateTime)) {
+                    Toast.makeText(getContext(), "End time must be after start time", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                newSlot.setStartTime(startDateTime.format(API_DATE_TIME_FORMATTER));
+                newSlot.setEndTime(endDateTime.format(API_DATE_TIME_FORMATTER));
+
+                newSlot.setPrice(Long.parseLong(slotBinding.etPrice.getText().toString().trim()));
+                newSlot.setCapacityTotal(Integer.parseInt(slotBinding.etCapacity.getText().toString().trim()));
                 newSlot.setCapacityAvailable(newSlot.getCapacityTotal());
                 newSlot.setStatus("ACTIVE");
                 
+                awaitingCreateSlotResult = true;
                 viewModel.createSlot(pool.getId(), newSlot);
                 dialog.dismiss();
-            } catch (NumberFormatException e) {
+            } catch (Exception e) {
                 Toast.makeText(getContext(), "Invalid input format", Toast.LENGTH_SHORT).show();
             }
         });
 
         dialog.show();
+    }
+
+    private void showSlotDatePicker(LocalDate[] slotDate, DialogAddSlotBinding slotBinding) {
+        DatePickerDialog pickerDialog = new DatePickerDialog(
+                requireContext(),
+                (view, year, month, dayOfMonth) -> {
+                    slotDate[0] = LocalDate.of(year, month + 1, dayOfMonth);
+                    slotBinding.etSlotDate.setText(slotDate[0].format(API_DATE_FORMATTER));
+                },
+                slotDate[0].getYear(),
+                slotDate[0].getMonthValue() - 1,
+                slotDate[0].getDayOfMonth()
+        );
+        pickerDialog.show();
+    }
+
+    private void showSlotTimePicker(LocalTime[] timeValue, com.google.android.material.textfield.TextInputEditText targetInput) {
+        TimePickerDialog pickerDialog = new TimePickerDialog(
+                requireContext(),
+                (view, hourOfDay, minute) -> {
+                    timeValue[0] = LocalTime.of(hourOfDay, minute);
+                    targetInput.setText(timeValue[0].format(TIME_FORMATTER));
+                },
+                timeValue[0].getHour(),
+                timeValue[0].getMinute(),
+                true
+        );
+        pickerDialog.show();
     }
 
     @Override
